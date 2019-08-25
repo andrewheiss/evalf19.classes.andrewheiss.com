@@ -1,0 +1,20 @@
+---
+title: "Regression discontiunity II & Instrumental variables I"
+date: "2019-11-11"
+citeproc: false
+bibliography: ../../static/bib/references.bib
+csl: ../../static/bib/chicago-fullnote-bibliography-no-bib.csl
+---
+
+# Required
+
+## Regression discontinuity
+
+- Review the readings from [last week](/reading/10-reading/)
+- Other readings TBA
+
+## Instrumental variables
+
+- <i class="fas fa-book"></i> Chapter 5 in *Impact Evaluation in Practice* [@wb-eval]
+- <i class="fas fa-book"></i> Chapter 3 in *Mastering 'Metrics* [@AngristPischke:2015]
+- <i class="fas fa-book"></i> "Differences-in-differences" in *Causal Inference: The Mixtape* [@mixtape]

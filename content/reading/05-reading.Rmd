@@ -1,0 +1,12 @@
+---
+title: "Counterfactuals and DAGs II"
+date: "2019-09-30"
+citeproc: false
+bibliography: ../../static/bib/references.bib
+csl: ../../static/bib/chicago-fullnote-bibliography-no-bib.csl
+---
+
+# Required
+
+- Review the readings from [last week](/reading/04-reading/)
+- <i class="fas fa-book"></i> "Potential outcomes causal model" in *Causal Inference: The Mixtape* [@mixtape]

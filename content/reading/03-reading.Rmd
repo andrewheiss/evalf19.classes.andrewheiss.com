@@ -1,0 +1,13 @@
+---
+title: "Theories of Change"
+date: "2019-09-16"
+citeproc: false
+bibliography: ../../static/bib/references.bib
+csl: ../../static/bib/chicago-fullnote-bibliography-no-bib.csl
+---
+
+# Required
+
+- <i class="fas fa-book"></i> Chapter 2 in *Impact Evaluation in Practice* [@wb-eval]
+- <i class="fas fa-book"></i> Chapter 3 in *Evaluation: A Systematic Approach* [@RossiLipseyHenry:2019]. This will be available on iCollege.
+- Other readings TBA

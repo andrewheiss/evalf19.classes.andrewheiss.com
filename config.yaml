@@ -1,0 +1,77 @@
+baseURL: "https://evalf19.classes.andrewheiss.com/"
+languageCode: en-us
+title: Program Evaluation for Public Service
+theme: "ath-tufte-hugo_archivo"
+googleAnalytics: ""
+ignoreFiles:
+  - \.Rmd$
+  - \.Rmarkdown$
+  - \.yaml$
+  - _files$
+  - _cache$
+  - \.csl$
+permalinks:
+  post: "/:year/:month/:day/:slug/"
+buildFuture: True
+disableKinds: ["taxonomy", "taxonomyTerm"]
+menu:
+  main:
+    - name: Syllabus
+      url: /syllabus/
+      weight: 1
+    - name: Assignments
+      url: /assignments/
+      weight: 3
+    - name: Schedule
+      url: /schedule/
+      weight: 2
+    - name: Reference
+      url: /reference/
+      weight: 4
+    - name: RStudio.cloud
+      url: https://rstudio.cloud/
+      weight: 5
+    - name: Slack
+      url: "https://pmap8521fall2019.slack.com/"
+      weight: 6
+params:
+  author: Andrew Heiss
+  thumbnail: /images/eval_meta.png
+  instructor: 
+    name: Dr. Andrew Heiss
+    email: aheiss@gsu.edu
+    url: "https://www.andrewheiss.com"
+    twitter: andrewheiss
+    github: andrewheiss
+    office: "357 Andrew Young School"
+  course:
+    number: "PMAP 8521"
+    semester: "Fall 2019"
+    days: "Mondays"
+    time: "4:30–7:00 PM"
+    location: "Langdale Hall 127"
+    twitter: andrewheiss
+    dates: "August 26–December 9, 2019"
+    github: "andrewheiss/evalf19.classes.andrewheiss.com"
+    slack: "https://pmap8521fall2019.slack.com/"
+    copyrightYear: "2019"
+    contactDetails: >-
+      Office hours: [Sign up here.](https://calendly.com/andrewheiss/meeting/)<br><br><small>E-mail is the best way to get in contact with me. I will try to respond to all course-related e-mails within 24 hours (*really*), but also remember that life can be busy and chaotic for everyone (including me!), so if I don't respond to your e-mail right away, don't worry!</small>
+  university: 
+    name: Georgia State University
+    url: "https://www.gsu.edu"
+  school:
+    name: Andrew Young School of Policy Studies
+    url: "https://aysps.gsu.edu/"
+  description: "Use modern statistical and data scientific tools to measure causal effects and evaluate public policy"
+  primaryColor: "#D46600"
+  secondaryColor: "#F6E03F"
+  credits: >-
+    Hex icon by Andrew Heiss. Color scheme adapted from [October Roads](http://www.colourlovers.com/palette/582235/October_Roads).
+  logo:
+    url: /images/eval_hires.png
+    alt: Program Evaluation
+  meta:
+    twitterSite: "@andrewheiss"
+    twitterCreator: "@andrewheiss"
+    fbAuthor: "https://www.facebook.com/andrewheiss"

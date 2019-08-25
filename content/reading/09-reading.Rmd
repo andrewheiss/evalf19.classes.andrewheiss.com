@@ -1,0 +1,12 @@
+---
+title: "Difference-in-difference II"
+date: "2019-10-28"
+citeproc: false
+bibliography: ../../static/bib/references.bib
+csl: ../../static/bib/chicago-fullnote-bibliography-no-bib.csl
+---
+
+# Required
+
+- Review the readings from [last week](/reading/08-reading/)
+- Other readings TBA

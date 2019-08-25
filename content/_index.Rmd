@@ -1,0 +1,12 @@
+---
+title: "Program evaluation for public service"
+author: "Andrew Heiss"
+---
+
+^[{-} `r blogdown::shortcode("courseinfo")`] <span class="newthought">This site contains</span> the syllabus, schedule, and assignments for PMAP 8521: Program Evaluation, held during Fall 2019 at the Andrew Young School of Policy Studies at Georgia State University.
+
+By the end of this course, you (1) will be literate in the language of causal inference, (2) will communicate evaluation outcomes clearly, and (3) will understand the ethics and limits of data analysis by designing, critiquing, coding, and running rigorous, valid, and feasible evaluations of public sector programs focused on society’s most pressing problems. 
+
+<figure>
+[![](/images/eval-flowchart.png)](/images/eval-flowchart.png)
+</figure>

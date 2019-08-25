@@ -1,0 +1,12 @@
+---
+title: "Randomization"
+date: "2019-10-14"
+citeproc: false
+bibliography: ../../static/bib/references.bib
+csl: ../../static/bib/chicago-fullnote-bibliography-no-bib.csl
+---
+
+# Required
+
+- <i class="fas fa-book"></i> Chapter 4 in *Impact Evaluation in Practice* [@wb-eval]
+- <i class="fas fa-book"></i> Chapter 1 in *Mastering 'Metrics* [@AngristPischke:2015]

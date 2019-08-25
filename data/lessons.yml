@@ -1,0 +1,122 @@
+lessons:
+  - title: '<span class="fake-header-table">Evaluation, design, & causation</span>'
+    header: True
+
+  - title: "What is program evaluation? + Introduction to R, RStudio, and the tidyverse"
+    date: "August 26"
+    reading: "01-reading"
+
+  - title: "Regression and inference"
+    date: "September 9"
+    reading: "02-reading"
+
+  - title: "**Problem set 1**"
+    date: "September 9"
+    assignment: "01-problem-set"
+    
+  - title: "Theories of change"
+    date: "September 16"
+    reading: "03-reading"
+
+  - title: "**Problem set 2**"
+    date: "September 16"
+    assignment: "02-problem-set"
+    
+  - title: "Counterfactuals and DAGs I"
+    date: "September 23"
+    reading: "04-reading"
+
+  - title: "**Problem set 3**"
+    date: "September 23"
+    assignment: "03-problem-set"
+
+  - title: "Counterfactuals and DAGs II"
+    date: "September 30"
+    reading: "05-reading"
+
+  - title: "**Problem set 4**"
+    date: "September 30"
+    assignment: "04-problem-set"
+    
+  - title: "Threats to validity"
+    date: "October 7"
+    reading: "06-reading"
+
+  - title: "**Problem set 5**"
+    date: "October 7"
+    assignment: "05-problem-set"
+    
+  - title: '<i class="fas fa-star"></i> **Exam 1**'
+    date: "October 15–20"
+
+  - title: '<span class="fake-header-table">Statistical tools</span>'
+    header: True
+    
+  - title: "Randomization"
+    date: "October 14"
+    reading: "07-reading"
+
+  - title: "Difference-in-difference I"
+    date: "October 21"
+    reading: "08-reading"
+
+  - title: "**Problem set 6**"
+    date: "October 21"
+    assignment: "06-problem-set"
+    
+  - title: "Difference-in-difference II"
+    date: "October 28"
+    reading: "09-reading"
+
+  - title: "**Problem set 7**"
+    date: "October 28"
+    assignment: "07-problem-set"
+    
+  - title: "Regression discontinuity I"
+    date: "November 4"
+    reading: "10-reading"
+
+  - title: "**Problem set 8**"
+    date: "November 4"
+    assignment: "08-problem-set"
+    
+  - title: "Regression discontinuity II & Instrumental variables I"
+    date: "November 11"
+    reading: "11-reading"
+
+  - title: "**Problem set 9**"
+    date: "November 11"
+    assignment: "09-problem-set"
+    
+  - title: "Instrumental variables II"
+    date: "November 18"
+    reading: "12-reading"
+
+  - title: "**Problem set 10**"
+    date: "November 18"
+    assignment: "10-problem-set"
+    
+  - title: '<i class="fas fa-star"></i> **Exam 2**'
+    date: "November 19–24"
+
+  - title: '<span class="fake-header-table">Applied evaluation</span>'
+    header: True
+
+  - title: "Ethics and open science"
+    date: "December 2"
+    reading: "13-reading"
+
+  - title: "**Code-through due**"
+    date: "December 2"
+    assignment: "code-through"
+
+  - title: "Politics, feasibility, and communication"
+    date: "December 9"
+    reading: "14-reading"
+
+  - title: '<span class="fake-header-table">Final</span>'
+    header: True
+
+  - title: "**Final project due** (submit online by 4:30 PM)"
+    date: "December 16"
+    assignment: "final-project"

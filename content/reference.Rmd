@@ -1,0 +1,38 @@
+---
+title: Reference
+slug: reference
+output:
+  blogdown::html_page:
+    template: ../pandoc/toc-title_html.template
+    toc: true
+---
+
+```{r include=FALSE}
+library(tidyverse)
+library(emo)
+library(here)
+
+source(here("lib", "graphics.R"))
+```
+
+
+# Citations and bibliography
+
+[^bibtex] You can [download a BibTeX file](/bib/references.bib) of all the non-web-based readings in the course.
+
+[^bibtex]: {-} You can open the file in [BibDesk on macOS](http://bibdesk.sourceforge.net/), [JabRef on Windows](http://www.jabref.org/), or [Zotero](https://www.zotero.org/) or [Mendeley](https://www.mendeley.com/) online.
+
+
+# Resources
+
+I will include a list of helpful resources here soon!
+
+
+# Things you should know for Exam 1
+
+I will put a list of topics you should know prior to the exam. This will be like your study guide.
+
+
+# Things you should know for Exam 2
+
+I will put a list of topics you should know prior to the exam. This will be like your study guide.

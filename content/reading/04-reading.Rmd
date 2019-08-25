@@ -1,0 +1,14 @@
+---
+title: "Counterfactuals and DAGs I"
+date: "2019-09-23"
+citeproc: false
+bibliography: ../../static/bib/references.bib
+csl: ../../static/bib/chicago-fullnote-bibliography-no-bib.csl
+---
+
+# Required
+
+- <i class="fas fa-book"></i> Chapter 3 in *Impact Evaluation in Practice* [@wb-eval]
+- <i class="fas fa-book"></i> "Directed acyclical graphs" in *Causal Inference: The Mixtape* [@mixtape]
+- <i class="far fa-file-pdf"></i> Julia M. Rohrer, "Thinking Clearly About Correlations and Causation: Graphical Causal Models for Observational Data" [@Rohrer:2018] This will be posted on iCollege.
+- Other readings TBA
