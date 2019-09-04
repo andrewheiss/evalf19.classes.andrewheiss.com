@@ -5,13 +5,14 @@ lessons:
   - title: "What is program evaluation? + Introduction to R, RStudio, and the tidyverse"
     date: "August 26"
     reading: "01-reading"
+    class: "01-class"
 
   - title: "Regression and inference"
     date: "September 9"
     reading: "02-reading"
 
   - title: "**Problem set 1**"
-    date: "September 9"
+    date: "September 11"
     assignment: "01-problem-set"
     
   - title: "Theories of change"

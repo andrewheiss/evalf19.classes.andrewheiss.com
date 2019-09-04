@@ -1,0 +1,39 @@
+---
+title: "What is program evaluation? + Introduction to R, RStudio, and the tidyverse"
+date: "2019-08-26"
+citeproc: false
+bibliography: ../../static/bib/references.bib
+csl: ../../static/bib/chicago-syllabus-no-bib.csl
+output:
+  blogdown::html_page:
+    template: ../../pandoc/toc-title_html.template
+    toc: true
+editor_options: 
+  chunk_output_type: console
+---
+
+# Slides
+
+[Download the slides from today's class](/slides/PMAP-8521_2019-08-26.pdf).
+
+<figure>
+[![First slide](/images/slides/slides_2019-08-26.png)](/slides/PMAP-8521_2019-08-26.pdf)
+</figure>
+
+
+# Getting started with R
+
+[Open the RStudio.cloud project for today](https://rstudio.cloud/spaces/26160/project/465826). 
+
+If you want to follow along on your own computer (recommended only if you feel comfortable installing packages in R), [you can download the project](/files/first-day.zip).
+
+
+# Clearest and muddiest things
+
+Go to [this form](https://forms.gle/gDXoxmbQeps5suaJ6) and answer these three questions:
+
+1. What was the muddiest thing from class today? What are you still wondering about?
+2. What was the clearest thing from class today? 
+3. What was the most exciting thing you learned?
+
+I'll compile the questions and send out answers after class.

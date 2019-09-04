@@ -1,0 +1,66 @@
+---
+title: "Playing with R Markdown"
+---
+
+# Literate programming
+
+R Markdown lets you combine text with code so that you no longer have to copy/paste numbers, tables, and graphs from one program to another! R Markdown is really just the combination of two different things: Markdown and R.
+
+## Markdown
+
+Markdown is a super simple syntax you can use to style your text. If you want something italicized, *add asterisks around it*; if you want something bolded, **add two asterisks around it.** You can
+
+- make
+- bulleted
+- lists
+
+And also
+
+1. make
+2. numbered
+3. lists
+
+You can make headings and subheadings with #s. 1 # = a 1st level heading, 2 #s = a 2nd level heading, etc. 
+
+[Here's a quick introduction to a bunch of other Markdown features.](https://guides.github.com/features/mastering-markdown/)
+
+
+## R within Markdown
+
+The magic of R Markdown is that it lets you mix R code and output inside text. Most often you'll put R code in what are called "chunks", which look like this:
+
+```{r}
+2 + 2
+```
+
+When you compile this document, a package named "knitr" will run each chunk and include its output in the document (because of this, compiling an R Markdown file is generally called "knitting").
+
+Here's an example regression model:
+
+```{r}
+mpg_model <- lm(mpg ~ wt, data = mtcars)
+summary(mpg_model)
+```
+
+Neat! It's kind of ugly when you knit, but later I'll show you how to make this look pretty.
+
+You can also include graphics:
+
+```{r}
+library(ggplot2)
+
+ggplot(data = mtcars, 
+       mapping = aes(x = wt, y = mpg)) +
+  geom_point(mapping = aes(color = as.factor(cyl))) +
+  geom_smooth(method = "lm")
+```
+
+If you want to run R code within a paragraph of text instead of in a chunk, you can do that too. Like, 2 + 2 is equal to `r 2 + 2`, or pi rounded to the first 5 digits is `r round(pi, 5)`.
+
+## Output formats
+
+With the magic of R Markdown, you can knit your document to a bunch of different formats:
+
+- HTML
+- Word
+- PDF (requires some extra installation)
