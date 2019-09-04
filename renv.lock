@@ -66,6 +66,12 @@
       "Source": "CRAN",
       "Hash": "19fb3d0ad048b4eb1a05cacffbae1f66"
     },
+    "babynames": {
+      "Package": "babynames",
+      "Version": "1.0.0",
+      "Source": "CRAN",
+      "Hash": "0eff4b1c01215852f8d7d82b11afa33c"
+    },
     "backports": {
       "Package": "backports",
       "Version": "1.1.4",
