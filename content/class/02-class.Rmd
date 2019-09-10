@@ -1,0 +1,123 @@
+---
+title: "Regression and inference"
+date: "2019-09-09"
+citeproc: false
+bibliography: ../../static/bib/references.bib
+csl: ../../static/bib/chicago-syllabus-no-bib.csl
+output:
+  blogdown::html_page:
+    template: ../../pandoc/toc-title_html.template
+    toc: true
+editor_options: 
+  chunk_output_type: console
+---
+
+# Slides
+
+[Download the slides from today's class](/slides/PMAP-8521_2019-09-09.pdf).
+
+<figure>
+[![First slide](/images/slides/slides_2019-09-09.png)](/slides/PMAP-8521_2019-09-09.pdf)
+</figure>
+
+
+# Regression with R
+
+[Open the RStudio.cloud project for today](https://rstudio.cloud/spaces/26160/project/501239). 
+
+You can also download the project to your computer and run the R Markdown files locally:
+
+- [<i class="fas fa-file-archive"></i> Simple regressions](/files/simple-regressions.zip)
+
+
+# Different styles of formulas
+
+There's unfortunately no standard notation for regression model math. Since everyone does it differently, here's a brief guide to translating between different forms. I'll write two different models in a bunch of different ways. The models come from chapter 2 of *Mastering 'Metrics* where they estimated the effect of private university on earnings:
+
+- Simple: Earnings ~ Public/private + Group A/Not group A
+- Complex: Earnings ~ Public/private + Group A/Not group A + SAT score + Parental income
+
+## R code
+
+When specifying a model with R, you don't need to worry about Greek letters (or any coefficient letters really), since the point of running the model is to find what the actual values of those letters would be. 
+The code for these two models would look something like this:
+
+```{r eval=FALSE}
+model_simple <- lm(earnings ~ private + group_a, data = schools)
+model_complex <- lm(log(earnings) ~ private + group_a + sat_score + parental_income,
+                    data = schools)
+```
+
+## *Mastering 'Metrics* and econometrics in general
+
+In *Mastering 'Metrics*, Angrist and Pischke like to use lots of different Greek letters to help distinguish between the different parts of a model. For instance, Equation 2.1 on page 57 is
+
+$$
+Y_i = \alpha + \beta P_i + \gamma A_i + e_i
+$$
+
+Here's what all these things mean: 
+
+- $\alpha$ ("alpha") is the intercept
+- $\beta$ ("beta") is the coefficient just for the *treatment*, or the causal effect we care about (i.e. the effect of private school)
+- $\gamma$ ("gamma") is the coefficient for the *identifying variable*, or the thing that simulates treatment and control groups (i.e. being in group A or not). 
+- $e$ ("epsilon") is the error term, or the residuals (i.e. things that aren't captured by the model)
+- $Y$ represents earnings, or the outcome variable (or dependent variable)
+- $P$ represents private schools
+- $A$ represents being in Group A
+
+Each of these terms has a subscripted *i* to show that the model is being fit for individuals, not groups. It's more of an esoteric point and we don't care much about that distinction for this class.
+
+For the more complex model, Angrist and Pischke use Equation 2.2 on page 61:
+
+$$
+\ln Y_i = \alpha + \beta P_i + \gamma A_i + \delta_1 \text{SAT}_i + \delta_2 \text{PI}_i + e_i
+$$
+
+The alpha, beta, and gamma terms are all the same as before (intercept, treatment coefficient, idenfication coefficient), but there are some new pieces:
+
+- $\delta_1$, $\delta_2$, etc. ("delta"): the coefficients for all other control variables
+- SAT is for SAT scores
+- PI is for parental income
+
+## All $\beta$s
+
+My preferred method is to not distinguish between the different types of coefficients (i.e. beta vs. gamma vs. delta) and just call everything beta. Here's what the two models look like when written this way:
+
+$$
+\begin{aligned}
+Y =& \beta_0 + \beta_1 P + \beta_2 A + \epsilon \\
+\ln Y =& \beta_0 + \beta_1 P + \beta_2 A + \beta_3 \text{SAT} + \beta_4 \text{PI} + \epsilon
+\end{aligned}
+$$
+
+You'll sometimes see the intercept $\beta_0$ written as $\alpha$, which is fine—just start with $\beta_1$:
+
+$$
+\begin{aligned}
+Y =& \alpha + \beta_1 P + \beta_2 A + \epsilon \\
+\ln Y =& \alpha + \beta_1 P + \beta_2 A + \beta_3 \text{SAT} + \beta_4 \text{PI} + \epsilon
+\end{aligned}
+$$
+
+# Use real names
+
+If you're not constrained with space, feel free to use actual words instead of things like $P$, $A$, or $PI$:
+
+$$
+\begin{aligned}
+Y =& \beta_0 + \beta_1 \text{Private} + \beta_2 \text{Group A} + \epsilon \\
+\ln Y =& \beta_0 + \beta_1 \text{Private} + \beta_2 \text{Group A} + \\
+& \beta_3 \text{SAT score} + \beta_4 \text{Parental income} + \epsilon
+\end{aligned}
+$$
+
+# Clearest and muddiest things
+
+Go to [this form](https://forms.gle/gDXoxmbQeps5suaJ6) and answer these three questions:
+
+1. What was the muddiest thing from class today? What are you still wondering about?
+2. What was the clearest thing from class today? 
+3. What was the most exciting thing you learned?
+
+I'll compile the questions and send out answers after class.

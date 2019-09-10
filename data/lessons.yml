@@ -10,6 +10,7 @@ lessons:
   - title: "Regression and inference"
     date: "September 9"
     reading: "02-reading"
+    class: "02-class"
 
   - title: "**Problem set 1**"
     date: "September 11"

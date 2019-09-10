@@ -1,0 +1,86 @@
+---
+title: "Mastering 'Metrics regression"
+output: html_document
+---
+
+```{r}
+library(tidyverse)
+library(broom)
+
+schools <- read_csv("data/mm_public_private.csv")
+```
+
+# Effect of private school on earnings, no controls
+
+What's the average income for people in each group, divided by whether they went to a private or public school?
+
+```{r}
+schools %>% 
+  group_by(Group, Private) %>% 
+  summarize(avg_earnings = mean(Earnings))
+```
+
+What are the differences?
+
+```{r}
+# Group A
+gap_a <- 105000 - 110000
+
+# Group B
+gap_b <- 60000 - 30000
+
+gap_a
+gap_b
+```
+
+What's the weighted average for both of these groups?
+
+```{r}
+(gap_a * 3/5) + (gap_b * 2/5)
+```
+
+From this it looks like attending a private university causes a \$9,000 bump in earnings.
+
+
+# Effect of private school on earnings, with regression and controls
+
+Instead of looking at weighted averages, we can use a regression model that accounts for differences between groups A and B (since something about group A made them way wealthier than group B regardless of school type).
+
+We do that by predicting earnings based on private/public school attendance while also controlling for group:
+
+```{r}
+model_earnings <- lm(Earnings ~ Private + Group_A, data = schools)
+```
+
+```{r}
+tidy(model_earnings)
+```
+
+There are three important numbers here. The intercept (or $\alpha$ in *Mastering 'Metrics*, or $\beta_0$) is \$40,000. This represents the earnings for someone with all the switches and sliders in the model set to 0 or turned off—in this case, someone who went to a public school in group B. 
+
+The Group A coefficient shows the effect of just being in that group. For whatever reason, Group A is an average of \$60,000 richer than Group B—*for reasons other than education*. This allows us to control for the effect of selection and omitted variable bias.
+
+The coefficient for Private is the one we care about the most—this is the causal effect of private schools on earnings (assuming we can justify all the controls and the matching into groups). It is \$10,000, which means that attending a private school gives you that much of a bump in income. This is larger than the \$9,000 we found earlier, but is likely more accurate since we're accounting for other differences between groups.
+
+# Omitted variable bias
+
+What if we hadn't controlled for group differences? How much would that influence our causal effect?
+
+To calculate this, we can run two regression models as described in *Mastering 'Metrics*: one long one and one short one (without the control for group):
+
+```{r}
+# This is technicaly the same as model_earnings from above, but we'll run it again 
+# here just for fun
+model_long <- lm(Earnings ~ Private + Group_A, data = schools)
+model_short <- lm(Earnings ~ Private, data = schools)
+
+tidy(model_long)
+tidy(model_short)
+```
+
+Following the *Mastering 'Metrics* equation for omitted variable bias, we calculate Private (short) - Private (long):
+
+```{r}
+20000 - 10000
+```
+

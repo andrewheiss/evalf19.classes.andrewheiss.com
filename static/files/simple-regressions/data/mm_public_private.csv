@@ -1,0 +1,6 @@
+﻿Group,Student,Ivy,Leafy,Smart,All_State,Tall_State,Altered_State,Earnings,Private,Group_A
+A,1,,Reject,Admit,,Admit,,110000,TRUE,TRUE
+A,2,,Reject,Admit,,Admit,,100000,TRUE,TRUE
+A,3,,Reject,Admit,,Admit,,110000,FALSE,TRUE
+B,4,Admit,,,Admit,,Admit,60000,TRUE,FALSE
+B,5,Admit,,,Admit,,Admit,30000,FALSE,FALSE
