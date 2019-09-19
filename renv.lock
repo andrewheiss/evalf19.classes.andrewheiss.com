@@ -54,6 +54,24 @@
       "Source": "CRAN",
       "Hash": "c25fa7d5684fa7001ddfea3755243975"
     },
+    "RcppArmadillo": {
+      "Package": "RcppArmadillo",
+      "Version": "0.9.700.2.0",
+      "Source": "CRAN",
+      "Hash": "786d94663176e5de42e20f838009600b"
+    },
+    "RcppEigen": {
+      "Package": "RcppEigen",
+      "Version": "0.3.3.5.0",
+      "Source": "CRAN",
+      "Hash": "b86bf100354fb8fe4a20b5689e40c7b3"
+    },
+    "V8": {
+      "Package": "V8",
+      "Version": "2.3",
+      "Source": "CRAN",
+      "Hash": "0287ba9640c1a28f389859b0d3c41cfc"
+    },
     "askpass": {
       "Package": "askpass",
       "Version": "1.1",
@@ -102,6 +120,12 @@
       "Source": "CRAN",
       "Hash": "2ac6b83fbe5c15bbdd3113bb9402c277"
     },
+    "boot": {
+      "Package": "boot",
+      "Version": "1.3-22",
+      "Source": "CRAN",
+      "Hash": "d6793731045601ba6fbc24f5b9f537ae"
+    },
     "broom": {
       "Package": "broom",
       "Version": "0.5.2",
@@ -149,6 +173,12 @@
       "Version": "3.3",
       "Source": "CRAN",
       "Hash": "208293ffee1d8d6988ec5bcbf7bed49e"
+    },
+    "dagitty": {
+      "Package": "dagitty",
+      "Version": "0.2-2",
+      "Source": "CRAN",
+      "Hash": "17a6a539a498a5ab8481036d14181ac5"
     },
     "dbplyr": {
       "Package": "dbplyr",
@@ -199,6 +229,12 @@
       "Source": "CRAN",
       "Hash": "cd87b0162287f0da225edfaa2fd3a20c"
     },
+    "farver": {
+      "Package": "farver",
+      "Version": "1.1.0",
+      "Source": "CRAN",
+      "Hash": "d9bf0922f00c345bef1559e9cfc0846b"
+    },
     "forcats": {
       "Package": "forcats",
       "Version": "0.4.0",
@@ -223,11 +259,35 @@
       "Source": "CRAN",
       "Hash": "4e8e453aff36dd8ddac10ff157083e4f"
     },
+    "ggdag": {
+      "Package": "ggdag",
+      "Version": "0.2.0",
+      "Source": "CRAN",
+      "Hash": "36b621b199111371b644b0b83727dd39"
+    },
+    "ggforce": {
+      "Package": "ggforce",
+      "Version": "0.3.1",
+      "Source": "CRAN",
+      "Hash": "67e9ac060ad52a3be4c5be8ca8a428e6"
+    },
     "ggplot2": {
       "Package": "ggplot2",
       "Version": "3.2.0",
       "Source": "CRAN",
       "Hash": "e3b95a7458944efa0ebbb903bcdbe168"
+    },
+    "ggraph": {
+      "Package": "ggraph",
+      "Version": "2.0.0",
+      "Source": "CRAN",
+      "Hash": "31c57379c1f6ec6c21ea5f0c37d56b68"
+    },
+    "ggrepel": {
+      "Package": "ggrepel",
+      "Version": "0.8.1",
+      "Source": "CRAN",
+      "Hash": "61257084e976294d3c97de988469d019"
     },
     "glue": {
       "Package": "glue",
@@ -240,6 +300,18 @@
       "RemoteRef": "master",
       "RemoteSha": "7ac044aa9f839902a57d7a623ff5d7c44c7f06d9",
       "Hash": "77b792f831a617f67bd2cb27cd00046a"
+    },
+    "graphlayouts": {
+      "Package": "graphlayouts",
+      "Version": "0.5.0",
+      "Source": "CRAN",
+      "Hash": "24494d956a2aed31d914ef1f3180069d"
+    },
+    "gridExtra": {
+      "Package": "gridExtra",
+      "Version": "2.3",
+      "Source": "CRAN",
+      "Hash": "4626f6a59a3b1095e7bdc7bd02a3107f"
     },
     "gtable": {
       "Package": "gtable",
@@ -288,6 +360,12 @@
       "Version": "1.4.0",
       "Source": "CRAN",
       "Hash": "4a241c31afac61ea4a8a672aa5b0b098"
+    },
+    "igraph": {
+      "Package": "igraph",
+      "Version": "1.2.4.1",
+      "Source": "CRAN",
+      "Hash": "6eb7a604bc33c66dac0611b7ce75ac69"
     },
     "jsonlite": {
       "Package": "jsonlite",
@@ -408,6 +486,12 @@
       "Version": "1.8.4",
       "Source": "CRAN",
       "Hash": "37dd0f3aadee2ac99e47168f4bffddb7"
+    },
+    "polyclip": {
+      "Package": "polyclip",
+      "Version": "1.10-0",
+      "Source": "CRAN",
+      "Hash": "16b33ad02d2d189ec057cfd731da86a6"
     },
     "prettyunits": {
       "Package": "prettyunits",
@@ -553,6 +637,12 @@
       "Source": "CRAN",
       "Hash": "a8d41bd284e21ab7e776d228dc5bac91"
     },
+    "tidygraph": {
+      "Package": "tidygraph",
+      "Version": "1.1.2",
+      "Source": "CRAN",
+      "Hash": "72f244d8c6af245ae92392a56fea9f66"
+    },
     "tidyr": {
       "Package": "tidyr",
       "Version": "0.8.3",
@@ -577,6 +667,12 @@
       "Source": "CRAN",
       "Hash": "11c9260eb54db1f55e7573844c2ae8ed"
     },
+    "tweenr": {
+      "Package": "tweenr",
+      "Version": "1.0.1",
+      "Source": "CRAN",
+      "Hash": "058315498c8c88670cbdf61bcbd71bbb"
+    },
     "utf8": {
       "Package": "utf8",
       "Version": "1.1.4",
@@ -588,6 +684,12 @@
       "Version": "0.1.0",
       "Source": "CRAN",
       "Hash": "990e11a7c6454ee32e2821f1a34fac94"
+    },
+    "viridis": {
+      "Package": "viridis",
+      "Version": "0.5.1",
+      "Source": "CRAN",
+      "Hash": "36f082a7e4f833bd4dc4839c5a8d2a84"
     },
     "viridisLite": {
       "Package": "viridisLite",
