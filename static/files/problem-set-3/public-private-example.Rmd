@@ -1,0 +1,140 @@
+---
+title: "The effect of private schooling on earnings"
+output: 
+  html_document: 
+    toc: yes
+---
+
+```{r load-libraries-data, warning=FALSE, message=FALSE}
+library(tidyverse)
+library(broom)
+library(scales)  # This makes it easy to format numbers with dollar(), comma(), etc.
+library(ggdag)   # Draw causal diagrams with R
+library(huxtable)  # Fancy regression tables
+
+# The data doesn't come with an indicator variable marking if they went to a
+# private school, so we create one here. If the string "ivy" is found in the
+# enrolled column, mark it as true, otherwise mark it as false.
+# 
+# We also create a variable that indicates if someone is in group A or not that
+# we'll use in the regression models. We could technically just include the
+# group variable in the model, where it would be treated as a dummy variable,
+# but the reference category would be A, not B, so this is a little trick to
+# force it to show results for group A.
+schools <- read_csv("data/public_private_earnings.csv") %>% 
+  mutate(private = ifelse(str_detect(enrolled, "ivy"), TRUE, FALSE)) %>% 
+  mutate(group_A = ifelse(group == "A", TRUE, FALSE))
+
+# Only look at groups A and B, since C and D don't have people in both public
+# and private schools. | means "or"
+schools_small <- schools %>% 
+  filter(group == "A" | group == "B")
+```
+
+# Theory
+
+According to the theory explained in chapter 2 of *Mastering 'Metrics*, attending a private university should be causally linked to earnings and income---that is, going to a private school should make you earn more money. The type of education you receive, however, is not the only factor that influences earnings. People self-select into different types of universities and choose where to apply and which offers to accept. They also choose to not apply to some schools and are also rejected from other schools. Unmeasured characteristics help determine both acceptance to schools and earnings. 
+
+We can draw a simplified version of this causal story with a directed acyclic graph (DAG) or causal model:
+
+```{r earnings-dag}
+dag <- dagify(Y ~ P + G,
+              P ~ G,
+              labels = c(Y = "Earnings", P = "Private university", 
+                         G = "Student characteristics (group)"))
+
+ggdag(dag, use_labels = "label") + 
+  theme_dag()
+```
+
+# Effect of private school on earnings, no controls
+
+First we can look at the average income for people in each group, divided by whether they went to a private or public school.
+
+```{r avg-income-groups-private}
+avg_earnings <- schools_small %>% 
+  group_by(group, private) %>% 
+  summarize(avg_earnings = mean(earnings))
+
+avg_earnings
+```
+
+Here we see that group A has higher income on average than group B, regardless of whether they went to a private school. Everyone in group A earns roughly \$100,000, while those in group B earn a lot less. 
+
+We can find the exact differences in earnings for public vs. private within each group by pulling the values out of the table and taking their differences
+
+```{r diffs-by-hand}
+# Pulling out each of the numbers is tedious and a good example of why we use
+# regression instead. filter() selects rows that match the specified conditions
+# (here where group and private both equal something) and pull extracts a column
+# from the dataset. Because we're filtering this data in a way that makes it
+# only have one row, pull() will extract a single number
+
+# Group A
+income_private_A <- avg_earnings %>% 
+  filter(group == "A" & private == TRUE) %>% 
+  pull(avg_earnings)
+
+income_public_A <- avg_earnings %>% 
+  filter(group == "A" & private == FALSE) %>% 
+  pull(avg_earnings)
+
+diff_A <- income_private_A - income_public_A
+diff_A
+
+# Group B
+income_private_B <- avg_earnings %>% 
+  filter(group == "B" & private == TRUE) %>% 
+  pull(avg_earnings)
+
+income_public_B <- avg_earnings %>% 
+  filter(group == "B" & private == FALSE) %>% 
+  pull(avg_earnings)
+
+diff_B <- income_private_B - income_public_B
+diff_B
+```
+
+The private-public earnings gap for people in Group A is `r dollar(diff_A)`, while for Group B it is `r dollar(diff_B)`. It seems that there's a big effect for Group B, but a small reversed effect for A.
+
+We want to account for how many people are in each group, though, since A has more people than B, so we calculate the proportion of each group in the same and multiply the group differences by those proportions.
+
+```{r weighted-differences}
+# We need to find the proportion of people in each group
+prop_in_groups <- schools_small %>% 
+  group_by(group) %>% 
+  summarize(n = n()) %>% 
+  # ungroup() %>% 
+  mutate(prop = n / nrow(schools_small))
+prop_in_groups
+
+prop_A <- prop_in_groups %>% filter(group == "A") %>% pull(prop)
+prop_B <- prop_in_groups %>% filter(group == "B") %>% pull(prop)
+
+# With those proportions, we can weight the differences in groups correctly
+weighted_effect <- (diff_A * prop_A) + (diff_B * prop_B)
+weighted_effect
+```
+
+From this it looks like attending a private university causes a bump in earnings of `r dollar(weighted_effect)`.
+
+
+# Effect of private school on earnings, with regression and controls
+
+Instead of looking at weighted averages (since that's tedious with just two groups—imagine doing all that with 3+ groups!), we can use a regression model that accounts for differences between groups A and B, since something about group A made them way wealthier than group B regardless of school type.
+
+We do that by predicting earnings based on private/public school attendance while also controlling for group:
+
+```{r}
+model_earnings <- lm(earnings ~ private + group_A, data = schools_small)
+```
+
+```{r}
+tidy(model_earnings)
+```
+
+There are three important numbers here. The intercept (or $\alpha$ in *Mastering 'Metrics*, or $\beta_0$) is \$40,000. This represents the earnings for someone with all the switches and sliders in the model set to 0 or turned off—in this case, someone who went to a public school in group B. 
+
+The `group_A` coefficient shows the effect of just being in that group. For whatever reason, Group A earns an average of \$60,000 more than Group B—*for reasons other than education*. This allows us to control for the effect of selection.
+
+The coefficient for `private` is the one we care about the most—this is the causal effect of private schools on earnings (assuming we can justify all the controls and the matching into groups). It is \$10,000, which means that attending a private school gives you that much of a bump in income. This is larger than the \$9,000 we found earlier, but is more accurate since we're accounting for other weighted differences between groups.

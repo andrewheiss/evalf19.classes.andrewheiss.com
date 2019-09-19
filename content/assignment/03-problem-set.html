@@ -1,7 +1,7 @@
 ---
 title: "Problem set 3"
-date: "2019-09-23"
-due_date: "2019-09-23"
+date: "2019-09-25"
+due_date: "2019-09-25"
 due_time: "11:59 PM"
 editor_options: 
   chunk_output_type: console
@@ -9,4 +9,23 @@ editor_options:
 
 
 
-<p>The instructions for this problem set will be posted one week before it is due.</p>
+<p>Like last week, I’ve provided a complete example of an analysis similar to what you’ll do in the problem set. It’s not identical—you’ll need to make some of your own graphs and rely on code from previous problem sets for that. Open and knit <code>public-private-example.Rmd</code> (or run it interactively from RStudio) to follow along.</p>
+<p>Remember that you can run an entire chunk by clicking on the green play arrow in the top right corner of the chunk. You can also run lines of code line-by-line if you place your cursor on some R code and press “⌘ + enter” (for macOS users) or “ctrl + enter” (for Windows users).</p>
+<p>Make sure you run each chunk sequentially. If you run a chunk in the middle of the document without running previous ones, it might not work, since previous chunks might do things that later chunks depend on.</p>
+<p>Remember, if you’re struggling, <em>please</em> talk to me. Work with classmates too. Don’t suffer in silence!</p>
+<h2 id="instructions">Instructions</h2>
+<p>For this problem set, we’ll be practicing with the regression-based approach to causal inference introduced in chapter 2 of <em>Mastering ’Metrics</em>. You’ll use synthetic data about a hypothetical jobs training program to see if the program has an effect on earnings/income.</p>
+<ol style="list-style-type: decimal">
+<li><p>Open the project named “Problem Set 3” on RStudio.cloud. <a href="https://rstudio.cloud/spaces/26160/project/536480">This link should theoretically take you to the project</a>—if it doesn’t, log in and look for the project named “Problem Set 3.”</p>
+<ul>
+<li>Alternatively (and preferably now), if you’re using R on your own computer, download this file, <em>unzip it</em>, and double click on the file named <code>problem-set-3.Rproj</code>: <a href="/files/problem-set-3.zip"><i class="fas fa-file-archive"></i> <code>problem-set-3.zip</code></a>. You’ll need to make sure you have these packages installed on your computer: <code>tidyverse</code>, <code>huxtable</code>, and <code>ggdag</code>. If you try to load one of those packages with <code>library(tidyverse)</code> or <code>library(huxtable)</code>, etc., and R gives an error that the package is missing, use the “Packages” panel in RStudio to install it.</li>
+</ul></li>
+<li><p>Open the file named <code>public-private-example.Rmd</code> and knit it or start running the chunks of code individually. <em>You do not need to edit this or change anything or turn this in.</em></p></li>
+<li><p>Rename the R Markdown file named <code>your-name_problem-set-3.Rmd</code> to something that matches your name and open it in RStudio.</p></li>
+<li><p>Complete the two tasks given in the R Markdown file. Fill out code in the empty chunks provided (you can definitely copy, paste, and adapt from other code—don’t try to write everything from scratch!), and replace text in ALL CAPS with your own (i.e. you’ll see a bunch of <code>TYPE YOUR ANSWER HERE</code>s. Type your answers there.). The second task requires <em>zero code</em> and deals with logic models and inputs, activities, outputs, and outcomes.</p></li>
+<li><p>When you’re all done, click on the “Knit” button at the top of the editing window and create a PDF or Word document of your problem set. Upload that file to iCollege.</p></li>
+</ol>
+<p><img src="/images/assignment/knit-button.png" width="60%" /></p>
+<h2 id="dag-hint">DAG hint</h2>
+<p>The DAG you draw in question 1.1 should look something like this:</p>
+<p><img src="/assignment/03-problem-set_files/figure-html/training-dag-1.png" width="672" /></p>

@@ -1,0 +1,152 @@
+---
+title: "Problem set 3: Job training and logic models"
+author: "YOUR NAME HERE"
+date: "DATE GOES HERE"
+output: 
+  html_document: 
+    toc: yes
+  pdf_document: 
+    latex_engine: xelatex
+    toc: yes
+  word_document: 
+    toc: yes
+---
+
+```{r load-libraries-data, warning=FALSE, message=FALSE}
+library(tidyverse)  # For ggplot and friends
+library(broom)      # For converting models to tables with tidy() and glance()
+library(ggdag)      # For making causal diagrams
+library(huxtable)   # For displaying side-by-side regression tables
+
+training <- read_csv("data/job_training.csv")
+```
+
+# 1: The effect of a job training program on earnings
+
+## 1.1: Theory
+
+In this hypothetical job training program, people whose jobs have been diplaced by globalization are eligible to receive additional job training to switch industries. The program designers hope that the training has a causal effect on earnings---those who receive training should, in theory, have higher incomes following the program. In general, the program targets younger people, since they'll have more years of future earnings in a new job. At the same time, older people tend to earn more money in general due to their experience on the job. Other factors such as differences in state economic performane can also influence earnings. 
+
+The figure below shows a simplified causal model for the program (look at the hint in the problem set instructions to see what should be connected to what):
+
+```{r training-dag}
+# Adapt the DAG code from public-private-example.Rmd
+```
+
+
+## 1.2: Matching
+
+To create comparison groups, people in the job training program were matched with people who didn't receive the training based on age (i.e if a training recipient was 18, an 18-year-old non-recipient as added to the control group). Check to see how well balanced this matching process was. Plot a histogram (`geom_histogram()`) of age and fill by training. Add a facet layer too to make the plot easier to read (`facet_wrap(~ training)`)
+
+```{r age-matching-histogram}
+# Create a histogram
+```
+
+ANSWER THIS. Say something about the matching accuracy. Does matching based on age make theoretical sense? What problem are there (if any) with this approach?
+
+
+## 1.3: Earnings by state and training
+
+What is the average income in each state, divided by participation in the jobs training program? How similar are incomes in four states?
+
+```{r earnings-state-training}
+# Use group_by() and summarize() to find mean(earnings) in each state and training statuf
+```
+
+ANSWER THIS.
+
+
+## 1.4: Effect of training program by state
+
+What is the effect of the training program within each state (i.e. the difference in earnings between training and no training in states A and B respectively)? Which state has a bigger or smaller effect? Why?
+
+ANSWER THIS
+
+NOTE: In the public/private school example, we weighted each of the differences by how big the groups are. Because I made this data up, the groups are all the same size, so you don't need to worry about weighting.
+
+```{r diffs-by-state}
+# Do some calculations here. You can either extract values from the table you
+# made above with filter() and pull(), or you can type the values by hand
+# (extracting the values is better)
+```
+
+
+## 1.5: Visualize differences
+
+Create a density plot showing the distribution of earnings across states and training program (HINT: use `geom_density()`, which only requires an x aesthetic, fill with training or state, and facet by training or state). Interpret this graph—what does this say about the effect of training.
+
+```{r earnings-density}
+# Make density plot here
+```
+
+
+## 1.6: Estimate differences with OLS
+
+Estimate two regression models and put the model results in a side-by-side table with `huxreg()`.
+
+1. Model 1: `earnings ~ training + age`
+2. Model 2: `earnings ~ training + age + state`
+
+Interpret the coefficients. Unlike other the other regression models you ran and interpreted last week, the intercept here matters. Why is age included? Why is state included? Why do the coefficeints change (or not) when controlling for state? What is the average causal effect of the training program on earnings?
+
+INTERPRET THE COEFFICIENTS AND ANSWER THESE QUESTIONS.
+
+```{r models}
+# Build models here
+```
+
+
+# 2: Theory of change and logic model/results chain
+
+Select a social program you are interested in from any part of the public or nonprofit sector and answer the following questions. Try to choose a program that you'd like to use for the final project and that you'd like to stick with for the remainder of the semester.
+
+## 2.1: Background and purpose
+
+Write a couple paragraphs about the program, including details about (1) when it was started, (2) why it was started, (3) what it was designed to address in society. If the program hasn't started yet, explain why it's under consideration.
+
+
+## 2.2: Program theory
+
+In a comple paragraphs, explain and explore the program's underlying theory. Sometimes programs will explain why they exist in a mission statement, but often they don't and you have to infer the theory from what the program looks like when implemented. 
+
+What did the program designers plan on occurring? Was this theory based on existing research? What does this research show? 
+
+Draw a simple impact theory graph showing the program's basic activities and outcomes. Recall from class and your reading that this is focused primarily on the theory and mechanisms, not on the implementation of the program.
+
+INCLUDE IMAGE HERE
+
+
+## 2.3: Logic model
+
+List every possible input, activity, output, and outcome for the program and provide a brief 1–2 sentence description of each.
+
+### Inputs
+
+- Something
+- Something else
+
+### Activities
+
+- Something
+- Something else
+
+### Outputs
+
+- Something
+- Something else
+
+### Outcomes
+
+- Something
+- Something else
+
+### Complete program flow
+
+Use flowchart software to connect the inputs, activities, outputs, and outcomes and create a complete logic model. Remember that inputs will always feed into activities, and that activities always produce outputs (that's the whole purpose of an activity: convert an input to an output).
+
+INCLUDE IMAGE HERE
+
+
+## 2.4: Evaluation
+
+Briefly evaluate how well the logic model relates to the program theory. Do the inputs, activities, and outputs have a logical, well-grounded connection to the intended outcomes? Under ideal conditions, would the components of the program lead to changes or lasting effects?
