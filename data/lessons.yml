@@ -28,6 +28,7 @@ lessons:
   - title: "Counterfactuals and DAGs I"
     date: "September 23"
     reading: "04-reading"
+    class: "04-class"
 
   - title: "**Problem set 3**"
     date: "September 25"
