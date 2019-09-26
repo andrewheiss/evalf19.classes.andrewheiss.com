@@ -1,0 +1,290 @@
+---
+title: "Problem set 4: Measurement and DAGs"
+author: "YOUR NAME HERE"
+date: "DATE GOES HERE"
+output: 
+ html_document: 
+   toc: yes
+ pdf_document: 
+   latex_engine: xelatex
+   toc: yes
+ word_document: 
+   toc: yes
+---
+
+# 1: Measurement and abstraction
+
+Read this article about half-day vs. full-day kindergarten in Utah: <https://archive.sltrib.com/story.php?ref=/news/ci_13164697>. The article is 10 years old, and half-day kindergarten still remains standard practice in most Utah school districts.
+
+Pretend you are the administrator of the Optional Extended Day Kindergarten initiative. Based on the *Salt Lake Tribune* article (which provides hints throughout, and especially in one of the final paragraphs), and based on your own knowledge of educational outcomes, do the following:
+
+## Possible outcomes
+
+Make a list of three possible outcomes of the full-day kindergarten program. 
+
+- List
+- Things
+- Here
+
+For each of the these outcomes, answer these questions:
+
+## Outcome 1: NAME OF IT HERE
+
+Using the concept of the "ladder of abstraction" that we discussed in class (e.g. identifying a witch, measuring poverty, etc.), make a list of all the possible attributes of the outcome:
+
+- List
+- Lots
+- Of
+- Things
+- Here
+
+Narrow this list down to 3-4 key attributes. Discuss how you decided to narrow the concepts and justify why you think these attributes capture the outcome.
+
+*For each of these attributes*, answer these questions:
+
+### Attribute 1: NAME
+
+- Measurable definition: How would you specifically define this attribute? (i.e. if the attribute is "reduced crime", define it as "The percent change in crime in a specific neighborhood during a certain time frame" or something similar)
+- Ideal measurement: How would you measure this attribute in an ideal world?
+- Feasible measurement: How would you measure this given reality and given limitations in budget, time, etc.?
+- Measurement of program effect: How would to connect this measure to people in the program? How would you check to see if the program itself had an effect?
+
+### Attribute 2: NAME
+
+- Measurable definition: 
+- Ideal measurement: 
+- Feasible measurement: 
+- Measurement of program effect: 
+
+### Attribute 3: NAME
+
+- Measurable definition: 
+- Ideal measurement: 
+- Feasible measurement: 
+- Measurement of program effect: 
+
+
+## Outcome 2: NAME OF IT HERE
+
+Possible attributes
+
+- List
+- Lots
+- Of
+- Things
+- Here
+
+Discuss how you decided to narrow the concepts and justify why you think these attributes capture the outcome.
+
+### Attribute 1: NAME
+
+- Measurable definition: 
+- Ideal measurement: 
+- Feasible measurement: 
+- Measurement of program effect: 
+
+### Attribute 2: NAME
+
+- Measurable definition: 
+- Ideal measurement: 
+- Feasible measurement: 
+- Measurement of program effect: 
+
+### Attribute 3: NAME
+
+- Measurable definition: 
+- Ideal measurement: 
+- Feasible measurement: 
+- Measurement of program effect: 
+
+
+## Outcome 3: NAME OF IT HERE
+
+Possible attributes
+
+- List
+- Lots
+- Of
+- Things
+- Here
+
+Discuss how you decided to narrow the concepts and justify why you think these attributes capture the outcome.
+
+### Attribute 1: NAME
+
+- Measurable definition: 
+- Ideal measurement: 
+- Feasible measurement: 
+- Measurement of program effect: 
+
+### Attribute 2: NAME
+
+- Measurable definition: 
+- Ideal measurement: 
+- Feasible measurement: 
+- Measurement of program effect: 
+
+### Attribute 3: NAME
+
+- Measurable definition: 
+- Ideal measurement: 
+- Feasible measurement: 
+- Measurement of program effect: 
+
+
+# 2: Measurement and abstraction
+
+Do this exercise for the program you've chosen for your final project.
+
+## Possible outcomes
+
+- List
+- Things
+- Here
+
+For each of the these outcomes, answer these questions:
+
+## Outcome 1: NAME OF IT HERE
+
+Possible attributes:
+
+- List
+- Lots
+- Of
+- Things
+- Here
+
+Discuss how you decided to narrow the concepts and justify why you think these attributes capture the outcome.
+
+### Attribute 1: NAME
+
+- Measurable definition: 
+- Ideal measurement: 
+- Feasible measurement: 
+- Measurement of program effect: 
+
+### Attribute 2: NAME
+
+- Measurable definition: 
+- Ideal measurement: 
+- Feasible measurement: 
+- Measurement of program effect: 
+
+### Attribute 3: NAME
+
+- Measurable definition: 
+- Ideal measurement: 
+- Feasible measurement: 
+- Measurement of program effect: 
+
+
+## Outcome 2: NAME OF IT HERE
+
+Possible attributes
+
+- List
+- Lots
+- Of
+- Things
+- Here
+
+Discuss how you decided to narrow the concepts and justify why you think these attributes capture the outcome.
+
+### Attribute 1: NAME
+
+- Measurable definition: 
+- Ideal measurement: 
+- Feasible measurement: 
+- Measurement of program effect: 
+
+### Attribute 2: NAME
+
+- Measurable definition: 
+- Ideal measurement: 
+- Feasible measurement: 
+- Measurement of program effect: 
+
+### Attribute 3: NAME
+
+- Measurable definition: 
+- Ideal measurement: 
+- Feasible measurement: 
+- Measurement of program effect: 
+
+
+## Outcome 3: NAME OF IT HERE
+
+Possible attributes
+
+- List
+- Lots
+- Of
+- Things
+- Here
+
+Discuss how you decided to narrow the concepts and justify why you think these attributes capture the outcome.
+
+### Attribute 1: NAME
+
+- Measurable definition: 
+- Ideal measurement: 
+- Feasible measurement: 
+- Measurement of program effect: 
+
+### Attribute 2: NAME
+
+- Measurable definition: 
+- Ideal measurement: 
+- Feasible measurement: 
+- Measurement of program effect: 
+
+### Attribute 3: NAME
+
+- Measurable definition: 
+- Ideal measurement: 
+- Feasible measurement: 
+- Measurement of program effect: 
+
+
+# 2: DAGs
+
+```{r load-libraries, warning=FALSE, message=FALSE}
+library(tidyverse)
+library(ggdag)
+library(dagitty)
+```
+
+## DAG 1
+
+Find a news article that makes a causal claim and interpret that claim by drawing an appropriate diagram in dagitty. The article likely won't explain all the things the researchers controlled for, so you'll need to create an ideal DAG. What should be included in the causal process to measure the effect of X on Y? 
+
+Export the figure from dagitty and include it here, or use this code to redraw the DAG with R. Delete this code if you don't plan on using it.
+
+```{r example-dag-code}
+# Remember that you can change the variable names here--they can be basically
+# anything, but cannot include spaces. The labels can have spaces. Adjust the
+# variable names (y, x2, etc) and labels ("Outcome", "Something", etc.) as
+# necessary.
+my_dag <- dagify(y ~ x1 + x2 + z,
+                 z ~ x1, 
+                 x2 ~ x1 + z,
+                 labels = c("y" = "Outcome",
+                            "x1" = "Something",
+                            "x2" = "Something else",
+                            "z" = "Yet another thing"),
+                 exposure = "z",
+                 outcome = "y")
+
+# If you set text = TRUE, you'll see the variable names in the DAG points
+ggdag(my_dag, text = FALSE, use_labels = "label") + 
+  theme_dag()
+```
+
+In a few paragraphs, summarize the causal claim. Describe what the authors controlled for and what else you included in the DAG. Justify the inclusion of each node (point) and connection (line) in the graph.
+
+If you're feeling abmitious, identify all the frontdoor and backdoor paths between your exposure and outcome. What variables need to be controlled for / adjusted to close the backdoors? (We're covering this in depth in class on Monday, but you may have understood the readings enough to do this on your own now.) 
+
+
+## DAG II
+
+Find a different news article with a causal claim and do the same thing as above. Draw an appropriate DAG and summarize the causal claim. Describe what the authors controlled for and what else you included in the DAG. Justify the inclusion of each node (point) and connection (line) in the graph. Identify paths and name the variables that should be controlled for if you're feeling brave.
