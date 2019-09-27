@@ -13,7 +13,7 @@ This problem set is more theoretical and abstract than previous assignments. You
 
 If you don't want to type all your text in RStudio (understandable, since there's not a nice spell checker), you can type everything in Word and then copy/paste it into your R Markdown document.
 
-1. Open the project named "Problem Set 4" on RStudio.cloud. [This link should take you to the project](https://rstudio.cloud/spaces/26160/project/536480)—if it doesn't, log in and look for the project named "Problem Set 4."
+1. Open the project named "Problem Set 4" on RStudio.cloud. [This link should take you to the project](https://rstudio.cloud/spaces/26160/project/560432)—if it doesn't, log in and look for the project named "Problem Set 4."
     - Alternatively (and preferably now), if you're using R on your own computer, download this file, *unzip it*, and double click on the file named `problem-set-4.Rproj`: [<i class="fas fa-file-archive"></i> `problem-set-4.zip`](/files/problem-set-34.zip). You'll need to make sure you have these packages installed on your computer: `tidyverse`, `ggdag`. If you try to load one of those packages with `library(tidyverse)` or `library(ggdag)`, etc., and R gives an error that the package is missing, use the "Packages" panel in RStudio to install it.
 
 2. Rename the R Markdown file named `your-name_problem-set-4.Rmd` to something that matches your name and open it in RStudio.
