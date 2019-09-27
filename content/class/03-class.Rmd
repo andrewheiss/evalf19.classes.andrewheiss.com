@@ -21,6 +21,13 @@ editor_options:
 </figure>
 
 
+# Results chains and logic models
+
+Here are all the inputs, activities, outputs, and outcomes that we identified for GSU's MPA and MPP programs:
+
+![Results chain](/images/class/results-chain-mpp-mpa.jpg)
+
+
 # Clearest and muddiest things
 
 Go to [this form](https://forms.gle/gDXoxmbQeps5suaJ6) and answer these three questions:
