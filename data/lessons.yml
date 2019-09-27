@@ -39,7 +39,7 @@ lessons:
     reading: "05-reading"
 
   - title: "**Problem set 4**"
-    date: "September 30"
+    date: "October 1"
     assignment: "04-problem-set"
     
   - title: "Threats to validity"
@@ -47,7 +47,7 @@ lessons:
     reading: "06-reading"
 
   - title: "**Problem set 5**"
-    date: "October 7"
+    date: "October 9"
     assignment: "05-problem-set"
     
   - title: '<i class="fas fa-star"></i> **Exam 1**'
@@ -65,7 +65,7 @@ lessons:
     reading: "08-reading"
 
   - title: "**Problem set 6**"
-    date: "October 21"
+    date: "October 23"
     assignment: "06-problem-set"
     
   - title: "Difference-in-difference II"
@@ -73,7 +73,7 @@ lessons:
     reading: "09-reading"
 
   - title: "**Problem set 7**"
-    date: "October 28"
+    date: "October 30"
     assignment: "07-problem-set"
     
   - title: "Regression discontinuity I"
@@ -81,7 +81,7 @@ lessons:
     reading: "10-reading"
 
   - title: "**Problem set 8**"
-    date: "November 4"
+    date: "November 6"
     assignment: "08-problem-set"
     
   - title: "Regression discontinuity II & Instrumental variables I"
@@ -89,7 +89,7 @@ lessons:
     reading: "11-reading"
 
   - title: "**Problem set 9**"
-    date: "November 11"
+    date: "November 13"
     assignment: "09-problem-set"
     
   - title: "Instrumental variables II"
@@ -97,7 +97,7 @@ lessons:
     reading: "12-reading"
 
   - title: "**Problem set 10**"
-    date: "November 18"
+    date: "November 20"
     assignment: "10-problem-set"
     
   - title: '<i class="fas fa-star"></i> **Exam 2**'
