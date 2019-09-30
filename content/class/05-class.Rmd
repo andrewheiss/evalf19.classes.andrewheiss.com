@@ -1,0 +1,187 @@
+---
+title: "Counterfactuals and DAGs II"
+date: "2019-09-30"
+citeproc: false
+bibliography: ../../static/bib/references.bib
+csl: ../../static/bib/chicago-syllabus-no-bib.csl
+output:
+  blogdown::html_page:
+    template: ../../pandoc/toc-title_html.template
+    toc: true
+editor_options: 
+  chunk_output_type: console
+---
+
+# Slides
+
+[Download the slides from today's class](/slides/PMAP-8521_2019-09-30.pdf).
+
+<figure>
+[![First slide](/images/slides/slides_2019-09-30.png)](/slides/PMAP-8521_2019-09-30.pdf)
+</figure>
+
+
+# Clearest and muddiest things
+
+Go to [this form](https://forms.gle/gDXoxmbQeps5suaJ6) and answer these three questions:
+
+1. What was the muddiest thing from class today? What are you still wondering about?
+2. What was the clearest thing from class today? 
+3. What was the most exciting thing you learned?
+
+I'll compile the questions and send out answers after class.
+
+```{r include=FALSE, eval=FALSE, warning=FALSE, message=FALSE}
+library(tidyverse)
+library(ggdag)
+library(dagitty)
+
+
+
+edu_earn_dag <- dagify(Earn ~ Edu + Year + Bkgd + Loc + JobCx,
+                       Edu ~ Req + Loc + Year,
+                       JobCx ~ Edu,
+                       Bkgd ~ U1,
+                       Loc ~ U1,
+                       exposure = "Edu",
+                       outcome = "Earn")
+
+ggdag(edu_earn_dag)
+paths(edu_earn_dag)
+ggdag_paths(edu_earn_dag, shadow = TRUE)
+ggdag_adjustment_set(edu_earn_dag, shadow = TRUE)
+
+
+
+library(wooldridge)
+
+# People who participated in training by random assignment
+data("jtrain2")
+jtrain2 %>% 
+  group_by(train) %>% 
+  summarize(wage = mean(re78))
+
+# People who participated in training by choice
+data("jtrain3")
+jtrain3 %>% 
+  group_by(train) %>% 
+  summarize(wage = mean(re78))
+
+# Possible DAG
+training_dag <- dagify(wage ~ train + U + need_tr,
+                       train ~ U + need_tr,
+                       exposure = "train",
+                       outcome = "wage")
+
+ggdag(training_dag)
+ggdag_adjustment_set(training_dag)
+
+
+jtrain2 %>% 
+  group_by(train) %>% 
+  summarize(wage = mean(re78))
+
+jtrain3 %>% 
+  filter(re75 <= 1.2) %>% 
+  group_by(train) %>% 
+  summarize(wage = mean(re78))
+
+summary(jtrain2$re75)
+
+ggplot(jtrain2, aes(y = re75)) +
+  geom_boxplot()
+ggplot(jtrain3, aes(y = re75)) +
+  geom_boxplot()
+
+
+tech_dag <- dagify(social ~ prog,
+                   hired ~ prog + social,
+                   exposure = "prog",
+                   outcome = "social",
+                   labels = c(social = "Social skills", prog = "Programming skills",
+                              hired = "Hired by a tech company"))
+ggdag(tech_dag, use_labels = "label") +
+  theme_dag()
+ggdag_adjustment_set(tech_dag)
+ggdag_collider(tech_dag)
+
+
+basketball <- read.csv(text = 'PointsPerGame,HeightInches
+                          20.8,75
+                          17.6,81
+                          12.7,78
+                          10.9,76
+                          10.7,83
+                          10.1,75
+                          9,81
+                          8.8,82
+                          8.8,84
+                          8.7,81
+                          5.5,75
+                          5.5,73
+                          3.9,81
+                          2.3,84
+                          2.1,81
+                          1.8,77
+                          1,74
+                          0.5,80')
+
+ggplot(basketball, aes(x = HeightInches, y = PointsPerGame)) +
+  geom_point() +
+  geom_smooth() +
+  labs(x = "Height in Inches",
+       y = "Points Per Game",
+       title = "Chicago Bulls 2009-10")
+# Data from Scott Andrews at StatCrunch
+
+
+dag <- dagify(Y~X+A+B+C+E,
+              X~A+B+D,
+              E~X,
+              A~U1+C,
+              B~U1,
+              coords=list(
+                x=c(X=1,E=2.5,A=2,B=3.5,C=1.5,D=1,Y=4,U1=2.5),
+                y=c(X=2,E=2.25,A=3,B=3,C=4,D=3,Y=2,U1=4)
+              ),
+              exposure = "X",
+              outcome = "Y")
+ggdag(dag) +
+  theme_dag()
+
+paths(dag)
+ggdag_adjustment_set(dag, shadow = TRUE)
+
+
+
+dag <- dagify(occup~gender+abil+discrim,
+              wage~abil+discrim+occup,
+              discrim~gender,
+              exposure = "discrim",
+              outcome = "wage",
+              coords=list(
+                x=c(gender=1,discrim=2,occup=2,wage=3,abil=3),
+                y=c(gender=2,occup=1,discrim=3,wage=2,abil=1)
+              ))
+paths(dag)
+
+ggdag(dag) +
+  theme_dag()
+
+game1 <- dagify(Y ~ A,
+                A ~ X,
+                B ~ A,
+                exposure = "X",
+                outcome = "Y")
+ggdag(game1)
+
+game2 <- dagify(Y ~ E,
+                E ~ D + X,
+                X ~ A,
+                B ~ A + D,
+                C ~ B,
+                exposure = "X",
+                outcome = "Y")
+ggdag(game2)
+```
+
