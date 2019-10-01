@@ -3,7 +3,7 @@
     "Version": "0.6.0-113"
   },
   "R": {
-    "Version": "3.6.0",
+    "Version": "3.6.1",
     "Repositories": [
       {
         "Name": "CRAN",
@@ -208,8 +208,8 @@
       "Package": "emo",
       "Version": "0.0.0.9000",
       "Source": "GitHub",
-      "Remotes": "tidyverse/glue",
       "RemoteType": "github",
+      "Remotes": "tidyverse/glue",
       "RemoteHost": "api.github.com",
       "RemoteRepo": "emo",
       "RemoteUsername": "hadley",
