@@ -1,0 +1,182 @@
+---
+title: "Problem set 5: GRE, doors, and DAGs"
+author: "YOUR NAME HERE"
+date: "DATE GOES HERE"
+output: 
+html_document: 
+  toc: yes
+pdf_document: 
+  latex_engine: xelatex
+  toc: yes
+word_document: 
+  toc: yes
+---
+
+```{r load-libraries-data, warning=FALSE, message=FALSE}
+library(tidyverse)
+library(ggdag)
+library(dagitty)
+library(broom)
+
+math_camp_experiment <- read_csv("data/math_camp_experiment.csv")
+math_camp_population <- read_csv("data/math_camp_everyone.csv")
+```
+
+# 1: The GRE and graduate student success
+
+In recent years, there has been a movement among graduate schools to stop considering GRE scores for admission into graduate programs, and [a growing body of research](https://www.theatlantic.com/education/archive/2016/03/the-problem-with-the-gre/471633/) shows that GRE scores do not predict success in graduate school. At the end of September 2019, Electronic Testing Services (ETS), the company responsible for the GRE, defensively tweeted that ["GRE scores, when reviewed holistically with all other admissions components, serve as the only truly objective measure in graduate school admissions."](https://twitter.com/ETSInsights/status/1176516430520561664). 
+
+Many of the responses to ETS's tweet called attention to research that shows the lack of connection between GRE scores and student success. However, other scientists (who are fully sympathetic to the argument that there are a host of class- and race- and gender-based reasons to hate the GRE) pointed out that the lack of correlation between success in graduate school and GRE scores does not prove that the scores are meaningless.
+
+Using the language of causal diagrams, confounders, and colliders, explain what might be wrong with the argument that among students who have already been accepted to graduate school, the GRE does not predict student success. Draw a DAG if you feel up to it (with `dagify()` in R). Explain your reasoning in **≈100 words.**
+
+ANSWER HERE.
+
+
+# 2: Doors
+
+Recall this causal model that we used in class that shows the effect of earnings on education. Should you adjust for (or control for) job connections? Explain why or why not (and what happens when you do adjust for it) in **≈50 words**.
+
+```{r edu_earn_dag}
+edu_earn_dag <- dagify(Earn ~ Edu + Year + Bkgd + Loc + JobCx,
+                       Edu ~ Req + Loc + Year,
+                       JobCx ~ Edu,
+                       Bkgd ~ U1,
+                       Loc ~ U1,
+                       exposure = "Edu",
+                       outcome = "Earn")
+
+# The seed here makes sure the nodes and labels are plotted in the same place
+# every time you plot this DAG
+ggdag(edu_earn_dag, seed = 1234) +
+  theme_dag()
+```
+
+ANSWER HERE
+
+
+# 3
+
+A consortium of MPA and MPP programs are interested in improving the quantitative skills of their students before they being their programs. Some schools have developed a two-week math camp that reviews basic algebra, probability theory, and microeconomics as a way to jumpstart students' quantitative skills.
+
+Being evaluation-minded, these schools conducted a randomized experiment where they assigned some students to participate in the math camp and withheld the camp from a control group. You're going to play with the data and see if there's an effect.
+
+(Note that this data is all fake and the program is fake.)
+
+## Causal model
+
+Take a look at the `math_camp_experiment` dataset in RStudio and see what kind of data the researchers collected. Build a causal model based on your own understanding of graduate school grades. The program's main causal pathway is that the math camp causes higher graduate GPA, so use `math_camp` as the treatment and `graduate_gpa` as the outcome. 
+
+Similar to what we did in class with the LaLonde job training program, include a node in the DAG called "needs math camp" and make sure it's connected to either the quantitative GRE score or the undergraduate GPA. Also make sure "needs math camp" is one of backdoor paths to graduate GPA.
+
+```{r math-camp-dag}
+# Build a DAG here
+```
+
+What variables do you need to control for? Are there any variables you don't need to control for? Why?
+
+ANSWER HERE.
+
+## Causal effect from the experiment
+
+*Without adjusting for any confounders*, calculate the basic average treatment effect (ATE) of the math camp program. This will be the difference between the average graduate GPA for those in the program and the average GPA for those not in the program.
+
+Do this two ways—as a summary table and with linear regression:
+
+```{r ate-simple-summary}
+math_camp_experiment %>% 
+  group_by(SOMETHING) %>% 
+  summarize(avg_gpa = mean(SOMETHING))
+```
+
+```{r ate-simple-ols}
+model_simple <- lm(SOMETHING ~ SOMETHING, data = math_camp_experiment)
+tidy(model_simple)
+```
+
+What is the ATE of the math camp program in the absence of controls? Does it have a causal effect on grades?
+
+ANSWER HERE
+
+Adjust for confounders now, based on what you included in your DAG. You won't be able to use a summary table for this—use a regression model instead:
+
+```{r ate-big-ols}
+model_big <- lm(SOMETHING ~ SOMETHING + SOMETHING_ELSE + SOMETHING_ELSE_AGAIN, 
+                data = math_camp_experiment)
+tidy(model_big)
+```
+
+After accounting for these backdoors, what is the ATE of the program? 
+
+ANSWER HERE
+
+Assignment to the treatment was random, which means that demographic and other characteristics should be distributed evenly between groups. Do you need to adjust for confounders in a randomized controlled trial like this?
+
+ANSWER HERE
+
+## Causal effect from the population
+
+Now pretend that the researchers didn't randomly assign students to the math camp program. They instead allowed students to self-select into the program and voluntarily sign up for math camp. Let's see if we can guess the causal effect of the program in the absence of an experiment! Use the `math_camp_population` dataset.
+
+What is the average graduate GPA of people in and out of the program? What do these averages tell you about the two groups?
+
+```{r diff-means-population}
+math_camp_population %>% 
+  group_by(SOMETHING) %>% 
+  summarize(avg_gpa = mean(SOMETHING))
+```
+
+In your DAG you have a node named "needs math camp," but this variable doesn't exist in the data. If we assume that the people who willingly participated in the math camp because they had low undergraduate GPAs or low quantitative GRE scores, we can try to find a comparable group in the general population with similar undergraduate GPAs or GRE scores. This will allow us to adjust for "needs math camp."
+
+First look at how different these groups are before the program. Find the average undergraduate GPA and the average quantitative GRE score for those in and out of math camp
+
+```{r}
+# Undergraduate GPA
+math_camp_population %>% 
+  group_by(SOMETHING) %>% 
+  summarize(avg_undergrad_gpa = mean(SOMETHING))
+```
+
+```{r}
+# Quantitative GRE
+math_camp_population %>% 
+  group_by(SOMETHING) %>% 
+  summarize(avg_undergrad_gpa = mean(SOMETHING))
+```
+
+Plot histograms of undergrad GPA and quantitative GRE scores to see these distributions (use `binwidth = 0.1` for GPA plots and `binwidth = 2` for GRE scores):
+
+```{r hist-camp-population-gpa}
+ggplot(math_camp_population, aes(x = SOMETHING)) +
+  geom_histogram(binwidth = 0.1, color = "white") +
+  facet_wrap(~ math_camp)
+```
+
+```{r hist-camp-population-gre}
+# Put something here. Remember to use binwidth = 2 in geom_histogram()
+```
+
+How do the people who signed up for math camp compare to the general population? Are math camp people similar to other grad students? How so? Which measure is more distinctive of math camp people: undergrad GPA or quantitative GRE scores?
+
+In the LaLonde job training example, we chose an arbitrarily low level of income as a cutoff to mark whether someone needed job training. What would be a good cutoff number for undergrad GPA and GRE scores for generating a "needs math camp" variable? (e.g. does someone with a 160 in the general population need math camp? 150? 140? 130?). 
+
+Use this "needs math camp" cutoff to limit the general population sample to just those who need math camp and calculate the ATE. This essentially lets you adjust for needing math camp.
+
+```{r ate-population-adjusted}
+math_camp_population %>% 
+  filter(SOMETHING < SOMETHING) %>% 
+  group_by(SOMETHING) %>% 
+  summarize(avg_grad_gpa = mean(SOMETHING))
+```
+
+Does this numebr differ from the experimental results? Is it comparable? Wny or why not?
+
+Adjust for all the backdoor variables in your DAG using OLS. What is the ATE of math camp now?
+
+```{r ate-ols-needs-math-adjusted}
+model_needs_math <- lm(SOMETHING ~ SOMETHING + SOMETHING_ELSE,
+                       data = filter(math_camp_population, SOMETHING < SOMETHING))
+tidy(model_needs_math)
+```
+
+You just calculated a bunch of different treatment effects. Which one do you trust the most? Why?
