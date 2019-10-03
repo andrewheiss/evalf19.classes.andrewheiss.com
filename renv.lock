@@ -144,6 +144,12 @@
       "Source": "CRAN",
       "Hash": "2cd2a065192f3ba08a919d8800dba7e0"
     },
+    "chron": {
+      "Package": "chron",
+      "Version": "2.3-54",
+      "Source": "CRAN",
+      "Hash": "60e1082e7a6c744b7df83481486bf869"
+    },
     "cli": {
       "Package": "cli",
       "Version": "1.1.0",
@@ -180,6 +186,12 @@
       "Source": "CRAN",
       "Hash": "17a6a539a498a5ab8481036d14181ac5"
     },
+    "data.table": {
+      "Package": "data.table",
+      "Version": "1.12.2",
+      "Source": "CRAN",
+      "Hash": "f2f76b5c5394350c4d4ee77dab51d35c"
+    },
     "dbplyr": {
       "Package": "dbplyr",
       "Version": "1.4.2",
@@ -208,8 +220,8 @@
       "Package": "emo",
       "Version": "0.0.0.9000",
       "Source": "GitHub",
-      "RemoteType": "github",
       "Remotes": "tidyverse/glue",
+      "RemoteType": "github",
       "RemoteHost": "api.github.com",
       "RemoteRepo": "emo",
       "RemoteUsername": "hadley",
@@ -222,6 +234,12 @@
       "Version": "0.14",
       "Source": "CRAN",
       "Hash": "5a6c1949963e0785dbcbb0556337d61e"
+    },
+    "fabricatr": {
+      "Package": "fabricatr",
+      "Version": "0.10.0",
+      "Source": "CRAN",
+      "Hash": "f70e8cd8d24972ff930c3edafd9c657f"
     },
     "fansi": {
       "Package": "fansi",
@@ -613,6 +631,12 @@
       "Source": "CRAN",
       "Hash": "adcd3bbb5259abaf5d4dd667b5dbd62b"
     },
+    "simcausal": {
+      "Package": "simcausal",
+      "Version": "0.5.5",
+      "Source": "CRAN",
+      "Hash": "166c250f52c8dc3b7354914ea548f4f7"
+    },
     "stringi": {
       "Package": "stringi",
       "Version": "1.4.3",
@@ -667,6 +691,12 @@
       "Source": "CRAN",
       "Hash": "11c9260eb54db1f55e7573844c2ae8ed"
     },
+    "truncnorm": {
+      "Package": "truncnorm",
+      "Version": "1.0-8",
+      "Source": "CRAN",
+      "Hash": "1c63f6818a3e62d1a13503b2ae8fdb74"
+    },
     "tweenr": {
       "Package": "tweenr",
       "Version": "1.0.1",
@@ -697,6 +727,12 @@
       "Source": "CRAN",
       "Hash": "1f264fa42320c4f44b1689d89101e823"
     },
+    "wakefield": {
+      "Package": "wakefield",
+      "Version": "0.3.3",
+      "Source": "CRAN",
+      "Hash": "967fefcb5f502cd803c43a589ff90324"
+    },
     "whisker": {
       "Package": "whisker",
       "Version": "0.3-2",
@@ -708,6 +744,12 @@
       "Version": "2.1.2",
       "Source": "CRAN",
       "Hash": "7c9aef08038f47e6c1532ed574a0e087"
+    },
+    "wooldridge": {
+      "Package": "wooldridge",
+      "Version": "1.3.1",
+      "Source": "CRAN",
+      "Hash": "50f79abdb4004d8bc16a96d4e4648bad"
     },
     "xfun": {
       "Package": "xfun",
