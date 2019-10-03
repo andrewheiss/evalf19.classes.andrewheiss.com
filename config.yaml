@@ -9,6 +9,7 @@ ignoreFiles:
   - \.yaml$
   - _files$
   - _cache$
+  - \.Rproj.user
   - \.csl$
 permalinks:
   post: "/:year/:month/:day/:slug/"
