@@ -1,0 +1,253 @@
+---
+title: "Threats to validity"
+date: "2019-10-07"
+citeproc: false
+bibliography: ../../static/bib/references.bib
+csl: ../../static/bib/chicago-syllabus-no-bib.csl
+output:
+  blogdown::html_page:
+    template: ../../pandoc/toc-title_html.template
+    toc: true
+editor_options: 
+  chunk_output_type: console
+---
+
+<!-- BLOGDOWN-HEAD -->
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    background-color: #ffffff;
+    color: #a0a0a0;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #a0a0a0;  padding-left: 4px; }
+div.sourceCode
+  { color: #1f1c1b; background-color: #ffffff; }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span. { color: #1f1c1b; } /* Normal */
+code span.al { color: #bf0303; background-color: #f7e6e6; font-weight: bold; } /* Alert */
+code span.an { color: #ca60ca; } /* Annotation */
+code span.at { color: #0057ae; } /* Attribute */
+code span.bn { color: #b08000; } /* BaseN */
+code span.bu { color: #644a9b; font-weight: bold; } /* BuiltIn */
+code span.cf { color: #1f1c1b; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #924c9d; } /* Char */
+code span.cn { color: #aa5500; } /* Constant */
+code span.co { color: #898887; } /* Comment */
+code span.cv { color: #0095ff; } /* CommentVar */
+code span.do { color: #607880; } /* Documentation */
+code span.dt { color: #0057ae; } /* DataType */
+code span.dv { color: #b08000; } /* DecVal */
+code span.er { color: #bf0303; text-decoration: underline; } /* Error */
+code span.ex { color: #0095ff; font-weight: bold; } /* Extension */
+code span.fl { color: #b08000; } /* Float */
+code span.fu { color: #644a9b; } /* Function */
+code span.im { color: #ff5500; } /* Import */
+code span.in { color: #b08000; } /* Information */
+code span.kw { color: #1f1c1b; font-weight: bold; } /* Keyword */
+code span.op { color: #1f1c1b; } /* Operator */
+code span.ot { color: #006e28; } /* Other */
+code span.pp { color: #006e28; } /* Preprocessor */
+code span.re { color: #0057ae; background-color: #e0e9f8; } /* RegionMarker */
+code span.sc { color: #3daee9; } /* SpecialChar */
+code span.ss { color: #ff5500; } /* SpecialString */
+code span.st { color: #bf0303; } /* String */
+code span.va { color: #0057ae; } /* Variable */
+code span.vs { color: #bf0303; } /* VerbatimString */
+code span.wa { color: #bf0303; } /* Warning */
+</style>
+<!-- /BLOGDOWN-HEAD -->
+
+<h2>Contents</h2>
+<div id="TOC">
+<ul>
+<li><a href="#slides">Slides</a></li>
+<li><a href="#generating-synthetic-data">Generating synthetic data</a></li>
+<li><a href="#clearest-and-muddiest-things">Clearest and muddiest things</a></li>
+</ul>
+</div>
+
+<h2 id="slides">Slides</h2>
+<p><a href="/slides/PMAP-8521_2019-10-07.pdf">Download the slides from today’s class</a>.</p>
+<figure>
+<a href="/slides/PMAP-8521_2019-10-07.pdf"><img src="/images/slides/slides_2019-10-07.png" alt="First slide" /></a>
+</figure>
+<h2 id="generating-synthetic-data">Generating synthetic data</h2>
+<p>In class, I briefly demonstrated how to use the <a href="https://github.com/trinker/wakefield"><strong>wakefield</strong></a> package to generate synthetic data for your final project.<span><label for="sn-1" class="margin-toggle sidenote-number"></label><input type="checkbox" id="sn-1" class="margin-toggle"/><span class="sidenote">The package is named after <a href="https://en.wikipedia.org/wiki/Andrew_Wakefield#Fraud_and_conflict_of_interest_allegations">Andrew Wakefield</a>, a British researcher who used fake data to create a false link between the MMR vaccine and autism.<br />
+<br />
+</span></span> We’ll do more work with it later in the semester, but here’s a quick example of how to use it. You can find <a href="https://github.com/trinker/wakefield">complete documentation at GitHub</a>.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw">library</span>(tidyverse)</a>
+<a class="sourceLine" id="cb1-2" title="2"><span class="kw">library</span>(wakefield)</a>
+<a class="sourceLine" id="cb1-3" title="3"></a>
+<a class="sourceLine" id="cb1-4" title="4"><span class="co"># Make all the random draws consistent</span></a>
+<a class="sourceLine" id="cb1-5" title="5"><span class="kw">set.seed</span>(<span class="dv">1234</span>)</a>
+<a class="sourceLine" id="cb1-6" title="6"></a>
+<a class="sourceLine" id="cb1-7" title="7"><span class="co"># The r_data_frame() function lets you generate random data. You just have to</span></a>
+<a class="sourceLine" id="cb1-8" title="8"><span class="co"># feed it the name of a function that generates variables. You can see all the</span></a>
+<a class="sourceLine" id="cb1-9" title="9"><span class="co"># possible variable-generating functions by running variables() in the R</span></a>
+<a class="sourceLine" id="cb1-10" title="10"><span class="co"># console:</span></a>
+<a class="sourceLine" id="cb1-11" title="11"><span class="kw">variables</span>()</a></code></pre></div>
+<pre><code>##  [1] &quot;age&quot;              &quot;animal&quot;           &quot;answer&quot;          
+##  [4] &quot;area&quot;             &quot;car&quot;              &quot;children&quot;        
+##  [7] &quot;coin&quot;             &quot;color&quot;            &quot;date_stamp&quot;      
+## [10] &quot;death&quot;            &quot;dice&quot;             &quot;dna&quot;             
+## [13] &quot;dob&quot;              &quot;dummy&quot;            &quot;education&quot;       
+## [16] &quot;employment&quot;       &quot;eye&quot;              &quot;grade&quot;           
+## [19] &quot;grade_level&quot;      &quot;group&quot;            &quot;hair&quot;            
+## [22] &quot;height&quot;           &quot;income&quot;           &quot;internet_browser&quot;
+## [25] &quot;iq&quot;               &quot;language&quot;         &quot;level&quot;           
+## [28] &quot;likert&quot;           &quot;lorem_ipsum&quot;      &quot;marital&quot;         
+## [31] &quot;military&quot;         &quot;month&quot;            &quot;name&quot;            
+## [34] &quot;normal&quot;           &quot;political&quot;        &quot;race&quot;            
+## [37] &quot;religion&quot;         &quot;sat&quot;              &quot;sentence&quot;        
+## [40] &quot;sex&quot;              &quot;sex_inclusive&quot;    &quot;smokes&quot;          
+## [43] &quot;speed&quot;            &quot;state&quot;            &quot;string&quot;          
+## [46] &quot;upper&quot;            &quot;valid&quot;            &quot;year&quot;            
+## [49] &quot;zip_code&quot;</code></pre>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1"><span class="co"># Here we generate a small data frame. Each of the functions that are listed in variables() has arguments. See age, for instance---we can specify a range of ages to draw from</span></a>
+<a class="sourceLine" id="cb3-2" title="2">small_data &lt;-<span class="st"> </span><span class="kw">r_data_frame</span>(</a>
+<a class="sourceLine" id="cb3-3" title="3">  <span class="dt">n =</span> <span class="dv">30</span>,</a>
+<a class="sourceLine" id="cb3-4" title="4">  <span class="kw">age</span>(<span class="dv">5</span><span class="op">:</span><span class="dv">18</span>),  <span class="co"># Young kids</span></a>
+<a class="sourceLine" id="cb3-5" title="5">  <span class="kw">income</span>(<span class="dt">digits =</span> <span class="dv">5</span>),  <span class="co"># Rich kids</span></a>
+<a class="sourceLine" id="cb3-6" title="6">  zip_code,</a>
+<a class="sourceLine" id="cb3-7" title="7">  race,</a>
+<a class="sourceLine" id="cb3-8" title="8">  gender_inclusive</a>
+<a class="sourceLine" id="cb3-9" title="9">)</a>
+<a class="sourceLine" id="cb3-10" title="10"></a>
+<a class="sourceLine" id="cb3-11" title="11"><span class="co"># Look at the first few rows</span></a>
+<a class="sourceLine" id="cb3-12" title="12"><span class="kw">head</span>(small_data)</a></code></pre></div>
+<pre><code>## # A tibble: 6 x 5
+##     Age  Income Zip   Race     Gender
+##   &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt; &lt;fct&gt;    &lt;fct&gt; 
+## 1    18  60519. 81105 White    Trans*
+## 2     8 203525. 17611 Black    Male  
+## 3     8  94910. 17611 White    Female
+## 4     9   4744. 95858 White    Female
+## 5    12  76010. 56454 Hispanic Male  
+## 6     8   9534. 72651 White    Trans*</code></pre>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1"><span class="co"># You can make more complicated data too, like adding normally-distributed</span></a>
+<a class="sourceLine" id="cb5-2" title="2"><span class="co"># income, or assigning people to treatment and control groups</span></a>
+<a class="sourceLine" id="cb5-3" title="3">treatment &lt;-<span class="st"> </span><span class="kw">r_data_frame</span>(</a>
+<a class="sourceLine" id="cb5-4" title="4">  <span class="dt">n =</span> <span class="dv">500</span>,</a>
+<a class="sourceLine" id="cb5-5" title="5">  race,</a>
+<a class="sourceLine" id="cb5-6" title="6">  <span class="kw">age</span>(<span class="dv">5</span><span class="op">:</span><span class="dv">18</span>),</a>
+<a class="sourceLine" id="cb5-7" title="7">  <span class="dt">income =</span> <span class="kw">rnorm</span>(<span class="dt">mean =</span> <span class="dv">100000</span>, <span class="dt">sd =</span> <span class="dv">15000</span>)  <span class="co"># Normal distribution centered at 100000</span></a>
+<a class="sourceLine" id="cb5-8" title="8">) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb5-9" title="9"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">treatment =</span> <span class="st">&quot;Yes&quot;</span>)</a>
+<a class="sourceLine" id="cb5-10" title="10"></a>
+<a class="sourceLine" id="cb5-11" title="11">control &lt;-<span class="st"> </span><span class="kw">r_data_frame</span>(</a>
+<a class="sourceLine" id="cb5-12" title="12">  <span class="dt">n =</span> <span class="dv">500</span>,</a>
+<a class="sourceLine" id="cb5-13" title="13">  race,</a>
+<a class="sourceLine" id="cb5-14" title="14">  <span class="kw">age</span>(<span class="dv">5</span><span class="op">:</span><span class="dv">18</span>),</a>
+<a class="sourceLine" id="cb5-15" title="15">  <span class="dt">income =</span> <span class="kw">rnorm</span>(<span class="dt">mean =</span> <span class="dv">50000</span>, <span class="dt">sd =</span> <span class="dv">15000</span>)  <span class="co"># Normal distribution centered at 50000</span></a>
+<a class="sourceLine" id="cb5-16" title="16">) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb5-17" title="17"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">treatment =</span> <span class="st">&quot;No&quot;</span>)</a>
+<a class="sourceLine" id="cb5-18" title="18"></a>
+<a class="sourceLine" id="cb5-19" title="19"><span class="co"># We can combine these two datasets into one with bind_rows(), which essentially</span></a>
+<a class="sourceLine" id="cb5-20" title="20"><span class="co"># stacks the rows of one on top of the rows of the other:</span></a>
+<a class="sourceLine" id="cb5-21" title="21">big_data_set &lt;-<span class="st"> </span><span class="kw">bind_rows</span>(treatment, control)</a>
+<a class="sourceLine" id="cb5-22" title="22"></a>
+<a class="sourceLine" id="cb5-23" title="23"><span class="co"># For fun, we can check the difference in income for people in the treatment and control groups</span></a>
+<a class="sourceLine" id="cb5-24" title="24"><span class="kw">ggplot</span>(big_data_set, <span class="kw">aes</span>(<span class="dt">x =</span> income, <span class="dt">fill =</span> treatment)) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb5-25" title="25"><span class="st">  </span><span class="kw">geom_density</span>()</a></code></pre></div>
+<p><img src="/class/06-class_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<p>Whoa! Look at that! The imaginary program boosted incomes substantially! :)</p>
+<p>In problem set 5 you worked with fake data about a hypothetical math camp. Here’s the code I used to generate that data. The only odd thing here is the <code>rtruncnorm()</code> function, which generates data from a truncated normal distribution. This makes it so you can put limits on numbers—if you want a random distribution of GPAs centered at 3.5, you don’t want to accidentally create GPAs of 4.3 or whatever. The <code>a</code> and <code>b</code> arguments let you set a minimum and a maximum number.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" title="1"><span class="kw">library</span>(tidyverse)</a>
+<a class="sourceLine" id="cb6-2" title="2"><span class="kw">library</span>(wakefield)</a>
+<a class="sourceLine" id="cb6-3" title="3"><span class="kw">library</span>(rtruncnorm)</a>
+<a class="sourceLine" id="cb6-4" title="4"></a>
+<a class="sourceLine" id="cb6-5" title="5"><span class="co"># Make all the random draws consistent</span></a>
+<a class="sourceLine" id="cb6-6" title="6"><span class="kw">set.seed</span>(<span class="dv">1234</span>)</a>
+<a class="sourceLine" id="cb6-7" title="7"></a>
+<a class="sourceLine" id="cb6-8" title="8"><span class="co"># Treatment group with higher post-treatment GPA</span></a>
+<a class="sourceLine" id="cb6-9" title="9">treatment &lt;-<span class="st"> </span><span class="kw">r_data_frame</span>(<span class="dt">n =</span> <span class="dv">794</span>, </a>
+<a class="sourceLine" id="cb6-10" title="10">                          id, </a>
+<a class="sourceLine" id="cb6-11" title="11">                          race, </a>
+<a class="sourceLine" id="cb6-12" title="12">                          <span class="kw">age</span>(<span class="dt">x =</span> <span class="dv">20</span><span class="op">:</span><span class="dv">30</span>), </a>
+<a class="sourceLine" id="cb6-13" title="13">                          gender_inclusive) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb6-14" title="14"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">undergrad_gpa =</span> <span class="kw">round</span>(<span class="kw">rtruncnorm</span>(<span class="kw">n</span>(), <span class="dt">a =</span> <span class="fl">1.0</span>, <span class="dt">b =</span> <span class="fl">4.0</span>, </a>
+<a class="sourceLine" id="cb6-15" title="15">                                          <span class="dt">mean =</span> <span class="fl">2.5</span>, <span class="dt">sd =</span> <span class="fl">.5</span>), <span class="dv">2</span>),</a>
+<a class="sourceLine" id="cb6-16" title="16">         <span class="dt">math_camp =</span> <span class="ot">TRUE</span>,</a>
+<a class="sourceLine" id="cb6-17" title="17">         <span class="dt">gre_verbal =</span> <span class="kw">round</span>(<span class="kw">rtruncnorm</span>(<span class="kw">n</span>(), <span class="dt">a =</span> <span class="dv">130</span>, <span class="dt">b =</span> <span class="dv">170</span>,</a>
+<a class="sourceLine" id="cb6-18" title="18">                                       <span class="dt">mean =</span> <span class="dv">145</span>, <span class="dt">sd =</span> <span class="dv">15</span>), <span class="dv">0</span>),</a>
+<a class="sourceLine" id="cb6-19" title="19">         <span class="dt">gre_quant =</span> <span class="kw">round</span>(<span class="kw">rtruncnorm</span>(<span class="kw">n</span>(), <span class="dt">a =</span> <span class="dv">130</span>, <span class="dt">b =</span> <span class="dv">170</span>,</a>
+<a class="sourceLine" id="cb6-20" title="20">                                      <span class="dt">mean =</span> <span class="dv">110</span>, <span class="dt">sd =</span> <span class="dv">15</span>), <span class="dv">0</span>),</a>
+<a class="sourceLine" id="cb6-21" title="21">         <span class="dt">gre_total =</span> gre_verbal <span class="op">+</span><span class="st"> </span>gre_quant,</a>
+<a class="sourceLine" id="cb6-22" title="22">         <span class="dt">graduate_gpa =</span> <span class="kw">round</span>(<span class="kw">rtruncnorm</span>(<span class="kw">n</span>(), <span class="dt">a =</span> <span class="fl">1.0</span>, <span class="dt">b =</span> <span class="fl">4.0</span>, </a>
+<a class="sourceLine" id="cb6-23" title="23">                                         <span class="dt">mean =</span> <span class="fl">3.3</span>, <span class="dt">sd =</span> <span class="fl">.5</span>), <span class="dv">2</span>))</a>
+<a class="sourceLine" id="cb6-24" title="24"></a>
+<a class="sourceLine" id="cb6-25" title="25"><span class="co"># Control group with slightly higher post-treatment GPA</span></a>
+<a class="sourceLine" id="cb6-26" title="26">control &lt;-<span class="st"> </span><span class="kw">r_data_frame</span>(<span class="dt">n =</span> <span class="dv">787</span>, </a>
+<a class="sourceLine" id="cb6-27" title="27">                        id, </a>
+<a class="sourceLine" id="cb6-28" title="28">                        race, </a>
+<a class="sourceLine" id="cb6-29" title="29">                        <span class="kw">age</span>(<span class="dt">x =</span> <span class="dv">20</span><span class="op">:</span><span class="dv">30</span>), </a>
+<a class="sourceLine" id="cb6-30" title="30">                        gender_inclusive) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb6-31" title="31"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">undergrad_gpa =</span> <span class="kw">round</span>(<span class="kw">rtruncnorm</span>(<span class="kw">n</span>(), <span class="dt">a =</span> <span class="fl">1.0</span>, <span class="dt">b =</span> <span class="fl">4.0</span>, </a>
+<a class="sourceLine" id="cb6-32" title="32">                                          <span class="dt">mean =</span> <span class="fl">2.5</span>, <span class="dt">sd =</span> <span class="fl">.5</span>), <span class="dv">2</span>),</a>
+<a class="sourceLine" id="cb6-33" title="33">         <span class="dt">gre_verbal =</span> <span class="kw">round</span>(<span class="kw">rtruncnorm</span>(<span class="kw">n</span>(), <span class="dt">a =</span> <span class="dv">130</span>, <span class="dt">b =</span> <span class="dv">170</span>,</a>
+<a class="sourceLine" id="cb6-34" title="34">                                       <span class="dt">mean =</span> <span class="dv">145</span>, <span class="dt">sd =</span> <span class="dv">15</span>), <span class="dv">0</span>),</a>
+<a class="sourceLine" id="cb6-35" title="35">         <span class="dt">gre_quant =</span> <span class="kw">round</span>(<span class="kw">rtruncnorm</span>(<span class="kw">n</span>(), <span class="dt">a =</span> <span class="dv">130</span>, <span class="dt">b =</span> <span class="dv">170</span>,</a>
+<a class="sourceLine" id="cb6-36" title="36">                                      <span class="dt">mean =</span> <span class="dv">110</span>, <span class="dt">sd =</span> <span class="dv">15</span>), <span class="dv">0</span>),</a>
+<a class="sourceLine" id="cb6-37" title="37">         <span class="dt">math_camp =</span> <span class="ot">FALSE</span>,</a>
+<a class="sourceLine" id="cb6-38" title="38">         <span class="dt">gre_total =</span> gre_verbal <span class="op">+</span><span class="st"> </span>gre_quant,</a>
+<a class="sourceLine" id="cb6-39" title="39">         <span class="dt">graduate_gpa =</span> <span class="kw">round</span>(<span class="kw">rtruncnorm</span>(<span class="kw">n</span>(), <span class="dt">a =</span> <span class="fl">1.0</span>, <span class="dt">b =</span> <span class="fl">4.0</span>, </a>
+<a class="sourceLine" id="cb6-40" title="40">                                         <span class="dt">mean =</span> <span class="fl">2.9</span>, <span class="dt">sd =</span> <span class="fl">.5</span>), <span class="dv">2</span>))</a>
+<a class="sourceLine" id="cb6-41" title="41"></a>
+<a class="sourceLine" id="cb6-42" title="42">population &lt;-<span class="st"> </span><span class="kw">r_data_frame</span>(<span class="dt">n =</span> <span class="dv">1986</span>, </a>
+<a class="sourceLine" id="cb6-43" title="43">                           id, </a>
+<a class="sourceLine" id="cb6-44" title="44">                           race, </a>
+<a class="sourceLine" id="cb6-45" title="45">                           <span class="kw">age</span>(<span class="dt">x =</span> <span class="dv">20</span><span class="op">:</span><span class="dv">30</span>), </a>
+<a class="sourceLine" id="cb6-46" title="46">                           gender_inclusive) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb6-47" title="47"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">undergrad_gpa =</span> <span class="kw">round</span>(<span class="kw">rtruncnorm</span>(<span class="kw">n</span>(), <span class="dt">a =</span> <span class="fl">1.0</span>, <span class="dt">b =</span> <span class="fl">4.0</span>, </a>
+<a class="sourceLine" id="cb6-48" title="48">                                          <span class="dt">mean =</span> <span class="fl">2.5</span>, <span class="dt">sd =</span> <span class="fl">1.5</span>), <span class="dv">2</span>),</a>
+<a class="sourceLine" id="cb6-49" title="49">         <span class="dt">gre_verbal =</span> <span class="kw">round</span>(<span class="kw">rtruncnorm</span>(<span class="kw">n</span>(), <span class="dt">a =</span> <span class="dv">130</span>, <span class="dt">b =</span> <span class="dv">170</span>,</a>
+<a class="sourceLine" id="cb6-50" title="50">                                       <span class="dt">mean =</span> <span class="dv">145</span>, <span class="dt">sd =</span> <span class="dv">15</span>), <span class="dv">0</span>),</a>
+<a class="sourceLine" id="cb6-51" title="51">         <span class="dt">gre_quant =</span> <span class="kw">round</span>(<span class="kw">rtruncnorm</span>(<span class="kw">n</span>(), <span class="dt">a =</span> <span class="dv">130</span>, <span class="dt">b =</span> <span class="dv">170</span>,</a>
+<a class="sourceLine" id="cb6-52" title="52">                                      <span class="dt">mean =</span> <span class="dv">160</span>, <span class="dt">sd =</span> <span class="dv">30</span>), <span class="dv">0</span>),</a>
+<a class="sourceLine" id="cb6-53" title="53">         <span class="dt">math_camp =</span> <span class="ot">FALSE</span>,</a>
+<a class="sourceLine" id="cb6-54" title="54">         <span class="dt">gre_total =</span> gre_verbal <span class="op">+</span><span class="st"> </span>gre_quant,</a>
+<a class="sourceLine" id="cb6-55" title="55">         <span class="dt">graduate_gpa =</span> <span class="kw">round</span>(<span class="kw">rtruncnorm</span>(<span class="kw">n</span>(), <span class="dt">a =</span> <span class="fl">1.0</span>, <span class="dt">b =</span> <span class="fl">4.0</span>, </a>
+<a class="sourceLine" id="cb6-56" title="56">                                         <span class="dt">mean =</span> <span class="fl">3.6</span>, <span class="dt">sd =</span> <span class="dv">1</span>), <span class="dv">2</span>))</a>
+<a class="sourceLine" id="cb6-57" title="57"></a>
+<a class="sourceLine" id="cb6-58" title="58"><span class="co"># Combine them all</span></a>
+<a class="sourceLine" id="cb6-59" title="59">experiment &lt;-<span class="st"> </span><span class="kw">bind_rows</span>(treatment, control) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb6-60" title="60"><span class="st">  </span><span class="kw">sample_frac</span>(<span class="dv">1</span>)  <span class="co"># Shuffle the dataset for kicks and giggles</span></a>
+<a class="sourceLine" id="cb6-61" title="61"></a>
+<a class="sourceLine" id="cb6-62" title="62">everyone &lt;-<span class="st"> </span><span class="kw">bind_rows</span>(experiment, population) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb6-63" title="63"><span class="st">  </span><span class="kw">sample_frac</span>(<span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb6-64" title="64"></a>
+<a class="sourceLine" id="cb6-65" title="65"><span class="co"># Save these as CSV files</span></a>
+<a class="sourceLine" id="cb6-66" title="66"><span class="kw">write_csv</span>(experiment, <span class="st">&quot;math_camp_experiment.csv&quot;</span>)</a>
+<a class="sourceLine" id="cb6-67" title="67"><span class="kw">write_csv</span>(everyone, <span class="st">&quot;math_camp_everyone.csv&quot;</span>)</a></code></pre></div>
+<h2 id="clearest-and-muddiest-things">Clearest and muddiest things</h2>
+<p>Go to <a href="https://forms.gle/gDXoxmbQeps5suaJ6">this form</a> and answer these three questions:</p>
+<ol style="list-style-type: decimal">
+<li>What was the muddiest thing from class today? What are you still wondering about?</li>
+<li>What was the clearest thing from class today?</li>
+<li>What was the most exciting thing you learned?</li>
+</ol>
+<p>I’ll compile the questions and send out answers after class.</p>
