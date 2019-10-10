@@ -47,5 +47,5 @@ dag <- dagify(y ~ t + s + a,
               t ~ a,
               labels = c(y = "Earnings", t = "Training", a = "Age", s = "State"))
 
-ggdag(dag, use_labels = "label") + theme_dag()
+ggdag(dag, use_labels = "label", seed = 1234) + theme_dag()
 ```
