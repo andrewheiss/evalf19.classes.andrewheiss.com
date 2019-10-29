@@ -24,12 +24,6 @@
       "Source": "CRAN",
       "Hash": "2b2b6ea2111e1e57e192765d5013a3c5"
     },
-    "DT": {
-      "Package": "DT",
-      "Version": "0.9",
-      "Source": "CRAN",
-      "Hash": "3713a75ea5f5bbc25579b20cbb7843f3"
-    },
     "MASS": {
       "Package": "MASS",
       "Version": "7.3-51.4",
@@ -180,12 +174,6 @@
       "Source": "CRAN",
       "Hash": "d308ead32010b8e4d76c4690427da50b"
     },
-    "crosstalk": {
-      "Package": "crosstalk",
-      "Version": "1.0.0",
-      "Source": "CRAN",
-      "Hash": "2bc962d85f29df259cc1a6930727ce87"
-    },
     "curl": {
       "Package": "curl",
       "Version": "3.3",
@@ -226,8 +214,8 @@
       "Package": "emo",
       "Version": "0.0.0.9000",
       "Source": "GitHub",
-      "RemoteType": "github",
       "Remotes": "tidyverse/glue",
+      "RemoteType": "github",
       "RemoteHost": "api.github.com",
       "RemoteRepo": "emo",
       "RemoteUsername": "hadley",
@@ -252,12 +240,6 @@
       "Version": "1.1.0",
       "Source": "CRAN",
       "Hash": "d9bf0922f00c345bef1559e9cfc0846b"
-    },
-    "fastmap": {
-      "Package": "fastmap",
-      "Version": "1.0.1",
-      "Source": "CRAN",
-      "Hash": "7a0d4ec0aa0299e3907f8f4f982e33b4"
     },
     "forcats": {
       "Package": "forcats",
@@ -369,27 +351,27 @@
     },
     "htmltools": {
       "Package": "htmltools",
-      "Version": "0.4.0",
+      "Version": "0.3.6",
       "Source": "CRAN",
-      "Hash": "639ced211d4574cb149a7906b22e110f"
-    },
-    "htmlwidgets": {
-      "Package": "htmlwidgets",
-      "Version": "1.5.1",
-      "Source": "CRAN",
-      "Hash": "f2ea129162a975cc3828d56d5270616d"
+      "Hash": "5132526e7fb28a2c20d1ef443d5c4644"
     },
     "httpuv": {
       "Package": "httpuv",
-      "Version": "1.5.2",
+      "Version": "1.5.1",
       "Source": "CRAN",
-      "Hash": "f708a79efa59756bf40137118c20d837"
+      "Hash": "3e4206eb62d89401a2a990eba9b3ecac"
     },
     "httr": {
       "Package": "httr",
       "Version": "1.4.0",
       "Source": "CRAN",
       "Hash": "4a241c31afac61ea4a8a672aa5b0b098"
+    },
+    "huxtable": {
+      "Package": "huxtable",
+      "Version": "4.7.0",
+      "Source": "CRAN",
+      "Hash": "dad63d67f01535906e92d5ea95e34898"
     },
     "igraph": {
       "Package": "igraph",
@@ -417,9 +399,9 @@
     },
     "later": {
       "Package": "later",
-      "Version": "1.0.0",
+      "Version": "0.8.0",
       "Source": "CRAN",
-      "Hash": "19ddb614c1423400e9ea7bf6bfd34a36"
+      "Hash": "4d5b806a328e0da75f0f0d4653676552"
     },
     "lattice": {
       "Package": "lattice",
@@ -450,6 +432,12 @@
       "Version": "1.1",
       "Source": "CRAN",
       "Hash": "80e1f73841614fa35f82a85d66fb41da"
+    },
+    "memoise": {
+      "Package": "memoise",
+      "Version": "1.1.0",
+      "Source": "CRAN",
+      "Hash": "22ca9b285c10f5dd8c4d1e90231ce558"
     },
     "mgcv": {
       "Package": "mgcv",
@@ -561,9 +549,9 @@
     },
     "promises": {
       "Package": "promises",
-      "Version": "1.1.0",
+      "Version": "1.0.1",
       "Source": "CRAN",
-      "Hash": "58abc43e83bbc8231c416a812743ab98"
+      "Hash": "f80d162b7cef7e36a0134d1f1084e36d"
     },
     "ps": {
       "Package": "ps",
@@ -654,18 +642,6 @@
       "Version": "0.15",
       "Source": "CRAN",
       "Hash": "adcd3bbb5259abaf5d4dd667b5dbd62b"
-    },
-    "shiny": {
-      "Package": "shiny",
-      "Version": "1.4.0",
-      "Source": "CRAN",
-      "Hash": "25dd339c951981444081a370b4afad40"
-    },
-    "sourcetools": {
-      "Package": "sourcetools",
-      "Version": "0.1.7",
-      "Source": "CRAN",
-      "Hash": "fc68fa34b8576eaa5a845a46ad75e214"
     },
     "stringi": {
       "Package": "stringi",
@@ -792,12 +768,6 @@
       "RemoteRef": "master",
       "RemoteSha": "618bc74b46756b3894e81669cc3a798543d95fc6",
       "Hash": "484b7bc791dafd859d989c1265eb71d9"
-    },
-    "xtable": {
-      "Package": "xtable",
-      "Version": "1.8-4",
-      "Source": "CRAN",
-      "Hash": "48f60fcc0974ce72870076d48038df2d"
     },
     "yaml": {
       "Package": "yaml",
