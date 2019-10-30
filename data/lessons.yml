@@ -86,7 +86,7 @@ lessons:
     reading: "10-reading"
 
   - title: "**Problem set 8**"
-    date: "November 6"
+    date: "November 9"
     assignment: "08-problem-set"
     
   - title: "Regression discontinuity II & Instrumental variables I"
@@ -94,7 +94,7 @@ lessons:
     reading: "11-reading"
 
   - title: "**Problem set 9**"
-    date: "November 13"
+    date: "November 16"
     assignment: "09-problem-set"
     
   - title: "Instrumental variables II"
@@ -102,11 +102,11 @@ lessons:
     reading: "12-reading"
 
   - title: "**Problem set 10**"
-    date: "November 20"
+    date: "November 23"
     assignment: "10-problem-set"
     
   - title: '<i class="fas fa-star"></i> **Exam 2**'
-    date: "November 19–24"
+    date: "November 21–December 1"
 
   - title: '<span class="fake-header-table">Applied evaluation</span>'
     header: True

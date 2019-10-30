@@ -1,7 +1,7 @@
 ---
 title: "Problem set 8"
-date: "2019-11-04"
-due_date: "2019-11-04"
+date: "2019-11-09"
+due_date: "2019-11-09"
 due_time: "11:59 PM"
 editor_options: 
   chunk_output_type: console
