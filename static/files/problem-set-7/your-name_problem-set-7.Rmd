@@ -3,13 +3,13 @@ title: "Problem set 7: The EITC and diff-in-diff"
 author: "YOUR NAME HERE"
 date: "DATE GOES HERE"
 output: 
-html_document: 
-  toc: yes
-pdf_document: 
-  latex_engine: xelatex
-  toc: yes
-word_document: 
-  toc: yes
+  html_document: 
+    toc: yes
+  pdf_document: 
+    latex_engine: xelatex
+    toc: yes
+  word_document: 
+    toc: yes
 ---
 
 ---
