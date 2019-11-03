@@ -415,6 +415,12 @@
       "Source": "CRAN",
       "Hash": "d2f5e98b8b7ae633e252830c3243c2ab"
     },
+    "lpdensity": {
+      "Package": "lpdensity",
+      "Version": "1.0",
+      "Source": "CRAN",
+      "Hash": "ec1435d9acfe499597e9f95640f146fa"
+    },
     "lubridate": {
       "Package": "lubridate",
       "Version": "1.7.4",
@@ -564,6 +570,18 @@
       "Version": "0.3.2",
       "Source": "CRAN",
       "Hash": "c360ab7eabd6e38a83f2475eb97c6344"
+    },
+    "rddensity": {
+      "Package": "rddensity",
+      "Version": "1.0",
+      "Source": "CRAN",
+      "Hash": "b1ed088a4eac64e2b2e8960763efbf27"
+    },
+    "rdrobust": {
+      "Package": "rdrobust",
+      "Version": "0.99.4",
+      "Source": "CRAN",
+      "Hash": "b063b0e69f0f0dc76a98214264f770a6"
     },
     "readr": {
       "Package": "readr",

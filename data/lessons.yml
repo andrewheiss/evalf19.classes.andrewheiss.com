@@ -84,6 +84,7 @@ lessons:
   - title: "Regression discontinuity I"
     date: "November 4"
     reading: "10-reading"
+    class: "10-class"
 
   - title: "**Problem set 8**"
     date: "November 9"
