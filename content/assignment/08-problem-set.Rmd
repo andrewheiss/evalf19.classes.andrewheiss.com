@@ -7,4 +7,43 @@ editor_options:
   chunk_output_type: console
 ---
 
-The instructions for this problem set will be posted one week before it is due.
+# Instructions
+
+1. If you're using R on your own computer ([follow these instructions if you haven't already](/install/)), download this file, *unzip it*, and double click on the file named `problem-set-8.Rproj`: [<i class="fas fa-file-archive"></i> `problem-set-8.zip`](/files/problem-set-8.zip). You'll need to make sure you have the `tidyverse`, `rdrobust`, `rddensity`, and `huxtable` packages installed on your computer. If you try to load them with `library(tidyverse)`, etc. and R gives an error that the package is missing, use the "Packages" panel in RStudio to install it.
+    - Alternatively, open the project named "Problem Set 8" on RStudio.cloud. [This link should take you to the project](https://rstudio.cloud/spaces/26160/project/677953)—if it doesn't, log in and look for the project named "Problem Set 8."
+
+2. Rename the R Markdown file named `your-name_problem-set-8.Rmd` to something that matches your name and open it in RStudio.
+
+3. Complete the tasks given in the R Markdown file.
+
+4. When you're all done, click on the "Knit" button at the top of the editing window and create a PDF or Word document of your problem set. Upload that file to iCollege.
+
+```{r knit-button, echo=FALSE, out.width="60%"}
+knitr::include_graphics("/images/assignment/knit-button.png")
+```
+
+```{r eval=FALSE, include=FALSE}
+library(tidyverse)
+library(wakefield)
+library(scales)
+
+# Make fake data
+set.seed(1234)
+program <- r_data_frame(
+  n = 1200,
+  id,
+  attendance = rbeta(shape1 = 7, shape2 = 2)
+) %>% 
+  mutate(attendance = rescale(attendance, to = c(20, 100))) %>% 
+  mutate(treatment = attendance < 80) %>% 
+  mutate(grade = (200 * treatment) + (20 * attendance) + rnorm(n(), 600, 100)) %>% 
+  mutate(grade = rescale(grade, to = c(0, 100))) %>% 
+  mutate(grade = ifelse(grade < 80, grade * (attendance / rnorm(n(), 80, 3)), grade)) %>% 
+  mutate_at(vars(attendance, grade), list(~ round(., 2)))
+
+ggplot(program, aes(x = attendance, y = grade)) +
+  geom_point() +
+  geom_smooth(data = filter(program, attendance < 80))
+
+write_csv(program, "~/Desktop/attendance_program.csv")
+```
