@@ -14,7 +14,11 @@ editor_options:
 
 # Slides
 
-The slides from today will go here.
+[Download the slides from today's class](/slides/PMAP-8521_2019-11-04.pdf).
+
+<figure>
+[![First slide](/images/slides/slides_2019-11-04.png)](/slides/PMAP-8521_2019-11-04.pdf)
+</figure>
 
 
 # The effect of a gifted program on student test scores
@@ -350,3 +354,186 @@ Go to [this form](https://forms.gle/gDXoxmbQeps5suaJ6) and answer these three qu
 3. What was the most exciting thing you learned?
 
 I'll compile the questions and send out answers after class.
+
+
+```{r eval=FALSE, include=FALSE}
+library(tidyverse)
+library(wakefield)
+library(scales)
+
+# Fake program data
+set.seed(1234)
+df <- r_data_frame(
+  n = 2200,
+  id,
+  Income = income
+) %>% 
+  mutate(enroll_prob = rnorm(n(), mean = (0.025 * Income), sd = 1000)) %>% 
+  mutate(enroll_prob = rescale(enroll_prob, c(0, 1))) %>% 
+  # mutate(enroll_prob = ifelse(Income <= 40000, enroll_prob * enroll_prob / 40000, enroll_prob)) #%>% 
+  mutate(enroll_prob = ifelse(Income < 40000, enroll_prob + 0.1, enroll_prob)) %>% 
+  mutate(Income_fuzzy = ifelse(Income < 50000 & Income > 30000,
+                               Income * rnorm(n()), Income)) %>% 
+  mutate(scholarship_sharp = Income < 40000,
+         scholarship_fuzzy = Income_fuzzy < 40000)
+
+
+ggplot(df, aes(x = Income, y = scholarship_fuzzy, color = Income < 40000)) +
+  geom_point(size = 0.5, alpha = 0.5) +
+  geom_vline(xintercept = 40000) + 
+  labs(x = "Family income", y = "Received scholarship") + 
+  guides(color = guide_legend(title = "Income < $40,000:", 
+                              override.aes = list(size = 3, alpha = 1))) +
+  scale_x_continuous(labels = dollar) +
+  theme_grey(20) + 
+  theme(legend.position = "bottom")
+
+ggplot(df, aes(x = Income, y = scholarship_sharp, color = Income < 40000)) +
+  geom_point(size = 0.5, alpha = 0.5) +
+  geom_vline(xintercept = 40000) + 
+  labs(x = "Family income", y = "Received scholarship") + 
+  guides(color = guide_legend(title = "Income < $40,000:", 
+                              override.aes = list(size = 3, alpha = 1))) +
+  scale_x_continuous(labels = dollar) +
+  theme_grey(20) + 
+  theme(legend.position = "bottom")
+
+
+ggplot(df, aes(x = Income, y = enroll_prob)) +
+  geom_point(size = 0.5, alpha = 0.5) +
+  geom_smooth(data = filter(df, Income < 40000), size = 2, se = FALSE, method = "lm", color = "orange") +
+  geom_smooth(data = filter(df, Income >= 40000), size = 2, se = FALSE, method = "lm", color = "grey40") +
+  # geom_smooth(size = 2, se = FALSE, method = "lm") +
+  geom_vline(xintercept = 40000, size = 2, color = "darkred") +
+  # geom_vline(xintercept = 40000 + 10000) + geom_vline(xintercept = 40000 - 10000) +
+  # annotate(geom = "rect", fill = "grey50", alpha = 0.25, ymin = -Inf, ymax = Inf,
+  #          xmin = 40000 - 10000,  xmax = 40000 + 10000) +
+  geom_vline(xintercept = 40000 + 20000) + geom_vline(xintercept = 40000 - 20000) +
+  annotate(geom = "rect", fill = "grey50", alpha = 0.25, ymin = -Inf, ymax = Inf,
+           xmin = 40000 - 20000,  xmax = 40000 + 20000) +
+  scale_x_continuous(labels = dollar) +
+  scale_y_continuous(labels = percent_format(accuracy = 1)) + 
+  labs(x = "Family income", y = "Probability of enrollment") +
+  coord_cartesian(ylim = c(0, 1)) +
+  theme_grey(20)
+
+
+df1 <- df %>% 
+  mutate(income_uniform = runif(n(), min = 0, max = 200000)) %>% 
+  mutate(outcome_linear = 500 + income_uniform * 3 + rnorm(n(), 500000, 100000)) %>% 
+  mutate(outcome_linear = rescale(outcome_linear, c(400, 40000))) %>% 
+  mutate(outcome_squared = 500 + (income_uniform * 5)^2) %>% 
+  mutate(outcome_squared = rescale(outcome_squared, c(400, 40000))) %>% 
+  mutate(outcome_squared = outcome_squared + rnorm(n(), 5000, 3000)) %>% 
+  mutate(outcome_cubed = 0 - (income_uniform * 2000000)^3 + (income_uniform * 1000)^7) %>% 
+  mutate(outcome_cubed = rescale(outcome_cubed, c(400, 40000))) %>% 
+  mutate(outcome_cubed = outcome_cubed + rnorm(n(), 5000, 3000)) %>% 
+  mutate(outcome_linear_split = ifelse(income_uniform > 100000, outcome_linear + 10000, outcome_linear))
+  # mutate(outcome_linear = 500 + Income * 3 + runif(n(), min = 5000, max = 100000))
+
+ggplot(df1, aes(x = income_uniform, y = outcome_linear)) + 
+  geom_point(alpha = 0.2) +
+  geom_smooth(method = "lm", se = FALSE, size = 2) + 
+  labs(x = NULL, y = NULL)
+
+# Centering
+set.seed(1234)e
+df_centered <- r_data_frame(
+  n = 5,
+  id,
+  running_var = height,
+  outcome = grade
+) %>% 
+  mutate(running_var_centered = running_var - 70) %>% 
+  mutate(treatment = running_var >= 70)
+
+model <- lm(outcome ~ running_var_centered + treatment, data = df_centered)
+broom::tidy(model)
+
+ggplot(df1, aes(x = income_uniform, y = outcome_linear_split)) + 
+  geom_point(alpha = 0.2) +
+  geom_smooth(data = filter(df1, income_uniform > 100000),
+              method = "lm", se = FALSE, size = 2) + 
+  geom_smooth(data = filter(df1, income_uniform <= 100000),
+              method = "lm", se = FALSE, size = 2) + 
+  labs(x = NULL, y = NULL)
+
+ggplot(df1, aes(x = income_uniform, y = outcome_linear)) + 
+  geom_point(alpha = 0.2) +
+  geom_smooth(method = "lm", se = FALSE, size = 2) + 
+  labs(x = NULL, y = NULL)
+
+
+
+ggplot(df1, aes(x = income_uniform, y = outcome_squared)) + 
+  geom_point(alpha = 0.2) +
+  geom_smooth(method = "lm", se = FALSE, size = 2) +
+  geom_smooth(method = "lm", se = FALSE, size = 2,
+              formula = y ~ poly(x, 2, raw = TRUE), color = "purple") +
+  labs(x = NULL, y = NULL)
+
+ggplot(df1, aes(x = income_uniform, y = outcome_cubed)) + 
+  geom_point(alpha = 0.2) +
+  geom_smooth(method = "lm", se = FALSE, size = 2) +
+  geom_smooth(method = "lm", se = FALSE, size = 2,
+              formula = y ~ poly(x, 2, raw = TRUE), color = "purple") +
+  geom_smooth(method = "lm", se = FALSE, size = 2,
+              formula = y ~ poly(x, 3, raw = TRUE), color = "pink") +
+  labs(x = NULL, y = NULL)
+
+df2 <- tibble(q = seq(from=0, to=20, by=0.01),
+              y_linear = 0.5 * q,
+              y_squiggly =500 + 0.4 * (q-10)^3) %>% 
+  mutate(noise = rnorm(n(), 10, 80)) %>% 
+  mutate(y_squiggly = y_squiggly + noise) %>% 
+  mutate(y_shifted = ifelse(q >= 10, y_squiggly + 300, y_squiggly))
+
+ggplot(df2, aes(x = q, y = y_linear)) + 
+  geom_point()
+
+ggplot(df2, aes(x = q, y = y_shifted)) + 
+  annotate(geom = "rect", fill = "grey50", alpha = 0.25, ymin = -Inf, ymax = Inf,
+           xmin = 10 - 5,  xmax = 10 + 5) +
+  geom_point(size = 0.5) + 
+  geom_vline(xintercept = 10) +
+  geom_smooth(data = filter(df2, q < 10), method = "loess",
+              size = 2, color = "orange") +
+  geom_smooth(data = filter(df2, q >= 10), method = "loess",
+              size = 2, color = "orange") +
+  geom_smooth(data = filter(df2, q < 10), method = "lm",
+              size = 2, color = "darkgreen") +
+  geom_smooth(data = filter(df2, q >= 10), method = "lm",
+              size = 2, color = "darkgreen") +
+  geom_smooth(data = filter(df2, q < 10 & q > 5), method = "lm",
+              size = 2, color = "green") +
+  geom_smooth(data = filter(df2, q >= 10 & q < 15), method = "lm",
+              size = 2, color = "green")
+  
+  # geom_smooth(data = filter(df2, q < 10), method = "lm",
+  #             formula = y ~ poly(x, 2, raw = TRUE),
+  #             size = 2, color = "darkred") +
+  # geom_smooth(data = filter(df2, q >= 10), method = "lm",
+  #             formula = y ~ poly(x, 2, raw = TRUE),
+  #             size = 2, color = "darkred")
+
+
+# Formulas from https://en.wikipedia.org/wiki/Kernel_(statistics)
+rec <- function(x) (abs(x) < 1) * 0.5
+tri <- function(x) (abs(x) < 1) * (1 - abs(x))
+epan <- function(x) (abs(x) < 1) * 0.75 * (1 - x^2)
+
+ggplot(mapping = aes(x = seq(-1.25, 1.25, 0.1))) + 
+  geom_vline(xintercept = 0, size = 1, color = "grey40") +
+  stat_function(fun = rec, aes(color = "Uniform"), size = 2) + 
+  stat_function(fun = tri, aes(color = "Triangular"), size = 2) +
+  stat_function(fun = epan, aes(color = "Epanechnikov"), size = 2) +
+  scale_color_manual(values = c("darkred", "darkblue", "orange")) + 
+  labs(x = "Distance from cutoff", y = "Weight", color = NULL) + 
+  theme_bw(20) +
+  theme(legend.position = "bottom",
+        panel.grid = element_blank())
+  
+
+plot(density(rnorm(100000), kernel = "triangular"))
+```
+
