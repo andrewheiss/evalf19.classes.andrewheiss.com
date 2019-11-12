@@ -7,4 +7,96 @@ editor_options:
   chunk_output_type: console
 ---
 
-The instructions for this problem set will be posted one week before it is due.
+# Instructions
+
+1. If you're using R on your own computer ([follow these instructions if you haven't already](/install/)), download this file, *unzip it*, and double click on the file named `problem-set-9.Rproj`: [<i class="fas fa-file-archive"></i> `problem-set-9.zip`](/files/problem-set-9.zip). You'll need to make sure you have the `tidyverse`, `huxtable`, and `estimatr` packages installed on your computer. If you try to load them with `library(tidyverse)`, etc. and R gives an error that the package is missing, use the "Packages" panel in RStudio to install it.
+    - Alternatively, open the project named "Problem Set 9" on RStudio.cloud. [This link should take you to the project](https://rstudio.cloud/spaces/26160/project/705520)—if it doesn't, log in and look for the project named "Problem Set 9."
+
+2. Rename the R Markdown file named `your-name_problem-set-9.Rmd` to something that matches your name and open it in RStudio.
+
+3. Complete the tasks given in the R Markdown file.
+
+4. When you're all done, click on the "Knit" button at the top of the editing window and create a PDF or Word document of your problem set. Upload that file to iCollege.
+
+```{r knit-button, echo=FALSE, out.width="60%"}
+knitr::include_graphics("/images/assignment/knit-button.png")
+```
+
+```{r eval=FALSE, include=FALSE}
+library(tidyverse)
+library(scales)
+library(fastDummies)
+
+set.seed(765)
+
+Supply  <- rnorm(1000, 15000, 20000)
+WaitingTime  <- rnorm(1000, 15000, 20000)
+Age <- rnorm(1000, 15000, 20000)
+Stamp <- rnorm(1000, 12000, 18000)
+Race  <- sample(rep(c(1, 2, 3, 4), 250))
+Education  <- sample(rep(c(1, 2, 3, 4), 250))
+MaritalStatus  <- sample(rep(c(1, 2, 3, 4), 250))
+err <- rnorm(1000, 7, 2.5)
+err2 <- rnorm(1000, 5, 4)
+
+ParentsHealthStatus <- rnorm(1000, 13000, 19000)
+ParentsHealthStatus <- rescale(ParentsHealthStatus, to = c(1, 20))
+
+HealthBehavior <- 9 + 3.5 * ParentsHealthStatus + 36 * err
+HealthBehavior <- rescale(HealthBehavior, to = c(0, 25))
+
+Supply <- rescale(Supply, to = c(0.3, 10))    
+WaitingTime <- rescale(WaitingTime, to = c(5, 46))   
+Age  <- rescale(Age,  to = c(20, 63)) 
+Stamp <- rescale(Stamp, to = c(120, 300))
+
+housing <- tibble(Supply, WaitingTime, HealthBehavior, Stamp, 
+                  ParentsHealthStatus, Age, Race, Education, MaritalStatus, 
+                  err, err2)
+
+housing = dummy_cols(housing, select_columns = c("Race", "MaritalStatus"))
+
+PublicHousing <- 2.7 + 
+  6.5 * housing$Supply + 
+  8.7 * housing$WaitingTime + 
+  0.6 * housing$ParentsHealthStatus + 
+  14 * housing$HealthBehavior +
+  1.2 * housing$Age + 
+  0.3 * housing$Race_3 + 
+  0.8 * housing$Race_2 + 
+  0.5 * housing$Race_1 + 
+  0.2 * housing$Race_4 -
+  1.6 * housing$Education - 
+  2.1 * housing$MaritalStatus_1 + 
+  0.9 * housing$MaritalStatus_2 + 
+  1.5 * housing$MaritalStatus_3 + 
+  1.9 * housing$MaritalStatus_4 +
+  7.5 * housing$err
+
+HealthStatus  <- 5.3 + 
+  1.3 * PublicHousing +
+  17 * housing$HealthBehavior +
+  3.9 * housing$Age + 
+  2.6 * housing$Race_3 + 
+  3.8 * housing$Race_2 + 
+  1.5 * housing$Race_1 + 
+  1.2 * housing$Race_4 -
+  2.8 * housing$Education - 
+  2.7 * housing$MaritalStatus_1 + 
+  2.9 * housing$MaritalStatus_2 - 
+  3.3 * housing$MaritalStatus_3 + 
+  2.9 * housing$MaritalStatus_4 +
+  4.31 * housing$err2
+
+PublicHousing <- rescale(PublicHousing,  to = c(0, 60)) 
+HealthStatus <- rescale(HealthStatus, to = c(1, 20))    
+
+housing <- housing %>% 
+  mutate(PublicHousing = PublicHousing, HealthStatus = HealthStatus) %>% 
+  select(-c(err, err2)) %>% 
+  select(PublicHousing, HealthStatus, everything()) %>% 
+  mutate_at(vars(1:8), list(~round(., 0)))
+
+write_csv(housing, here::here("static", "files", "problem-set-9", 
+                              "data", "public_housing.csv"))
+```
