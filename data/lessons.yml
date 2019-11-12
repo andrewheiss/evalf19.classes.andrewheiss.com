@@ -90,15 +90,16 @@ lessons:
     date: "November 9"
     assignment: "08-problem-set"
     
-  - title: "Regression discontinuity II & Instrumental variables I"
+  - title: "Instrumental variables I"
     date: "November 11"
     reading: "11-reading"
+    class: "11-class"
 
   - title: "**Problem set 9**"
     date: "November 16"
     assignment: "09-problem-set"
     
-  - title: "Instrumental variables II"
+  - title: "Instrumental variables II & Regression discontinuity II"
     date: "November 18"
     reading: "12-reading"
 

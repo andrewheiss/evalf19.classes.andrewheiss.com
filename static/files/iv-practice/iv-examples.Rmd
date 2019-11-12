@@ -1,0 +1,105 @@
+---
+title: "IV examples"
+output: 
+  html_document: 
+    toc: yes
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(broom)
+library(huxtable)
+library(AER)
+library(wooldridge)
+```
+
+# Education, wages, and parent education (fake data)
+
+```{r}
+# Load data
+ed_fake <- read_csv("data/father_education.csv")
+```
+
+
+# Education, wages, and parent education (real data)
+
+This data comes from the wooldridge R package (and it's real!)
+
+```{r}
+ed_real <- wage2 %>% 
+  mutate(wage, education = educ, education_dad = feduc, education_mom = meduc) %>%
+  na.omit()
+```
+
+
+# Cigarette prices and smoking (real data)
+
+This data comes from the AER package (and it's real!). Look at ?CigarettesSW to see what the columns are. Here, we modify them a little. We can calculate the cigarette tax (`cigtax`) by subtracting the average taxes from the average excise taxes). We adjust the price and cigarette tax for inflation by dividing by the CPI for that year, and we limit the data to just 1995. 
+
+```{r}
+data("CigarettesSW")
+
+cigs <- CigarettesSW %>% 
+  mutate(cigtax = taxs - tax) %>% 
+  mutate(price = price / cpi,
+         cigtax = cigtax / cpi) %>% 
+  filter(year == 1995)
+```
+
+Find the effect of cigarette prices on the number of packs of cigarettes per capita. Use the logged amount of packs and the logged price (i.e. `log(packs) ~ log(price)`)
+
+You can't find causation because prices and quantity are figured out at the same time (remember your econ class!), so you'll need to use an instrument for price: cigarette taxes.
+
+Do the following:
+
+- Build a naive model of `log(packs) ~ log(price)` and find the effect of price on packs
+- Determine if cigarette taxes can work as a valid instrument. Does it meet these criteria?
+    - Relevance (is there a relationship between `policy ~ instrument`; is the F-statistic greater than 10?)
+    - Exclusion (do cigarette taxes influence the number of packs purchased *only through* prices?)
+    - Exogeneity (are cigarette taxes related to anything else in the model, like omitted variables?)
+- Build a first stage model
+- Use the fitted values of `log(price)` from the first stage to estimate the second stage
+
+
+# Education, wages, and distance to college (real data)
+
+```{r}
+data("card")
+head(card)
+```
+
+For this exercise we are going to use the following variables. You can find a description of all variables [here](http://fmwww.bc.edu/ec-p/data/wooldridge/card.des).
+
+| **Variable name**    | **Description**                                       | 
+| -------------------- | ----------------------------------------------------- |
+| lwage                | Annual wage (log form)                                |
+| educ                 | Years of education                                    |
+| nearc4               | Living close to college (=1) or far from college (=0) |
+| smsa                 | Living in metropolitan area (=1) or not (=0)          |
+| exper                | Years of experience                                   | 
+| expersq              | Years of experience (squared term)                    | 
+| black                | Black (=1), not black (=0)                            |
+| south                | Living in the south (=1) or not (=0)                  |
+
+As we did before, Card wants to estimate the impact of education on wage. But to solve the ability bias, he utilizes a different instrumental variable: **proximity to college**. He provides arguments to support each of three main characteristics of a good instrumental variable:
+
+1. **It is correlated with the policy variable:** Individuals who live close to a 4-year college have easier access to education at a lower costs (no communiting costs and time nor accomodation costs), so they have greater incentives to pursue education.
+2. **It is not correlated with the omitted variable:** Individual ability does not depend on proximity to a college.
+3. **It is correlated to the dependent variable only through the policy variable:** Proximity to a college has no effect on your annual income, unless you decide to pursue further education because of the nearby college. 
+
+Therefore, he estimates a model where:
+
+**First stage:**
+
+$$
+\widehat{\text{Educ}} = \beta_0 + \beta_1\text{nearc4} + \beta_{2-6}\text{Control variables}
+$$
+
+**Second stage:**
+
+$$
+\text{lwage} = \beta_0 + \beta_1 \widehat{\text{Educ}} + \beta_{2-6}\text{Control variables}
+$$
+
+Card's control variables are these: `smsa66 + exper + expersq + black + south66`
+
