@@ -21,3 +21,66 @@ editor_options:
 ```{r knit-button, echo=FALSE, out.width="60%"}
 knitr::include_graphics("/images/assignment/knit-button.png")
 ```
+
+```{r eval=FALSE, include=FALSE}
+# Treatment group with higher post-treatment GPA
+treatment <- r_data_frame(n = 794, 
+                          id, 
+                          race, 
+                          age(x = 20:30), 
+                          gender_inclusive) %>% 
+  mutate(undergrad_gpa = round(rtruncnorm(n(), a = 1.0, b = 4.0, 
+                                          mean = 2.5, sd = .5), 2),
+         math_camp = TRUE,
+         gre_verbal = round(rtruncnorm(n(), a = 130, b = 170,
+                                       mean = 145, sd = 15), 0),
+         gre_quant = round(rtruncnorm(n(), a = 130, b = 170,
+                                      mean = 110, sd = 15), 0),
+         gre_total = gre_verbal + gre_quant,
+         graduate_gpa = round(rtruncnorm(n(), a = 1.0, b = 4.0, 
+                                         mean = 3.3, sd = .5), 2))
+
+# Control group with slightly higher post-treatment GPA
+control <- r_data_frame(n = 787, 
+                        id, 
+                        race, 
+                        age(x = 20:30), 
+                        gender_inclusive) %>% 
+  mutate(undergrad_gpa = round(rtruncnorm(n(), a = 1.0, b = 4.0, 
+                                          mean = 2.5, sd = .5), 2),
+         gre_verbal = round(rtruncnorm(n(), a = 130, b = 170,
+                                       mean = 145, sd = 15), 0),
+         gre_quant = round(rtruncnorm(n(), a = 130, b = 170,
+                                      mean = 110, sd = 15), 0),
+         math_camp = FALSE,
+         gre_total = gre_verbal + gre_quant,
+         graduate_gpa = round(rtruncnorm(n(), a = 1.0, b = 4.0, 
+                                         mean = 2.9, sd = .5), 2))
+
+population <- r_data_frame(n = 1986, 
+                           id, 
+                           race, 
+                           age(x = 20:30), 
+                           gender_inclusive) %>% 
+  mutate(undergrad_gpa = round(rtruncnorm(n(), a = 1.0, b = 4.0, 
+                                          mean = 2.5, sd = 1.5), 2),
+         gre_verbal = round(rtruncnorm(n(), a = 130, b = 170,
+                                       mean = 145, sd = 15), 0),
+         gre_quant = round(rtruncnorm(n(), a = 130, b = 170,
+                                      mean = 160, sd = 30), 0),
+         math_camp = FALSE,
+         gre_total = gre_verbal + gre_quant,
+         graduate_gpa = round(rtruncnorm(n(), a = 1.0, b = 4.0, 
+                                         mean = 3.6, sd = 1), 2))
+
+# Combine them all
+experiment <- bind_rows(treatment, control) %>% 
+  sample_frac(1)  # Shuffle the dataset for kicks and giggles
+
+everyone <- bind_rows(experiment, population) %>% 
+  sample_frac(1)
+
+write_csv(experiment, "~/Desktop/math_camp_experiment.csv")
+write_csv(everyone, "~/Desktop/math_camp_everyone.csv")
+```
+
