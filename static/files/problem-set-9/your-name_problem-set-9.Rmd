@@ -99,11 +99,11 @@ ANSWER HERE
 
 | Variable name         | Description                                                                      |
 | --------------------- | -------------------------------------------------------------------------------- |
-| `HealthStatus`        | Health status on a scale from 1 = poor to 5 = excellent                          |
+| `HealthStatus`        | Health status on a scale from 1 = poor to 20 = excellent                         |
 | `HealthBehavior`      | Omitted variable (you can't actually measure this!)                              |
 | `PublicHousing`       | Number of years spent in public housing                                          |
 | `Supply`              | Number of available public housing units in the city per 100 eligible households |
-| `ParentsHealthStatus` | Health status of parents on a scale from 1 = poor to 5 = excellent               |
+| `ParentsHealthStatus` | Health status of parents on a scale from 1 = poor to 20 = excellent              |
 | `WaitingTime`         | Average waiting time before obtaining public housing in the city (in months)     |
 | `Stamp`               | Dollar amount of food stamps (SNAP) spent each month                             |
 | `Age`                 | Age                                                                              |
@@ -122,10 +122,14 @@ This data includes four potential instruments:
 - `WaitingTime`: Average waiting time before obtaining public housing in the city (in months)
 - `Stamp`: Dollar amount of food stamps (SNAP) spent each month
 
-You have a three tasks:
+You have three tasks:
 
 1. Evaluate the suitability of each of the four potential instruments. Check if they (1) have *relevance* with a scatterplot and model and F-test, (2) meet the *excludability* assumption, and (3) meet the *exogeneity* assumption. Choose one of these as your main instrument and justify why it's the best. Explain why the other three are not.
-2. Estimate a naive model of the effect of public housing on health status (i.e. without any instruments). You can include any control variables you feel appropriate (i.e. that fit in your causal model)
+2. Estimate a naive model of the effect of public housing on health status (i.e. without any instruments). You can include any control variables you feel appropriate (i.e. that fit in your causal model). If you use variables that are categorical like race, education, or marital status, make sure you wrap them with `as.factor()` to treat them as categories instead of numbers (e.g. `as.factor(education)`).
 3. Estimate the effect of public housing on health status using 2SLS IV (by hand with a first stage model, predicted public housing, and a second stage model using predicted public housing; don't use `iv_robust()` except to check your work). Compare the results with the naive model. Which model do you trust (if any), and why?
 
 DO ALL THAT HERE.
+
+```{r load-housing-data, message=FALSE}
+housing <- read_csv("data/public_housing.csv")
+```
