@@ -1,0 +1,23 @@
+---
+title: "Qualtrics RCT"
+output: html_document
+---
+
+# Load and clean data
+
+```{r load-packages, warning=FALSE, message=FALSE}
+library(tidyverse)
+library(qualtRics)
+library(broom)
+```
+
+```{r load-clean-data}
+survey <- read_survey("")
+```
+
+
+# Randomization checks
+
+
+# Casual effect
+

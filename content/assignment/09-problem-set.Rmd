@@ -24,6 +24,16 @@ knitr::include_graphics("/images/assignment/knit-button.png")
 
 ```{r eval=FALSE, include=FALSE}
 library(tidyverse)
+library(wooldridge)
+
+wage1 %>%
+  transmute(
+    wage = round(wage, 2), education = educ, n_kids = numdep
+  ) %>%
+  write_csv(path = here::here("static", "files", "problem-set-9", 
+                              "data", "wages.csv"))
+
+
 library(scales)
 library(fastDummies)
 

@@ -21,3 +21,12 @@ editor_options:
 ```{r knit-button, echo=FALSE, out.width="60%"}
 knitr::include_graphics("/images/assignment/knit-button.png")
 ```
+
+```{r include=FALSE, eval=FALSE}
+# https://web.archive.org/web/20180428021443/https://thetarzan.wordpress.com/2011/05/24/surviving-graduate-econometrics-with-r-difference-in-difference-estimation-2-of-8/
+# https://web.archive.org/web/20181227042335/https://the-tarzan.com/2011/06/20/differences-in-differences-estimation-in-r-and-stata/
+# http://www.montana.edu/cstoddard/562/index.html
+# https://dhicks.github.io/2018-10-10-did/
+# https://drive.google.com/uc?authuser=0&id=0B0iAUHM7ljQ1cUZvRWxjUmpfVXM&export=download
+```
+

@@ -1,0 +1,159 @@
+---
+title: "Diff-in-diff lab: Injuries"
+author: "PMAP 8521"
+date: "October 28, 2019"
+---
+
+```{r load-data-libraries, warning=FALSE, message=FALSE}
+library(tidyverse)
+library(wooldridge)
+library(broom)
+library(huxtable)
+
+kentucky <- injury %>% 
+  # Only look at data from Kentucky
+  filter(ky == 1)
+```
+
+
+# Background
+
+In 1980, Kentucky raised its cap on weekly earnings that were covered by worker's compensation.[^1] The outcome variable is `ldurat`, which is the log duration (in weeks) of worker's compensation benefits. It is logged because the variable is fairly skewed---most people are unemployed for a few weeks, with some unemployed for a long time. The policy was designed so that the cap increase did not affect low-earnings workers, but did affect high-earnings workers. Thus low-earnings workers serve as the control group, while high-earnings workers serve as the treatment group.
+
+We want to know if the policy caused workers to spend more time unemployed. If benefits are not generous enough, then workers may sue the company for on-the-job injuries. On the other hand, benefits that are too generous may induce workers to be more reckless on the job, or to claim that off-the-job injuries were incurred while at work.
+
+[^1]: Worker's compensation is "a form of insurance providing wage replacement and medical benefits to employees injured in the course of employment in exchange for mandatory relinquishment of the employee's right to sue their employer for ... negligence." ([Wikipedia](https://en.wikipedia.org/wiki/Workers%27_compensation))
+
+
+# Exploratory data analysis
+
+Look at the help file for `injury`. What do all these columns mean?
+
+Look at the distribution of the duration of benefits (`durat`) using a histogram (choose an appropriate binwidth), facetted by high earners (`highearn`). 
+
+Make another plot using logged duration (`ldurat`). What's the difference?
+
+```{r}
+ggplot(data = kentucky, mapping = aes(x = ldurat)) +
+  geom_histogram(binwidth = 0.1) + 
+  facet_wrap(~ highearn)
+```
+
+```{r}
+
+```
+
+
+# Diff-in-diff by hand
+
+Calculate the difference-in-differences based on the pre- and post-means for the treatment and control groups. Remember that the pre/post variable is `afchnge` and the treatment/control variable is `highearn`.
+
+```{r}
+kentucky_diff <- kentucky %>% 
+  group_by(afchnge, highearn) %>% 
+  summarise(avg_durat = mean(ldurat),
+            avg_durat_for_humans = mean(durat))
+kentucky_diff
+```
+
+Make a table of the ABCD values if it helps:
+
+|              | Before change | After change | Difference |
+| ------------ | ------------- | ------------ | ---------- |
+| High earners |               |              |            |
+| Low earners  |               |              |            |
+| Difference   |               |              |            |
+
+
+What is the difference in the differences estimate? Interpret it. (Remember that the outcome variable is logged.)
+
+
+# Plot of diff-in-diff
+
+Store your `group_by() %>% summarize()` table above as an object and plot it with `ggplot`. Put `afchnge` on the x-axis, average duration on the y-axis, and color the lines by `highearn`. Is there an effect?
+
+Important: `afchnge` and `highearn` are in the dataset as numbers (0 and 1), but they're actually categories. We have to tell R to treat them as categories (or factors), otherwise it'll assume you can have a `highearn` value of 0.58 or something. To do this, wrap the variable name in `as.factor()`, like `x = as.factor(afchnge)`.
+
+Also, to make ggplot draw lines acroww the before/after groups on the x-axis, you'll need to set the group aesthetic in `geom_line()`: `geom_line(aes(group = as.factor(highearn))`. You only have to do with when the x variable is a category; you don't have to do this in problem set 7 since x is year, and that's not a category.
+
+```{r}
+ggplot(kentucky_diff, aes(x = as.factor(afchnge), 
+                          y = avg_durat, 
+                          color = as.factor(highearn))) + 
+  geom_line(aes(group = as.factor(highearn)))
+```
+
+
+
+# Diff-in-diff with regression
+
+Now, instead of calculating the group averages by hand, use regression to find the diff-in-diff estimate. Remember that you'll need to include indicator variables for treatment/control and before/after, as well as the interaction of the two. Here's what the math equation looks like:
+
+$$
+\log(\text{durat}) = \alpha + \beta \ \text{highearn} + \gamma \ \text{afchnge} + \delta \ (\text{highearn} \times \text{afchnge}) + \epsilon
+$$
+
+The $\delta$ value is the one you care about.
+
+```{r}
+model1 <- lm(ldurat ~ highearn + afchnge + highearn * afchnge,
+             data = kentucky)
+tidy(model1)
+```
+
+Compare the value of the interaction term with the diff-in-diff estimate you calculated by hand. Is it the same? (it should be!). Is it statistically significant?
+
+
+# Diff-in-diff with regression + controls
+
+One advantage to using regression for diff-in-diff is that you can include control variables to help isolate the effect. For example, perhaps claims made by construction or manufacturing workers tend to have longer duration than claims made workers in other industries. Or maybe those claiming back injuries tend to have lonter claims than those claiming head injuries. One may also want to control for worker demographics such as gender, marital status, and age.
+
+Estimate an expanded version of the basic regression model with the following additional variables:
+
+- `male`
+- `married`
+- `age`
+- `hosp` (1 = hospitalized)
+- `indust` (1 = manuf, 2 = construc, 3 = other)
+- `injtype` (1-8; categories for different types of injury)
+- `lprewage` (log of wage prior to filing a claim)
+
+Important: `indust` and `injtype` are in the dataset as numbers (1-3 and 1-8), but they're actually categories. We have to tell R to treat them as categories (or factors), otherwise it'll assume that you can have an injury type of 3.46 or something impossible.
+
+```{r}
+# Convert industry and injury type to categories/factors
+kentucky <- kentucky %>% 
+  mutate(indust = as.factor(indust),
+         injtype = as.factor(injtype))
+```
+
+```{r}
+# Expanded DiD regression model here
+model2 <- lm(ldurat ~ highearn + afchnge + highearn * afchnge + 
+               male + married + age + hosp + indust + injtype + lprewage,
+             data = kentucky)
+tidy(model2)
+```
+
+Is the diff-in-diff estimate different now? How so? Is it significant?
+
+
+# Comparison of regression models
+
+Put the results from the two models in a side-by-side table using `huxreg(name_of_simple_model, name_of_bigger_model)`:
+
+```{r}
+huxreg(model1, model2)
+```
+
+
+# Michigan
+
+Do the same analysis as before, but with Michigan. Is there a difference in causal effect across the two states? How much do you trust these new findings (i.e. How significant is the effect? How many observations are in Michigan compared to Kentucky?)
+
+```{r}
+michigan <- injury %>% 
+  # Only look at data from Michigan
+  filter(ky == 0)
+```
+

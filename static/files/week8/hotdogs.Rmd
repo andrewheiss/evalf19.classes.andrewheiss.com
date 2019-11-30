@@ -1,0 +1,23 @@
+---
+title: "Hot dogs"
+output: html_document
+---
+
+```{r}
+library(tidyverse)
+
+hotdogs <- tribble(
+  ~price, ~cheese, ~chili,
+  2.00,   FALSE,   FALSE,
+  2.35,   TRUE,    FALSE,
+  2.35,   FALSE,   TRUE,
+  2.70,   TRUE,    TRUE
+)
+
+model <- lm(price ~ cheese + chili + cheese * chili, data = hotdogs)
+
+broom::tidy(model) %>% 
+  select(term, estimate) %>% 
+  mutate(estimate = round(estimate, 2))
+```
+

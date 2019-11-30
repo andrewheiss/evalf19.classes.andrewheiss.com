@@ -21,6 +21,13 @@ editor_options:
 </figure>
 
 
+# In-class R work
+
+[Open the RStudio.cloud project for today](https://rstudio.cloud/spaces/26160/project/635987) or download the project to your computer, *unzip it*, and run it locally:
+
+- [<i class="fas fa-file-archive"></i> Week 8 stuff](/files/week8.zip)
+
+
 # Clearest and muddiest things
 
 Go to [this form](https://forms.gle/gDXoxmbQeps5suaJ6) and answer these three questions:
@@ -30,3 +37,26 @@ Go to [this form](https://forms.gle/gDXoxmbQeps5suaJ6) and answer these three qu
 3. What was the most exciting thing you learned?
 
 I'll compile the questions and send out answers after class.
+
+
+```{r eval=FALSE, include=FALSE}
+library(tidyverse)
+
+hotdogs <- tribble(
+  ~price, ~cheese, ~chili,
+  2.00,   FALSE,   FALSE,
+  2.35,   TRUE,    FALSE,
+  2.35,   FALSE,   TRUE,
+  2.70,   TRUE,    TRUE
+)
+
+model <- lm(price ~ cheese + chili + cheese * chili, data = hotdogs)
+
+broom::tidy(model) %>% 
+  select(term, estimate) %>% 
+  mutate(estimate = round(estimate, 2))
+
+# Repeat this a bunch for the sake of degrees of freedom
+# (though this isn't necessary)
+hotdogs <- map_dfr(seq_len(10), ~hotdogs)
+```

@@ -1,0 +1,273 @@
+---
+title: "Effect of Katrina evacuation on employment"
+output: html_document
+---
+
+```{r load-libraries-data, warning=FALSE, message=FALSE}
+library(tidyverse)
+library(haven)  # For reading files from Stata, SPSS, etc.
+library(estimatr)  # For robust regression and standard errors
+
+katrina <- read_stata("data/katrina.dta") %>% 
+  # Clean up some of the columns so they have labels instead of 0/1, 1/2/3/4/5, etc.
+  mutate(health_cat = factor(health, labels = c("Excellent", "Very good", "Good", "Fair", "Poor"),
+                             ordered = TRUE),
+         everevac_bin = factor(everevac, labels = c("Not evacuated", "Evacuated")),
+         year_factor = factor(year, ordered = TRUE),
+         storm = factor(ifelse(year == 2005, "Before", "After"), levels = c("Before", "After")))
+```
+
+
+# Exploratory analysis
+
+We're interested in the effect of Katrina evacuation on four different outcomes: time spent employed, earnings, unemployment income, and health. 
+
+We first want to see what the effect of the storm was on those who evacuated. What are the averages and distributions for these different outcomes?
+
+Here we're only looking at those who evacuated, and only in 2006 after they evacuated (this is like an experiment with no control group and no pretest).
+
+```{r}
+# Only look at people in 2006 who had evacuated
+katrina_2006_evac <- katrina %>% 
+  filter(year == 2006, everevac_bin == "Evacuated")
+```
+
+## Weeks worked
+
+```{r}
+katrina_2006_evac %>% 
+  summarize(avg_wks_worked = mean(wkswork))
+```
+
+
+```{r}
+ggplot(katrina_2006_evac, aes(x = wkswork)) +
+  geom_density(fill = "blue")
+```
+
+
+## Earnings
+
+```{r}
+# Get the average for earnings
+```
+
+```{r}
+# Plot the distrubtion for earnings
+```
+
+
+## Unemployment income
+
+```{r}
+# Get the average for unempinc
+```
+
+```{r}
+# Plot the distrubtion for unempinc
+```
+
+
+## Health
+
+We can't calculate the average health, since it's categorical. But we can look at the distribution:
+
+```{r}
+# Make a smaller summary dataframe first
+health_plot <- katrina_2006_evac %>% 
+  group_by(health_cat) %>% 
+  summarize(n = n()) %>% 
+  # Get the percentage for each category
+  ungroup() %>% 
+  mutate(prop = n / sum(n))
+
+ggplot(health_plot, aes(x = health_cat, y = prop)) + 
+  geom_col()
+```
+
+
+# Before/after comparison for evacuees
+
+Next, calculate the effect of evacuation for just those who evacuated (i.e. ignore those who didn't evacuate; there's no control group). 
+
+Check the difference in means visually and with a t-test. Run a regression with `storm` as the explanatory variable, then with `storm` and controls for age, race, sex, and education (`age + sex + black + hsgrad + someco + ba + postgrad`). 
+
+Without looking at a control group, did the storm have any effect on evacuees in weeks worked, earnings, and unemployment income? (don't worry about health for now). Does adding controls change anything?
+
+```{r}
+# Only look at evacuees
+katrina_evac <- katrina %>% 
+  filter(everevac_bin == "Evacuated")
+```
+
+## Weeks worked
+
+```{r}
+# Difference in means
+t.test(wkswork ~ storm, data = katrina_evac)
+
+model_work_evac <- lm(wkswork ~ storm, data = katrina_evac)
+
+model_work_evac_full <- lm(wkswork ~ storm + age + sex + black + 
+                             hsgrad + someco + ba + postgrad,
+                           data = katrina_evac)
+tidy(model_work_evac)
+tidy(model_work_evac_full)
+```
+
+```{r}
+# Calculate the average weeks worked + standard error
+wks_worked_plot <- katrina_evac %>% 
+  group_by(storm) %>% 
+  summarize(avg = mean(wkswork),
+            sd = sd(wkswork),
+            n = n(),
+            se = sd / sqrt(n))
+
+ggplot(wks_worked_plot, aes(x = storm, y = avg, color = storm)) +
+  geom_errorbar(aes(ymin = avg - 1.96 * se,
+                    ymax = avg + 1.96 * se), 
+                size = 1, width = 0.1) +
+  geom_point() +
+  geom_line(aes(group = 1), color = "grey50") +
+  guides(color = FALSE)  # Turn off legend
+```
+
+## Earnings
+
+```{r}
+# t-test and models for earnings
+```
+
+```{r}
+# Plot for earnings
+```
+
+## Unemployment income
+
+```{r}
+# t-test and models for unempinc
+```
+
+```{r}
+# Plot for unempinc
+```
+
+# Evacuee / non-evacuee comparison in 2006
+
+Next, calculate the effect of evacuation for just those who evacuated (i.e. ignore 2005; there's no pretest). 
+
+Check the difference in means visually and with a t-test. Run a regression with `everevac_bin` as the explanatory variable, then with `everevac_bin` and controls for age, race, sex, and education (`age + sex + black + hsgrad + someco + ba + postgrad`). 
+
+Without looking at pre-storm levels, did the storm have any effect on evacuees in weeks worked, earnings, and unemployment income? (don't worry about health for now). Does adding controls change anything?
+
+```{r}
+# Only look at evacuees
+katrina_2006 <- katrina %>% 
+  filter(year == 2006)
+```
+
+## Weeks worked
+
+```{r}
+# Difference in means
+t.test(wkswork ~ everevac_bin, data = katrina_2006)
+
+model_work_2006 <- lm(wkswork ~ everevac_bin, data = katrina_2006)
+
+model_work_2006_full <- lm(wkswork ~ everevac_bin + age + sex + black + 
+                             hsgrad + someco + ba + postgrad,
+                           data = katrina_2006)
+tidy(model_work_2006)
+tidy(model_work_2006_full)
+```
+
+```{r}
+# Calculate the average weeks worked + standard error
+wks_worked_plot <- katrina_2006 %>% 
+  group_by(everevac_bin) %>% 
+  summarize(avg = mean(wkswork),
+            sd = sd(wkswork),
+            n = n(),
+            se = sd / sqrt(n))
+
+ggplot(wks_worked_plot, aes(x = everevac_bin, y = avg, color = everevac_bin)) +
+  geom_errorbar(aes(ymin = avg - 1.96 * se,
+                    ymax = avg + 1.96 * se), 
+                size = 1, width = 0.1) +
+  geom_point() +
+  geom_line(aes(group = 1), color = "grey50") +
+  guides(color = FALSE)  # Turn off legend
+```
+
+## Earnings
+
+```{r}
+# t-test and models for earnings
+```
+
+```{r}
+# Plot for earnings
+```
+
+## Unemployment income
+
+```{r}
+# t-test and models for unempinc
+```
+
+```{r}
+# Plot for unempinc
+```
+
+
+# Difference-in-differences
+
+Finally (!!) we can see if the evacuation itself had an effect, account for treatment/control and before/after the storm. Interpret these coefficients:
+
+## Weeks worked
+
+```{r}
+model_dd_weeks_worked <- lm(wkswork ~ storm + everevac_bin + storm * everevac_bin, 
+                            data = katrina)
+model_dd_weeks_worked_full <- lm(wkswork ~ storm + everevac_bin + storm * everevac_bin +
+                                   age + sex + black + hsgrad + someco + ba + postgrad, 
+                            data = katrina)
+
+tidy(model_dd_weeks_worked)
+tidy(model_dd_weeks_worked_full)
+```
+
+```{r}
+wks_worked_group_avgs <- katrina %>% 
+  group_by(storm, everevac_bin) %>% 
+  summarize(avg = mean(wkswork))
+wks_worked_group_avgs
+```
+
+```{r}
+# We assume that the evacuated group would have changed at the same rate as the non-evacuated group after the storm
+# Not evacuated_after - Not evacuated_before
+hypothetical_change <- 38.95388 - 38.23799
+
+ggplot(wks_worked_group_avgs, aes(x = storm, y = avg, color = everevac_bin)) +
+  geom_point() + 
+  geom_line(aes(group = everevac_bin)) +
+  geom_segment(aes(x = 1, y = 36.06564, xend = 2, 
+                   yend = (36.06564 + hypothetical_change)), 
+               linetype = "dotted", color = "grey10")
+```
+
+## Earnings
+
+```{r}
+# Models for earnings
+```
+
+
+## Unemployment income
+
+```{r}
+# Models for unempinc
+```
+

@@ -21,6 +21,13 @@ editor_options:
 </figure>
 
 
+# In-class R work
+
+[Open the RStudio.cloud project for today](https://rstudio.cloud/spaces/26160/project/680728) or download the project to your computer, *unzip it*, and run it locally:
+
+- [<i class="fas fa-file-archive"></i> Week 10 stuff](/files/week10.zip)
+
+
 # The effect of a gifted program on student test scores
 
 In this hypothetical example, students take a test in 6th grade to determine if they can participate in an academically and intellectually gifted (AIG) program during middle school and high school. In the AIG program students regularly get pulled out of their classes for extra work and lessons. At the end of high school, students take a final test (with a maximum of 100 points) to measure how much they learned overall.^[Again, this is a hypothetical example and tests like this don't really exist, but just go with it.]
@@ -52,6 +59,11 @@ aig_program <- r_data_frame(
          aig = test_score >= 75) %>% 
   mutate(final_score = final_score * 40 + 10 * aig + test_score / 2)
 ```
+
+```{r include=FALSE, warning=FALSE}
+write_csv(aig_program, "aig_program.csv")
+```
+
 
 
 ## Step 1: Determine if process of assigning treatment is rule-based
@@ -375,8 +387,29 @@ df <- r_data_frame(
   mutate(Income_fuzzy = ifelse(Income < 50000 & Income > 30000,
                                Income * rnorm(n()), Income)) %>% 
   mutate(scholarship_sharp = Income < 40000,
-         scholarship_fuzzy = Income_fuzzy < 40000)
+         scholarship_fuzzy = Income_fuzzy < 40000) %>% 
+  mutate(outcome_linear = 500 + Income * 3 + rnorm(n(), 500000, 100000)) %>% 
+  mutate(outcome_linear_split = ifelse(Income < 40000, outcome_linear + 150000, outcome_linear))
 
+df_clean <- df %>% 
+  select(ID, Income, Wages = outcome_linear_split,
+         received_scholarship = scholarship_fuzzy, assigned_scholarship = scholarship_sharp)
+
+ggplot(df_clean, aes(x = Income, y = Wages, color = received_scholarship)) + 
+  geom_point(alpha = 0.2) + 
+  geom_smooth(method = "lm")
+
+write_csv(df_clean, here::here("static", "data", "scholarship_rdd.csv"))
+
+library(rdrobust)
+
+thing <- rdrobust(df_clean$Wages, df_clean$Income, c = 40000)
+summary(thing)
+
+thing1 <- rdrobust(df_clean$Wages, df_clean$Income, c = 40000, fuzzy = df_clean$received_scholarship)
+summary(thing1)
+
+rdplot(df_clean$Wages, df_clean$Income, c = 40000, fuzzy = df_clean$assigned_scholarship)
 
 ggplot(df, aes(x = Income, y = scholarship_fuzzy, color = Income < 40000)) +
   geom_point(size = 0.5, alpha = 0.5) +
@@ -431,7 +464,7 @@ df1 <- df %>%
   mutate(outcome_linear_split = ifelse(income_uniform > 100000, outcome_linear + 10000, outcome_linear))
   # mutate(outcome_linear = 500 + Income * 3 + runif(n(), min = 5000, max = 100000))
 
-ggplot(df1, aes(x = income_uniform, y = outcome_linear)) + 
+ggplot(df1, aes(x = income_uniform, y = outcome_linear_split)) + 
   geom_point(alpha = 0.2) +
   geom_smooth(method = "lm", se = FALSE, size = 2) + 
   labs(x = NULL, y = NULL)

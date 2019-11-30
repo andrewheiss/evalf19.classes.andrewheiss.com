@@ -1,0 +1,141 @@
+---
+title: "RCTs with R"
+output: html_document
+---
+
+```{r load-stuff, warning=FALSE, message=FALSE}
+library(tidyverse)
+library(wakefield)
+library(broom)
+```
+
+# Individual randomization
+
+First, let's create a random village:
+
+```{r individual-randomization}
+village <- r_data_frame(
+  n = 35,
+  id,
+  age,
+  sex(prob = c(0.6, 0.4)),
+  pre_income = rnorm(mean = 800, sd = 100)
+) %>%
+  mutate(experiment_group = sample(c("Treatment", "Control"), size = n(), replace = TRUE))
+
+village
+```
+
+What are the average values of our pre-treatment demographic characteristics?
+
+```{r pre-treat-summary-everyone}
+village %>%
+  summarize(avg_age = mean(Age),
+            avg_income = mean(pre_income),
+            prop_male = mean(Sex == "Male"))
+```
+
+What are the average values of our pre-treatment demographics across the treatment and control groups? Are the two groups similar?
+
+```{r pre-treat-summary-everyone}
+village %>%
+  group_by(experiment_group) %>% 
+  summarize(avg_age = mean(Age),
+            avg_income = mean(pre_income),
+            prop_male = mean(Sex == "Male"))
+```
+
+```{r}
+t.test(pre_income ~ experiment_group, data = village)
+```
+
+
+We can visualize this:
+
+```{r}
+# This histogram is kind of hard to interpret
+ggplot(village, aes(x = Age)) +
+  geom_histogram(color = "white", binwidth = 2) +
+  facet_wrap(~ experiment_group)
+```
+
+```{r}
+# Stat summary will calculate the average and standard errors for each group
+ggplot(village, aes(x = experiment_group, y = pre_income)) +
+  stat_summary(fun.data = "mean_se")
+```
+
+```{r}
+# For the Sex variable, we can't use lines since it's categorical. We can use bars instead
+ggplot(village, aes(x = experiment_group, fill = Sex)) +
+  #geom_bar(position = "stack")
+  #geom_bar(position = "fill")
+  geom_bar(position = "dodge")
+```
+
+# Village-level randomization
+
+```{r village-randomization}
+province <- r_data_frame(
+  n = 4000,
+  id,
+  age,
+  sex(prob = c(0.6, 0.4)),
+  income = rnorm(mean = 800, sd = 100)
+) %>%
+  mutate(village = sample(c("A", "B", "C", "D", "E"), size = n(), replace = TRUE))
+
+# Assign villages
+set.seed(9999)
+villages <- tibble(village = c("A", "B", "C", "D", "E")) %>%
+  mutate(experiment_group = sample(c("Treatment", "Control"), size = n(), replace = TRUE))
+
+province_assigned <- province %>%
+  left_join(villages, by = "village")
+
+province_assigned %>%
+  group_by(experiment_group) %>%
+  summarize(avg_age = mean(Age),
+            avg_income = mean(income),
+            prop_male = mean(Sex == "Male"))
+```
+
+# Village RCT
+
+```{r}
+village_treatment <- r_data_frame(
+  n = 600,
+  id,
+  age,
+  sex(prob = c(0.6, 0.4)),
+  pre_income = rnorm(mean = 800, sd = 100)
+) %>%
+  mutate(post_income = rnorm(n(), mean = 1.1, sd = 0.3) * pre_income) %>%
+  mutate(experiment_group = "Treatment")
+
+village_control <- r_data_frame(
+  n = 600,
+  age,
+  sex(prob = c(0.6, 0.4)),
+  pre_income = rnorm(mean = 800, sd = 100)
+) %>%
+  mutate(post_income = rnorm(n(), mean = 1, sd = 0.3) * pre_income) %>%
+  mutate(experiment_group = "Control")
+
+village_experiment <- bind_rows(village_treatment, village_control)
+```
+
+```{r}
+ggplot(village_experiment, aes(x = experiment_group, y = post_income)) +
+  # geom_point(position = "jitter", alpha = 0.2) +
+  stat_summary(fun.data = "mean_se")
+```
+
+```{r}
+village_experiment %>%
+  group_by(experiment_group) %>%
+  summarize(avg_post_income = mean(post_income))
+
+model <- lm(post_income ~ experiment_group, data = village_experiment)
+tidy(model)
+```

@@ -1,0 +1,44 @@
+---
+title: "Fuzzy RD"
+output: html_document
+---
+
+```{r setup, warning=FALSE, message=FALSE}
+library(tidyverse)
+library(rdrobust)
+```
+
+```{r message=FALSE}
+program <- read_csv("data/scholarship_rdd.csv")
+```
+
+```{r}
+ggplot(program, aes(x = Income, y = received_scholarship, color = received_scholarship)) + 
+  geom_point(alpha = 0.2) + 
+  geom_vline(xintercept = 40000)
+
+program %>% 
+  group_by(received_scholarship, Income < 40000) %>% 
+  summarize(count = n())
+```
+
+
+```{r}
+ggplot(program, aes(x = Income, y = Wages, color = received_scholarship)) + 
+  geom_point(alpha = 0.2) + 
+  geom_smooth(method = "lm") + 
+  geom_vline(xintercept = 40000)
+```
+
+```{r}
+rdplot(program$Wages, program$Income, c = 40000)
+```
+
+```{r}
+regular_rdd <- rdrobust(program$Wages, program$Income, c = 40000)
+summary(regular_rdd)
+
+fuzzy_rdd <- rdrobust(program$Wages, program$Income, c = 40000, fuzzy = program$received_scholarship)
+summary(fuzzy_rdd)
+```
+

@@ -1,0 +1,114 @@
+---
+title: "Playground"
+output: html_document
+---
+
+Messages: don't worry about them!
+
+```{r}
+library(tidyverse)
+library(broom)
+library(gapminder)
+```
+
+Warnings: Okay-ish, but follow what they say:
+
+```{r}
+ggplot(gapminder, aes(x = lifeExp, fill = continent)) + 
+  # geom_histogram(binwidth = 1)
+  geom_density(alpha = 0.5)# +
+  facet_wrap(~ continent)
+```
+
+Errors: Something is wrong, and R will try to tell you what it is.
+
+```{r eval=FALSE}
+ggplot(gampinder, aes(x = lifeExp)) + 
+  geom_histogram()
+```
+
+# Extracting things from models
+
+```{r}
+gapminder_2007 <- gapminder %>% 
+  filter(year == 2007)
+
+example_model <- lm(lifeExp ~ log(gdpPercap) + continent, data = gapminder_2007)
+
+example_model_df <- tidy(example_model)
+```
+
+The effect of blah is 12.9 in Oceania. 
+
+One way is to use `$`, but this gets the whole column:
+
+```{r}
+example_model_df$estimate
+
+example_model_df$estimate
+
+```
+
+Another way is to filter the data frame first:
+
+```{r}
+example_model_df %>% 
+  filter(term == "log(gdpPercap)")
+```
+
+This gives you all the columns for one specific row. You can get just the value you want by adding `pull()`, which pulls that value out:
+
+```{r}
+example_model_df %>% 
+  filter(term == "log(gdpPercap)") %>% 
+  pull(p.value)
+```
+
+If you know the row number you care about, you can use `slice()` instead of `filter()` to just select that one row:
+
+```{r}
+oceanian_estimate <- example_model_df %>% 
+  slice(6) %>% 
+  pull(estimate)
+```
+
+Oceania's estimate is `r round(oceanian_estimate, 2)`. The p value is QWERQWE and the t-statistic is QWERQW ;l
+
+This works for any data frame. Here's how to get the $R^2$ value out, for example:
+
+
+
+```{r}
+model_details <- glance(example_model)
+
+# The dollar sign way, since there's only one row:
+model_details$adj.r.squared
+
+# The pull way:
+model_details %>% pull(adj.r.squared)
+```
+
+You can then use this in your text and say that the model has fairly good fit ($R^2$ = `r model_details %>% pull(adj.r.squared) %>% round(2)`).
+
+Or you can store the value as a variable to make typing easier:
+
+```{r}
+model_r2 <- model_details %>% pull(adj.r.squared)
+```
+
+The model's $R^2$ is `r round(model_r2, 2)`
+
+
+# Math
+
+Markdown lets you use fancy math typesetting notation called LaTeX (see https://www.calvin.edu/~rpruim/courses/s341/S17/from-class/MathinRmd.html for some examples of how to use it). 
+
+There are two ways to use LaTeX math: inline within a paragraph, and as a standalone paragraph. Inline, math is surrounded by dollar signs: $\beta_1$, or $y = mx + b$, etc. When putting it in a standalong paragraph, it's surrounded by two dollar signs:
+
+$$
+y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \epsilon
+$$
+
+Because the dollar sign is used for mathy things, if you want to type an actual dollar sign in Markdown, you'll need to put a backslash in front of it: the cost of a gallon of milk is \$2.98. 
+
+

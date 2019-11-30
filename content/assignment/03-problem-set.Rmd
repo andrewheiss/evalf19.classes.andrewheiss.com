@@ -49,3 +49,40 @@ dag <- dagify(y ~ t + s + a,
 
 ggdag(dag, use_labels = "label", seed = 1234) + theme_dag()
 ```
+
+```{r make-data, eval=FALSE, include=FALSE}
+pub_priv <- tribble(
+  ~student_id, ~group, ~ivy1, ~ivy2, ~ivy3, ~public1, ~public2, ~public3, ~enrolled, ~earnings,
+  1, "A", NA, "Reject", "Admit", NA, "Admit", NA, "ivy3", 110000,
+  2, "A", NA, "Reject", "Admit", NA, "Admit", NA, "ivy3", 100000,
+  3, "A", NA, "Reject", "Admit", NA, "Admit", NA, "public2", 110000,
+  4, "B", "Admit", NA, NA, "Admit", NA, "Admit", "ivy1", 60000,
+  5, "B", "Admit", NA, NA, "Admit", NA, "Admit", "public3", 30000,
+  6, "C", NA, "Admit", NA, NA, NA, NA, "ivy2", 115000,
+  7, "C", NA, "Admit", NA, NA, NA, NA, "ivy2", 75000,
+  8, "D", "Reject", NA, NA, "Admit", "Admit", NA, "public1", 90000,
+  9, "D", "Reject", NA, NA, "Admit", "Admit", NA, "public2", 60000,
+)
+
+write_csv(pub_priv, here::here("static", "files", "problem-set-3", "data", 
+                               "public_private_earnings.csv")
+
+set.seed(1234)
+n_in_group <- 1160
+
+job_training <- tibble(age = rep(rpois(n_in_group, 36), 2)) %>% 
+  mutate(training = rep(c(TRUE, FALSE), each = n_in_group)) %>% 
+  mutate(state = rep(rep(c("A", "B", "C", "D"), each = n_in_group / 4), 2)) %>% 
+  mutate(earnings = c(rnorm(n_in_group / 4, 115000, 1000),  # State A, training
+                      rnorm(n_in_group / 4, 130000, 2000),  # State B, training
+                      rnorm(n_in_group / 4, 125000, 2100),  # State C, training
+                      rnorm(n_in_group / 4, 70000, 1500),   # State D, training
+                      rnorm(n_in_group / 4, 95000, 1000),   # State A, no training
+                      rnorm(n_in_group / 4, 100000, 2000),  # State B, no training
+                      rnorm(n_in_group / 4, 120000, 2000),  # State C, no training
+                      rnorm(n_in_group / 4, 80000, 1700))) %>%   # State D, no training
+  slice(sample(1:n()))  # Shuffle
+
+write_csv(job_training, here::here("static", "files", "problem-set-3", "data", 
+                                   "job_training.csv")
+```

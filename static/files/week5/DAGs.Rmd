@@ -1,0 +1,200 @@
+---
+title: "DAGs with R"
+output: html_document
+---
+
+The **ggdag** and **dagitty** packages make it easy to plot and work with the logic of DAGs.
+
+```{r load-libraries, warning=FALSE, message=FALSE}
+library(tidyverse)
+library(ggdag)
+library(dagitty)
+```
+
+# Education and earnings
+
+Here's the education and earnings DAG we did in daggity:
+
+```{r}
+educ_earn_dag <- dagify(Earn ~ Edu + Year + Bkgd + Loc + JobCx,
+                        Edu ~ Loc + Bkgd + Year + Req,
+                        JobCx ~ Edu,
+                        Loc ~ U1,
+                        Bkgd ~ U1,
+                        outcome = "Earn",
+                        exposure = "Edu",
+                        latent = "U1")
+```
+
+Plot it:
+
+```{r}
+ggdag(educ_earn_dag)
+```
+
+Plot it with a nicer theme:
+
+```{r}
+ggdag(educ_earn_dag) + 
+  theme_dag()
+```
+
+What are all the possible paths between treament and outcome?
+
+```{r}
+paths(educ_earn_dag)
+```
+
+We can plot all the paths:
+
+```{r}
+ggdag_paths(educ_earn_dag, shadow = TRUE) +
+  theme_dag()
+```
+
+We can figure out the adjustment set automatically too:
+
+```{r}
+ggdag_adjustment_set(educ_earn_dag, shadow = TRUE) +
+  theme_dag()
+```
+
+
+# Wine and lifespan
+
+Here's a DAG showing the relationship between wine consumption and lifespan:
+
+```{r}
+wine_lifespan_dag <- dagify(lifespan ~ wine + drugs + income + health,
+                            drugs ~ wine,
+                            wine ~ income + health,
+                            health ~ something,
+                            income ~ something,
+                            latent = "something",
+                            exposure = "wine",
+                            outcome = "lifespan",
+                            labels = c("lifespan" = "Lifespan",
+                                       "wine" = "Drinking wine",
+                                       "drugs" = "Drug use",
+                                       "income" = "Income",
+                                       "health" = "Health",
+                                       "something" = "Something else"))
+
+# With fancier labels
+ggdag(wine_lifespan_dag, text = FALSE, use_labels = "label") +
+  theme_dag()
+```
+
+Possible paths:
+
+```{r}
+paths(wine_lifespan_dag)
+```
+
+Adjustment set:
+
+```{r}
+ggdag_adjustment_set(wine_lifespan_dag, text = FALSE, use_labels = "label", shadow = TRUE) +
+  theme_dag()
+```
+
+# Adjusting without regression
+
+In 1986 Robert LaLonde published a report that studied the effect of a job training program on earnings in 1978 (`re78`. His study used an experiment to assign people to a training program or not, and he also collected data on people who voluntarily joined, which includes their earnings in 1975 (`re75`), prior to the training program.
+
+```{r}
+# This package contains the data we want
+library(wooldridge)
+
+# People who participated in training by random assignment
+data("jtrain2")
+
+# People who participated in training by choice
+data("jtrain3")
+```
+
+What were the hourly wages of people in the experiment, both in and out of the training program?
+
+```{r}
+jtrain2 %>% 
+  group_by(train) %>% 
+  summarize(avg_wage = mean(re78))
+```
+
+Fairly similar. Without any inferential tools, it looks like the training people earned almost \$2/hour more.
+
+What about the general public? People who voluntarily received training?
+
+```{r}
+jtrain3 %>% 
+  group_by(train) %>% 
+  summarize(avg_wage = mean(re78))
+```
+
+Whoa! Those without the training are waaay richer. The training program is making people poorer?
+
+There are lots of confounders though. People who need the training want to get it it but are likely to have lower wages already (since they need the training).
+
+```{r}
+# Possible DAG
+training_dag <- dagify(wage ~ train + U + need_tr,
+                       train ~ U + need_tr,
+                       exposure = "train",
+                       outcome = "wage")
+
+ggdag(training_dag)
+```
+
+Let's adjust for needing training. These two datasets are looking at different groups of people. Look at their incomes before the training program was offered, `re75`:
+
+```{r}
+# Experimental people
+ggplot(jtrain2, aes(x = re75)) +
+  geom_histogram(binwidth = 2)
+```
+
+```{r}
+# Non-experimental people
+ggplot(jtrain3, aes(x = re75)) +
+  geom_histogram(binwidth = 2)
+```
+
+We can look at the distribution of these incomes:
+
+```{r}
+summary(jtrain2$re75)  # Experiment
+summary(jtrain3$re75)  # Non experiment
+```
+
+Look at the 3rd quartile, or 75th percentile. 75% of the people in the experiment had an hourly wage of \$1.20 or less, while 75% of the people in the general public had a wage of \$25 or less!
+
+What if we limit the nonexperimental sample to just people who earned \$1.20 or less?
+
+```{r}
+jtrain3 %>% 
+  filter(re75 <= 1.20) %>% 
+  group_by(train) %>% 
+  summarize(avg_wage = mean(re78))
+```
+
+This isn't perfect. The \$1.20 cutoff was arbitrary, and we still have the `train <- U -> wage` backdoor to close, but it's an improvement! Choosing a sample is a form of controlling.
+
+# Colliders and DAGs
+
+```{r}
+tech_dag <- dagify(social ~ prog,
+                   hired ~ prog + social,
+                   exposure = "prog",
+                   outcome = "social",
+                   labels = c(social = "Social skills", prog = "Programming skills",
+                              hired = "Hired by a tech company"))
+
+ggdag(tech_dag, use_labels = "label") +
+  theme_dag()
+```
+
+```{r}
+ggdag_collider(tech_dag)
+ggdag_adjustment_set(tech_dag)
+```
+

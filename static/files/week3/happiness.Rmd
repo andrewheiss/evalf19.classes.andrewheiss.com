@@ -1,0 +1,158 @@
+---
+title: "World happiness tinkering"
+output:
+  html_document: default
+---
+
+
+```{r load-libraries-data, warning=FALSE, message=FALSE}
+library(tidyverse)
+library(gapminder)
+library(huxtable)
+library(broom)
+
+world_happiness <- read_csv("data/world_happiness.csv")
+```
+
+# Adding pictures
+
+You can add any arbitrary picture to a Markdown document with this syntax: `![Caption of picture][path/to/picture.png/jpg]`
+
+![Super basic logic model](logic_model.png)
+
+# Correlation
+
+What is the correlation between happiness and life expectancy? Do they move together?
+
+```{r find-correlation}
+cor(world_happiness$happiness_score, world_happiness$life_expectancy,
+    use = "complete.obs")
+```
+
+```{r find-correlation-with-pipe}
+world_happiness %>% 
+  summarize(happy_life_correlation = cor(happiness_score, life_expectancy,
+                                         use = "complete.obs"))
+```
+
+What does this look like?
+
+```{r}
+ggplot(world_happiness, mapping = aes(x = life_expectancy, y = happiness_score)) + 
+  geom_point() +
+  geom_smooth(method = "lm")
+```
+
+What is the correlation between happiness and life expectancy in different regions?
+
+```{r find-correlation-region}
+world_happiness %>% 
+  group_by(region) %>% 
+  summarize(happy_life_correlation = cor(happiness_score, life_expectancy,
+                                         use = "complete.obs"))
+```
+
+```{r}
+ggplot(world_happiness, mapping = aes(x = life_expectancy, y = happiness_score, color = region)) + 
+  geom_point() +
+  geom_smooth(method = "lm")
+```
+
+# Simple model
+
+We know that happiness and life expectancy are correlated, but how are they associated? How do they move together?
+
+```{r}
+model1 <- lm(happiness_score ~ life_expectancy, data = world_happiness)
+```
+
+There are different ways of seeing the model results. You can use `summary()` to see all the details:
+
+```{r}
+summary(model1)
+```
+
+But this has a lot of extra information and it's ugly and hard to read in a document. It'd be nicer if this was in a table. We can make a table of the model coefficients with the `tidy()` function from the **broom** package:
+
+```{r}
+tidy(model1)
+```
+
+If you want confidence intervals for the estimates (you generally do), use `tidy(model1, conf.int = TRUE)`:
+
+```{r}
+tidy(model1, conf.int = TRUE)
+```
+
+And we can get the $R^2$ value and other diagnostic numbers with `glance()`:
+
+```{r}
+glance(model1)
+```
+
+## Simple model interpretation
+
+Given these results, we can write the model as an equation:
+
+$$
+\hat{\text{happiness}} = -2.22 + 0.105 \times \text{life expectancy} + \epsilon
+$$
+
+The intercept of -2.22 means that this line crosses the y-axis at -2.22. In a hypothetical country with a life expectancy of 0, the happiness score would be -2. 
+
+What is important, though, is the value of the β1
+
+coefficient, or the slope of life expectancy. This tells us that for every unit increase in life expectancy, there’s an associated increase in happiness of 0.105. If life expectancy increase by 10 years, we could predict an associated increase in happiness of 1.05 points, on average. Neat!
+
+We can use the following template to interpret this coefficient:
+
+> A one unit increase in life expectancy is associated with a 0.105 point increase in happiness, on average.
+
+Don't succumb to the temptation to tell a causal story, though. Life expectancy doesn't necessarily cause happiness. The reverse story is just as plausible (as life expectancy increases, happiness will increases). There's no mathematical or statistical way to test for causation though—it's all a question of theory and philosophy.
+
+# Bigger model
+
+We can control for other factors as well by include more variables in our model:
+
+```{r}
+model2 <- 
+  lm(happiness_score ~ life_expectancy + school_enrollment + region, 
+     data = world_happiness)
+```
+
+Let's check the coefficients now:
+
+```{r}
+tidy(model2, conf.int = TRUE)
+```
+
+```{r}
+glance(model2)
+```
+
+Both together!
+
+```{r}
+huxreg(model1, model2)
+```
+
+
+# Visualizing model results
+
+In problem set 2, you made a bunch of regression tables, including side-by-side tables that compare model coefficients. This is standard practice in the worlds of evaluation, political science, and economics, but these tables are sometimes hard to read and it's difficult to see patterns or significance right away. 
+
+To make life easier, we can plot the regression results in a *coefficient plot*:
+
+```{r coef-plot}
+# Save the model results as a data frame:
+model2_results <- tidy(model2, conf.int = TRUE) %>% 
+  filter(term != "(Intercept)") %>% 
+  filter(!str_detect(term, "region"))
+
+# Plot the estimates with confidence intervals
+ggplot(model2_results, aes(x = term, y = estimate)) + 
+  geom_pointrange(aes(ymin = conf.low, ymax = conf.high)) + 
+  geom_hline(yintercept = 0) +
+  coord_flip()
+```
+

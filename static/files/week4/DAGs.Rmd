@@ -1,0 +1,100 @@
+---
+title: "DAGs with R"
+output: html_document
+---
+
+The **ggdag** and **dagitty** packages make it easy to plot and work with the logic of DAGs.
+
+```{r load-libraries, warning=FALSE, message=FALSE}
+library(tidyverse)
+library(ggdag)
+library(dagitty)
+```
+
+# Education and earnings
+
+Here's the education and earnings DAG we did in daggity:
+
+```{r}
+educ_earn_dag <- dagify(Earn ~ Edu + Year + Bkgd + Loc + JobCx,
+                        Edu ~ Loc + Bkgd + Year + Req,
+                        JobCx ~ Edu,
+                        Loc ~ U1,
+                        Bkgd ~ U1,
+                        outcome = "Earn",
+                        exposure = "Edu",
+                        latent = "U1")
+```
+
+Plot it:
+
+```{r}
+ggdag(educ_earn_dag)
+```
+
+Plot it with a nicer theme:
+
+```{r}
+ggdag(educ_earn_dag) + 
+  theme_dag()
+```
+
+What are all the possible paths between treament and outcome?
+
+```{r}
+paths(educ_earn_dag)
+```
+
+We can plot all the paths:
+
+```{r}
+ggdag_paths(educ_earn_dag, shadow = TRUE) +
+  theme_dag()
+```
+
+We can figure out the adjustment set automatically too:
+
+```{r}
+ggdag_adjustment_set(educ_earn_dag, shadow = TRUE) +
+  theme_dag()
+```
+
+
+# Wine and lifespan
+
+Here's a DAG showing the relationship between wine consumption and lifespan:
+
+```{r}
+wine_lifespan_dag <- dagify(lifespan ~ wine + drugs + income + health,
+                            drugs ~ wine,
+                            wine ~ income + health,
+                            health ~ something,
+                            income ~ something,
+                            latent = "something",
+                            exposure = "wine",
+                            outcome = "lifespan",
+                            labels = c("lifespan" = "Lifespan",
+                                       "wine" = "Drinking wine",
+                                       "drugs" = "Drug use",
+                                       "income" = "Income",
+                                       "health" = "Health",
+                                       "something" = "Something else"))
+
+# With fancier labels
+ggdag(wine_lifespan_dag, text = FALSE, use_labels = "label") +
+  theme_dag()
+```
+
+Possible paths:
+
+```{r}
+paths(wine_lifespan_dag)
+```
+
+Adjustment set:
+
+```{r}
+ggdag_adjustment_set(wine_lifespan_dag, text = FALSE, use_labels = "label", shadow = TRUE) +
+  theme_dag()
+```
+

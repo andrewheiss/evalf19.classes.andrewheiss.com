@@ -21,6 +21,13 @@ editor_options:
 </figure>
 
 
+# In-class R work
+
+[Open the RStudio.cloud project for today](https://rstudio.cloud/spaces/26160/project/615594) or download the project to your computer, *unzip it*, and run it locally:
+
+- [<i class="fas fa-file-archive"></i> Week 7 stuff](/files/week7.zip)
+
+
 # Clearest and muddiest things
 
 Go to [this form](https://forms.gle/gDXoxmbQeps5suaJ6) and answer these three questions:
