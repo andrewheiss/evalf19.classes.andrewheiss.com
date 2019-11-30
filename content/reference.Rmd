@@ -137,4 +137,11 @@ source(here("lib", "graphics.R"))
 
 # Things you should know for Exam 2
 
-I will put a list of topics you should know prior to the exam. This will be like your study guide.
+## Randomization
+
+## Difference-in-difference
+
+## Regression discontinuity
+
+## Instrumental variables
+
