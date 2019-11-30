@@ -102,6 +102,7 @@ lessons:
   - title: "Instrumental variables II & Regression discontinuity II"
     date: "November 18"
     reading: "12-reading"
+    class: "12-class"
 
   - title: "**Problem set 10**"
     date: "November 23"

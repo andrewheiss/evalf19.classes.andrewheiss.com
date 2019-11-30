@@ -1,0 +1,236 @@
+---
+title: "Instrumental variables II and regression discontinuity II"
+date: "2019-11-18"
+citeproc: false
+bibliography: ../../static/bib/references.bib
+csl: ../../static/bib/chicago-syllabus-no-bib.csl
+output:
+  blogdown::html_page:
+    template: ../../pandoc/toc-title_html.template
+    toc: true
+editor_options: 
+  chunk_output_type: inline
+---
+
+<!-- BLOGDOWN-HEAD -->
+<style type="text/css">
+code.sourceCode > span { display: inline-block; line-height: 1.25; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    background-color: #ffffff;
+    color: #a0a0a0;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #a0a0a0;  padding-left: 4px; }
+div.sourceCode
+  { color: #1f1c1b; background-color: #ffffff; }
+@media screen {
+code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span. { color: #1f1c1b; } /* Normal */
+code span.al { color: #bf0303; background-color: #f7e6e6; font-weight: bold; } /* Alert */
+code span.an { color: #ca60ca; } /* Annotation */
+code span.at { color: #0057ae; } /* Attribute */
+code span.bn { color: #b08000; } /* BaseN */
+code span.bu { color: #644a9b; font-weight: bold; } /* BuiltIn */
+code span.cf { color: #1f1c1b; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #924c9d; } /* Char */
+code span.cn { color: #aa5500; } /* Constant */
+code span.co { color: #898887; } /* Comment */
+code span.cv { color: #0095ff; } /* CommentVar */
+code span.do { color: #607880; } /* Documentation */
+code span.dt { color: #0057ae; } /* DataType */
+code span.dv { color: #b08000; } /* DecVal */
+code span.er { color: #bf0303; text-decoration: underline; } /* Error */
+code span.ex { color: #0095ff; font-weight: bold; } /* Extension */
+code span.fl { color: #b08000; } /* Float */
+code span.fu { color: #644a9b; } /* Function */
+code span.im { color: #ff5500; } /* Import */
+code span.in { color: #b08000; } /* Information */
+code span.kw { color: #1f1c1b; font-weight: bold; } /* Keyword */
+code span.op { color: #1f1c1b; } /* Operator */
+code span.ot { color: #006e28; } /* Other */
+code span.pp { color: #006e28; } /* Preprocessor */
+code span.re { color: #0057ae; background-color: #e0e9f8; } /* RegionMarker */
+code span.sc { color: #3daee9; } /* SpecialChar */
+code span.ss { color: #ff5500; } /* SpecialString */
+code span.st { color: #bf0303; } /* String */
+code span.va { color: #0057ae; } /* Variable */
+code span.vs { color: #bf0303; } /* VerbatimString */
+code span.wa { color: #bf0303; } /* Warning */
+</style>
+<!-- /BLOGDOWN-HEAD -->
+
+<h2>Contents</h2>
+<div id="TOC">
+<ul>
+<li><a href="#slides">Slides</a></li>
+<li><a href="#in-class-r-work">In-class R work</a></li>
+<li><a href="#itt-and-cace">ITT and CACE</a><ul>
+<li><a href="#compliance">Compliance</a></li>
+<li><a href="#finding-compliers-in-actual-data">Finding compliers in actual data</a></li>
+<li><a href="#finding-the-caselate-with-iv2sls">Finding the CASE/LATE with IV/2SLS</a></li>
+</ul></li>
+<li><a href="#clearest-and-muddiest-things">Clearest and muddiest things</a></li>
+</ul>
+</div>
+
+<h2 id="slides">Slides</h2>
+<p><a href="/slides/PMAP-8521_2019-11-18.pdf">Download the slides from today’s class</a>.</p>
+<figure>
+<a href="/slides/PMAP-8521_2019-11-18.pdf"><img src="/images/slides/slides_2019-11-18.png" alt="First slide" /></a>
+</figure>
+<h2 id="in-class-r-work">In-class R work</h2>
+<p><a href="https://rstudio.cloud/spaces/26160/project/727284">Open the RStudio.cloud project for today</a> or download the project to your computer, <em>unzip it</em>, and run it locally:</p>
+<ul>
+<li><a href="/files/week12.zip"><i class="fas fa-file-archive"></i> Week 12 stuff</a></li>
+</ul>
+<h2 id="itt-and-cace">ITT and CACE</h2>
+<h3 id="compliance">Compliance</h3>
+<p>In class we talked about the difference between the average treatment effect (ATE), or the average effect of a program for an entire population, and conditional averages treatment effects (CATE), or the average effect of a program for some segment of the population. There are all sorts of CATEs: you can find the CATE for men vs. women, for people who are treated with the program (the average treatment on the treated, or ATT or TOT), for people who are not treated with the program (the average treatment on the untreated, or ATU), and so on.</p>
+<p>One important type of CATE is the effect of a program on just those who comply with the program. We can call this the complier average treatment effect, but the acronym would be the same as conditional average treatment effect, so we’ll call it the <em>conditional average causal effect</em> (CACE).</p>
+<p>Thinking about compliance is important. You might randomly assign people to receive treatment or a program, but people might not do what you tell them. Additionally, people might do the program if assigned to do it, but they would have done it anyway. We can split the population into four types of people:</p>
+<ul>
+<li><strong>Compliers</strong>: People who follow whatever their assignment is (if assigned to treatment, they do the program; if assigned to control, they don’t)</li>
+<li><strong>Always takers</strong>: People who will receive or seek out the program regardless of assignment (if assigned to treatment, they do the program; if assigned to control, they still do the program)</li>
+<li><strong>Never takers</strong>: People who will not receive or seek out the program regardless of assignment (if assigned to treatment, they don’t do the program; if assigned to control, they also don’t do it)</li>
+<li><strong>Defiers</strong>: People who will do the opposite of whatever their assignment is (if assigned to treatment, they don’t do the program; if assigned to control, they do the program)</li>
+</ul>
+<p>To simplify things, evaluators and econometricians assume that defiers don’t exist based on the idea of <em>monotonicity</em>, which means that we can assume that the effect of being assigned to treatment only increases the likelihood of participating in the program (and doesn’t make it more likely).</p>
+<p>The tricky part about trying to find who the compliers are in a sample is that we can’t know what people would have done in the absense of treatment. If we see that someone in the experiment was assigned to be in the treatment group and they then participated in the program, they could be a complier (since they did what they were assigned to do), or they could be an always taker (they did what they were assigned to do, but they would have done it anyway). Due to the fundamental problem of causal inference, we cannot know what each person would have done in a parallel world.</p>
+<p>We can use data from a hypothetical program to see how these three types of compliers distort our outcomes.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="kw">library</span>(broom)</span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="kw">library</span>(estimatr)</span>
+<span id="cb1-4"><a href="#cb1-4"></a></span>
+<span id="cb1-5"><a href="#cb1-5"></a>bed_nets &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;https://evalf19.classes.andrewheiss.com/data/bed_nets_observed.csv&quot;</span>)</span>
+<span id="cb1-6"><a href="#cb1-6"></a>bed_nets_time_machine &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;https://evalf19.classes.andrewheiss.com/data/bed_nets_time_machine.csv&quot;</span>)</span></code></pre></div>
+<p>This is what we would be able to see if we could read everyone’s minds. There are always takers who will use a bed net regardless of the program, and they’ll have higher health outcomes. However, those better outcomes are because of something endogenous—there’s something else that makes these people always pursue bed nets, and that’s likely related to health. We probably want to not consider them when looking for the program effect. There are never takers who won’t ever use a bed net, and they have worse health outcomes. Again, there’d endogeneity here—something is causing them to not use the bed nets, and it likely also causes their health level. We don’t want to look at them either.</p>
+<p>The middle group—the compliers—are the people we want to focus on. Here we see that the program had an effect when compared to a control group.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="kw">ggplot</span>(bed_nets_time_machine, <span class="kw">aes</span>(<span class="dt">y =</span> health, <span class="dt">x =</span> treatment)) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb2-2"><a href="#cb2-2"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">shape =</span> bed_net, <span class="dt">color =</span> status), <span class="dt">position =</span> <span class="st">&quot;jitter&quot;</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb2-3"><a href="#cb2-3"></a><span class="st">  </span><span class="kw">facet_wrap</span>(<span class="op">~</span><span class="st"> </span>status) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb2-4"><a href="#cb2-4"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">color =</span> <span class="st">&quot;Type of person&quot;</span>, <span class="dt">shape =</span> <span class="st">&quot;Compliance&quot;</span>,</span>
+<span id="cb2-5"><a href="#cb2-5"></a>       <span class="dt">x =</span> <span class="ot">NULL</span>, <span class="dt">y =</span> <span class="st">&quot;Health status&quot;</span>)</span></code></pre></div>
+<p><img src="/class/12-class_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<h3 id="finding-compliers-in-actual-data">Finding compliers in actual data</h3>
+<p>This is what we actually see in the data, though. You can tell who some of the always takers are (those who used bed nets after being assigned to the control group) and who some of the never takers are (those who did not use a bed net after being assigned to the treatment group), but compliers are mixed up with the always and never takers. We have to somehow disentangle them!</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="kw">ggplot</span>(bed_nets_time_machine, <span class="kw">aes</span>(<span class="dt">y =</span> health, <span class="dt">x =</span> treatment)) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb3-2"><a href="#cb3-2"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">shape =</span> bed_net, <span class="dt">color =</span> status), <span class="dt">position =</span> <span class="st">&quot;jitter&quot;</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb3-3"><a href="#cb3-3"></a><span class="st">  </span><span class="kw">facet_wrap</span>(<span class="op">~</span><span class="st"> </span>bed_net) <span class="op">+</span></span>
+<span id="cb3-4"><a href="#cb3-4"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">color =</span> <span class="st">&quot;Type of person&quot;</span>, <span class="dt">shape =</span> <span class="st">&quot;Compliance&quot;</span>,</span>
+<span id="cb3-5"><a href="#cb3-5"></a>       <span class="dt">x =</span> <span class="ot">NULL</span>, <span class="dt">y =</span> <span class="st">&quot;Health status&quot;</span>)</span></code></pre></div>
+<p><img src="/class/12-class_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p>We can do this by assuming the proportion of compliers, never takers, and always takers are equally spread across treatment and control (which we can assume through the magic of randomization). If that’s the case, we can calculate the intent to treat (ITT) effect, which is the CATE of being assigned treatment (or the effect of being assigned treatment on health status, regardless of actual compliance).</p>
+<p>The ITT is actually composed of three different causal effects: the complier average causal effect (CACE), the always taker average causal effect (ATACE), and the never taker average causal effect (NTACE). In the formula below, <span class="math inline">\(\pi\)</span> stands for the proportion of people in each group. Formally, the ITT can be defined like this:</p>
+<p><span class="math display">\[
+\begin{aligned}
+\text{ITT} =&amp; \pi_\text{compliers} \times (\text{T} - \text{C})_\text{compliers} + \\
+&amp;\pi_\text{always takers} \times (\text{T} - \text{C})_\text{always takers} + \\
+&amp;\pi_\text{never takers} \times (\text{T} - \text{C})_\text{never takers}
+\end{aligned}
+\]</span></p>
+<p>We can simplify this to this acronymized version:</p>
+<p><span class="math display">\[
+\text{ITT} = \pi_\text{C} \text{CACE} + \pi_\text{A} \text{ATACE} + \pi_\text{N} \text{NTACE}
+\]</span></p>
+<p>The number we care about the most here is the CACE, which is stuck in the middle of the equation. If we assume that assignment to treatment doesn’t make someone more likely to be an always taker or a never taker, we can set the ATACE and NTACE to zero, leaving us with just three variables to worry about: ITT, <span class="math inline">\(\pi_\text{c}\)</span>, and CACE:</p>
+<p><span class="math display">\[
+\begin{aligned}
+\text{ITT} =&amp; \pi_\text{C} \text{CACE} + \pi_\text{A} 0 + \pi_\text{N} 0 \\
+&amp; \pi_\text{C} \text{CACE}
+\end{aligned}
+\]</span></p>
+<p>We can use algebra to rearrange this formula so that we’re left with an equation that starts with CACE (since that’s the value we care about):</p>
+<p><span class="math display">\[
+\text{CACE} = \frac{\text{ITT}}{\pi_\text{C}}
+\]</span></p>
+<p>If we can find the ITT and the proportion of compliers, we can find the complier average causal effect (CACE). The ITT is easy to find with a simple OLS model:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>itt_model &lt;-<span class="st"> </span><span class="kw">lm</span>(health <span class="op">~</span><span class="st"> </span>treatment, <span class="dt">data =</span> bed_nets)</span>
+<span id="cb4-2"><a href="#cb4-2"></a></span>
+<span id="cb4-3"><a href="#cb4-3"></a><span class="kw">tidy</span>(itt_model)</span></code></pre></div>
+<pre><code>## # A tibble: 2 x 5
+##   term               estimate std.error statistic  p.value
+##   &lt;chr&gt;                 &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
+## 1 (Intercept)           40.9      0.444     92.1  0.      
+## 2 treatmentTreatment     5.99     0.630      9.51 5.36e-21</code></pre>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>ITT &lt;-<span class="st"> </span><span class="kw">tidy</span>(itt_model) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb6-2"><a href="#cb6-2"></a><span class="st">  </span><span class="kw">filter</span>(term <span class="op">==</span><span class="st"> &quot;treatmentTreatment&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb6-3"><a href="#cb6-3"></a><span class="st">  </span><span class="kw">pull</span>(estimate)</span></code></pre></div>
+<p>The ITT here is ≈6—being assigned treatment increases average health status by 5.99 health points.</p>
+<p>The proportion of compliers is a little trickier, but doable with some algebraic trickery. Recall from the graph above that the people who were in the treatment group and who complied are a combination of always takers and compliers. This means we can say:</p>
+<p><span class="math display">\[
+\begin{aligned}
+\pi_\text{A} + \pi_\text{C} =&amp; \text{% in treatment and yes; or} \\
+\pi_\text{C} =&amp; \text{% in treatment and yes} - \pi_\text{A}
+\end{aligned}
+\]</span></p>
+<p>We actually know <span class="math inline">\(\pi_\text{A}\)</span>—remember in the graph above that the people who were in the control group and who used bed nets are guaranteed to be always takers (none of them are compliers or never takers). If we assume that the proportion of always takers is the same in both treatment and control, we can use that percent here, giving us this final equation for <span class="math inline">\(\pi_\text{C}\)</span>:</p>
+<p><span class="math display">\[
+\pi_\text{C} = \text{% in treatment and yes} - \text{% in control and yes}
+\]</span></p>
+<p>So, if we can find the percent of people assigned to treatment who used bed nets, find the percent of people assigned to control and used bed nets, and subtract the two percentages, we’ll have the proportion of compliers, or <span class="math inline">\(\pi_\text{C}\)</span>. We can do that with the data we have (61% - 19.5% = 41.5% compliers):</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>bed_nets <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb7-2"><a href="#cb7-2"></a><span class="st">  </span><span class="kw">group_by</span>(treatment, bed_net) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb7-3"><a href="#cb7-3"></a><span class="st">  </span><span class="kw">summarize</span>(<span class="dt">n =</span> <span class="kw">n</span>()) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb7-4"><a href="#cb7-4"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">prop =</span> n <span class="op">/</span><span class="st"> </span><span class="kw">sum</span>(n))</span></code></pre></div>
+<pre><code>## # A tibble: 4 x 4
+## # Groups:   treatment [2]
+##   treatment bed_net        n  prop
+##   &lt;chr&gt;     &lt;chr&gt;      &lt;int&gt; &lt;dbl&gt;
+## 1 Control   Bed net      196 0.195
+## 2 Control   No bed net   808 0.805
+## 3 Treatment Bed net      608 0.610
+## 4 Treatment No bed net   388 0.390</code></pre>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a><span class="co"># pi_c = prop yes in treatment - prop yes in control</span></span>
+<span id="cb9-2"><a href="#cb9-2"></a>pi_c &lt;-<span class="st"> </span><span class="fl">0.6104418</span> <span class="op">-</span><span class="st"> </span><span class="fl">0.1952191</span></span></code></pre></div>
+<p>Finally, now that we know both the ITT and <span class="math inline">\(\pi_\text{C}\)</span>, we can find the CASE (or the LATE):</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a>CASE &lt;-<span class="st"> </span>ITT <span class="op">/</span><span class="st"> </span>pi_c</span>
+<span id="cb10-2"><a href="#cb10-2"></a>CASE</span></code></pre></div>
+<pre><code>## [1] 14.42116</code></pre>
+<p>It’s 14.4, which means that using bed nets increased health by 14 health points <em>for compliers</em> (which is a lot bigger than the 6 that we found before). We successfully filtered out the always takers and the never takers, and we have our complier-specific causal effect.</p>
+<h3 id="finding-the-caselate-with-iv2sls">Finding the CASE/LATE with IV/2SLS</h3>
+<p>Doing that is super tedious though! What if there was an easier way to find the effect of the bed net program for just the compliers? We can do this with IV/2SLS regression by using assignment to treatment as an instrument.</p>
+<p>Assignment to treatment works as an instrument because it’s (1) relevant, since being told to use bed nets is probably highly correlated with using bed nets, (2) exclusive, since the only way that being told to use bed nets can cause changes in health is through the actual use of the bed nets, and (3) exogenous, since being told to use bed nets probably isn’t related to other things that cause health.</p>
+<p>Here’s a 2SLS regression with assignment to treatment as the instrument:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a>model_2sls &lt;-<span class="st"> </span><span class="kw">iv_robust</span>(health <span class="op">~</span><span class="st"> </span>bed_net <span class="op">|</span><span class="st"> </span>treatment, <span class="dt">data =</span> bed_nets)</span>
+<span id="cb12-2"><a href="#cb12-2"></a><span class="kw">tidy</span>(model_2sls)</span></code></pre></div>
+<pre><code>##                term  estimate std.error statistic      p.value  conf.low
+## 1       (Intercept)  52.54401 0.8448045  62.19665 0.000000e+00  50.88722
+## 2 bed_netNo bed net -14.42116 1.2538198 -11.50178 1.086989e-29 -16.88009
+##   conf.high   df outcome
+## 1  54.20080 1998  health
+## 2 -11.96223 1998  health</code></pre>
+<p>The coefficient for <code>bed_net</code> is identical to the CACE that we found manually!<span><label for="sn-1" class="margin-toggle sidenote-number"></label><input type="checkbox" id="sn-1" class="margin-toggle"/><span class="sidenote">It’s negative here because the base case is “Bed net” rather than “No bed net”.<br />
+<br />
+</span></span> Instrumental variables are helpful for isolated program effects to only compliers when you’re dealing with noncompliance.</p>
+<h2 id="clearest-and-muddiest-things">Clearest and muddiest things</h2>
+<p>Go to <a href="https://forms.gle/gDXoxmbQeps5suaJ6">this form</a> and answer these three questions:</p>
+<ol style="list-style-type: decimal">
+<li>What was the muddiest thing from class today? What are you still wondering about?</li>
+<li>What was the clearest thing from class today?</li>
+<li>What was the most exciting thing you learned?</li>
+</ol>
+<p>I’ll compile the questions and send out answers after class.</p>
