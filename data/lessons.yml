@@ -114,7 +114,7 @@ lessons:
   - title: '<span class="fake-header-table">Applied evaluation</span>'
     header: True
 
-  - title: "Ethics and open science"
+  - title: "Work day"
     date: "December 2"
     reading: "13-reading"
 
@@ -122,7 +122,7 @@ lessons:
     date: "December 4"
     assignment: "code-through"
 
-  - title: "Politics, feasibility, and communication"
+  - title: "Ethics and open science"
     date: "December 9"
     reading: "14-reading"
 

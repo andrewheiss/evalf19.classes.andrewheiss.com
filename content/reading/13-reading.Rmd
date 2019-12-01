@@ -1,5 +1,5 @@
 ---
-title: "Ethics and open science"
+title: "Work day"
 date: "2019-12-02"
 citeproc: false
 bibliography: ../../static/bib/references.bib
@@ -8,4 +8,4 @@ csl: ../../static/bib/chicago-fullnote-bibliography-no-bib.csl
 
 # Required
 
-- Readings TBA
+- Nothing! Today will be a catch-up, work-on-your-project-and-code-through day!
