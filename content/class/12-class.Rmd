@@ -57,6 +57,7 @@ We can use data from a hypothetical program to see how these three types of comp
 library(tidyverse)
 library(broom)
 library(estimatr)
+set.seed(1234)
 
 bed_nets <- read_csv(here::here("static", "data", "bed_nets_observed.csv"))
 bed_nets_time_machine <- read_csv(here::here("static", "data", "bed_nets_time_machine.csv"))
