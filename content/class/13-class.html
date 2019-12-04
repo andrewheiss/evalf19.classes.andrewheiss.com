@@ -1,0 +1,626 @@
+---
+title: "Work day"
+date: "2019-12-02"
+citeproc: false
+bibliography: ../../static/bib/references.bib
+csl: ../../static/bib/chicago-syllabus-no-bib.csl
+output:
+  blogdown::html_page:
+    template: ../../pandoc/toc-title_html.template
+    toc: true
+editor_options: 
+  chunk_output_type: inline
+---
+
+<!-- BLOGDOWN-HEAD -->
+<style type="text/css">
+code.sourceCode > span { display: inline-block; line-height: 1.25; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    background-color: #ffffff;
+    color: #a0a0a0;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #a0a0a0;  padding-left: 4px; }
+div.sourceCode
+  { color: #1f1c1b; background-color: #ffffff; }
+@media screen {
+code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span. { color: #1f1c1b; } /* Normal */
+code span.al { color: #bf0303; background-color: #f7e6e6; font-weight: bold; } /* Alert */
+code span.an { color: #ca60ca; } /* Annotation */
+code span.at { color: #0057ae; } /* Attribute */
+code span.bn { color: #b08000; } /* BaseN */
+code span.bu { color: #644a9b; font-weight: bold; } /* BuiltIn */
+code span.cf { color: #1f1c1b; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #924c9d; } /* Char */
+code span.cn { color: #aa5500; } /* Constant */
+code span.co { color: #898887; } /* Comment */
+code span.cv { color: #0095ff; } /* CommentVar */
+code span.do { color: #607880; } /* Documentation */
+code span.dt { color: #0057ae; } /* DataType */
+code span.dv { color: #b08000; } /* DecVal */
+code span.er { color: #bf0303; text-decoration: underline; } /* Error */
+code span.ex { color: #0095ff; font-weight: bold; } /* Extension */
+code span.fl { color: #b08000; } /* Float */
+code span.fu { color: #644a9b; } /* Function */
+code span.im { color: #ff5500; } /* Import */
+code span.in { color: #b08000; } /* Information */
+code span.kw { color: #1f1c1b; font-weight: bold; } /* Keyword */
+code span.op { color: #1f1c1b; } /* Operator */
+code span.ot { color: #006e28; } /* Other */
+code span.pp { color: #006e28; } /* Preprocessor */
+code span.re { color: #0057ae; background-color: #e0e9f8; } /* RegionMarker */
+code span.sc { color: #3daee9; } /* SpecialChar */
+code span.ss { color: #ff5500; } /* SpecialString */
+code span.st { color: #bf0303; } /* String */
+code span.va { color: #0057ae; } /* Variable */
+code span.vs { color: #bf0303; } /* VerbatimString */
+code span.wa { color: #bf0303; } /* Warning */
+</style>
+<!-- /BLOGDOWN-HEAD -->
+
+<h2>Contents</h2>
+<div id="TOC">
+<ul>
+<li><a href="#slides">Slides</a></li>
+<li><a href="#drawing-random-numbers-from-distributions">Drawing random numbers from distributions</a></li>
+<li><a href="#using-wakefield">Using wakefield</a></li>
+<li><a href="#creating-a-fake-program-effect">Creating a fake program effect</a><ul>
+<li><a href="#rcts">RCTs</a></li>
+<li><a href="#diff-in-diff">Diff-in-diff</a></li>
+<li><a href="#rdd">RDD</a></li>
+<li><a href="#iv">IV</a></li>
+</ul></li>
+<li><a href="#clearest-and-muddiest-things">Clearest and muddiest things</a></li>
+</ul>
+</div>
+
+<h2 id="slides">Slides</h2>
+<p>No slides today!</p>
+<h2 id="drawing-random-numbers-from-distributions">Drawing random numbers from distributions</h2>
+<p>Often when you generate data it’s helpful to make the data follow a kind of distribution. For instance, if you generate synthetic incomes, you’ll generally want a cluster of incomes around some average, with most incomes within some range around the average (and a handful of really small and really big ones). For other values, you might want a full range instead of a cluster; for others, you might want a skewed distribution with mostly small numbers and a handful of larger numbers.</p>
+<p>Values in the real world can be modeled as distributions: specific shapes of how often different values appear. R has a bunch of distribution-related functions for calculating percentiles (<code>pnorm()</code>, <code>pbeta()</code>, etc.), quantiles (<code>qnorm()</code>, <code>qbeta()</code>, etc.), and drawing random values (<code>rnorm()</code>, <code>rbeta()</code>, etc.). There are nearly 20 distributions built in to R: run <code>?Distributions</code> or <a href="https://stat.ethz.ch/R-manual/R-devel/library/stats/html/Distributions.html">go here</a> to see them all. There are also a ton of examples online about how to work with and plot these distributions (<a href="https://www.econometrics-with-r.org/2-1-random-variables-and-probability-distributions.html">like this, for instance</a>).</p>
+<p>Make sure you look at the help page for the distribution you want to use to figure out the arguments you need. For normal distributions (<code>rnorm()</code>) you have to specify a mean and standard deviation; for Poisson distributions (<code>rpois()</code>), you specify a λ (<a href="https://www.google.com/search?q=poisson+lambda">lambda</a>); for uniform distributions you specify a minimum and maximum; for beta distributions (<code>rbeta()</code>) you specify two shape parameters (<a href="https://stats.stackexchange.com/questions/47771/what-is-the-intuition-behind-beta-distribution">see this post for details about what those mean</a>).</p>
+<p>When you’re generating synthetic data for your final project, you generally just have to tinker with the different parameters until it looks good. Sometimes you’ll have a population average and standard deviation for some value (like income), and you can use that; sometimes you’ll have to make it up as you go.</p>
+<p>Here’s how to use a few of the main distributions:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="kw">library</span>(patchwork)  <span class="co"># For combining ggplots</span></span>
+<span id="cb1-3"><a href="#cb1-3"></a></span>
+<span id="cb1-4"><a href="#cb1-4"></a><span class="co"># Make all this randomness reproducible</span></span>
+<span id="cb1-5"><a href="#cb1-5"></a><span class="kw">set.seed</span>(<span class="dv">1234</span>)</span>
+<span id="cb1-6"><a href="#cb1-6"></a></span>
+<span id="cb1-7"><a href="#cb1-7"></a><span class="co"># Round everything to 3 digits by default</span></span>
+<span id="cb1-8"><a href="#cb1-8"></a><span class="kw">options</span>(<span class="st">&quot;digits&quot;</span> =<span class="st"> </span><span class="dv">3</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>dist_stuff &lt;-<span class="st"> </span><span class="kw">tibble</span>(</span>
+<span id="cb2-2"><a href="#cb2-2"></a>  <span class="co"># Normal dist. of income with $40k average and $10k sd</span></span>
+<span id="cb2-3"><a href="#cb2-3"></a>  <span class="dt">income =</span> <span class="kw">rnorm</span>(<span class="dt">n =</span> <span class="dv">2000</span>, <span class="dt">mean =</span> <span class="dv">40000</span>, <span class="dt">sd =</span> <span class="dv">10000</span>),</span>
+<span id="cb2-4"><a href="#cb2-4"></a>  <span class="co"># Uniform distribution of wait time from 1 minute to 2 hours</span></span>
+<span id="cb2-5"><a href="#cb2-5"></a>  <span class="dt">wait_time =</span> <span class="kw">runif</span>(<span class="dt">n =</span> <span class="dv">2000</span>, <span class="dt">min =</span> <span class="dv">1</span>, <span class="dt">max =</span> <span class="dv">120</span>),</span>
+<span id="cb2-6"><a href="#cb2-6"></a>  <span class="co"># Number of kids as Poisson, with most around 1 and 2</span></span>
+<span id="cb2-7"><a href="#cb2-7"></a>  <span class="dt">n_kids =</span> <span class="kw">rpois</span>(<span class="dt">n =</span> <span class="dv">2000</span>, <span class="dt">lambda =</span> <span class="dv">2</span>)</span>
+<span id="cb2-8"><a href="#cb2-8"></a>)</span></code></pre></div>
+<figure class="fullwidth">
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>plot_norm &lt;-<span class="st"> </span><span class="kw">ggplot</span>(dist_stuff, <span class="kw">aes</span>(<span class="dt">x =</span> income)) <span class="op">+</span></span>
+<span id="cb3-2"><a href="#cb3-2"></a><span class="st">  </span><span class="kw">geom_histogram</span>(<span class="dt">binwidth =</span> <span class="dv">2000</span>, <span class="dt">color =</span> <span class="st">&quot;white&quot;</span>)</span>
+<span id="cb3-3"><a href="#cb3-3"></a></span>
+<span id="cb3-4"><a href="#cb3-4"></a>plot_unif &lt;-<span class="st"> </span><span class="kw">ggplot</span>(dist_stuff, <span class="kw">aes</span>(<span class="dt">x =</span> wait_time)) <span class="op">+</span></span>
+<span id="cb3-5"><a href="#cb3-5"></a><span class="st">  </span><span class="kw">geom_histogram</span>(<span class="dt">binwidth =</span> <span class="dv">5</span>, <span class="dt">color =</span> <span class="st">&quot;white&quot;</span>, <span class="dt">boundary =</span> <span class="dv">0</span>)</span>
+<span id="cb3-6"><a href="#cb3-6"></a></span>
+<span id="cb3-7"><a href="#cb3-7"></a>plot_pois &lt;-<span class="st"> </span><span class="kw">ggplot</span>(dist_stuff, <span class="kw">aes</span>(<span class="dt">x =</span> n_kids)) <span class="op">+</span></span>
+<span id="cb3-8"><a href="#cb3-8"></a><span class="st">  </span><span class="kw">geom_histogram</span>(<span class="dt">binwidth =</span> <span class="dv">1</span>, <span class="dt">color =</span> <span class="st">&quot;white&quot;</span>) <span class="op">+</span></span>
+<span id="cb3-9"><a href="#cb3-9"></a><span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="dt">breaks =</span> <span class="dv">0</span><span class="op">:</span><span class="dv">10</span>)</span>
+<span id="cb3-10"><a href="#cb3-10"></a></span>
+<span id="cb3-11"><a href="#cb3-11"></a>plot_norm <span class="op">+</span><span class="st"> </span>plot_unif <span class="op">+</span><span class="st"> </span>plot_pois</span></code></pre></div>
+<p><img src="/class/13-class_files/figure-html/plot-dists-1.png" width="1152" /></p>
+</figure>
+<p>Sometimes it’s helpful to constrain the random numbers you generate to fit reasonable numbers. For instance, if you want to simulate test scores for a test with a maximum of 100 and an average score of 80, some random scores might exceed 100. You can install the <strong>truncnorm</strong> package and use a special version of <code>rnorm()</code> named <code>rtruncnorm()</code> that will draw random numbers from a truncated normal distribution, which means you can put upper and lower bounds on the numbers it creates. Notice how the regular <code>rnorm()</code> here generates test scores that are too high, while <code>rtruncnorm()</code> doesn’t:</p>
+<figure class="fullwidth">
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="kw">library</span>(truncnorm)  <span class="co"># For truncated normal distributions</span></span>
+<span id="cb4-2"><a href="#cb4-2"></a></span>
+<span id="cb4-3"><a href="#cb4-3"></a>truncated_stuff &lt;-<span class="st"> </span><span class="kw">tibble</span>(</span>
+<span id="cb4-4"><a href="#cb4-4"></a>  <span class="dt">scores =</span> <span class="kw">rnorm</span>(<span class="dt">n =</span> <span class="dv">2000</span>, <span class="dt">mean =</span> <span class="dv">85</span>, <span class="dt">sd =</span> <span class="dv">10</span>),</span>
+<span id="cb4-5"><a href="#cb4-5"></a>  <span class="co"># Use a for the lower bound; b for the upper bound</span></span>
+<span id="cb4-6"><a href="#cb4-6"></a>  <span class="dt">scores_truncated =</span> <span class="kw">rtruncnorm</span>(<span class="dt">n =</span> <span class="dv">2000</span>, <span class="dt">b =</span> <span class="dv">100</span>, <span class="dt">mean =</span> <span class="dv">85</span>, <span class="dt">sd =</span> <span class="dv">10</span>)</span>
+<span id="cb4-7"><a href="#cb4-7"></a>)</span>
+<span id="cb4-8"><a href="#cb4-8"></a></span>
+<span id="cb4-9"><a href="#cb4-9"></a>plot_scores &lt;-<span class="st"> </span><span class="kw">ggplot</span>(truncated_stuff, <span class="kw">aes</span>(<span class="dt">x =</span> scores)) <span class="op">+</span></span>
+<span id="cb4-10"><a href="#cb4-10"></a><span class="st">  </span><span class="kw">geom_histogram</span>(<span class="dt">binwidth =</span> <span class="dv">5</span>, <span class="dt">color =</span> <span class="st">&quot;white&quot;</span>, <span class="dt">boundary =</span> <span class="dv">90</span>) <span class="op">+</span></span>
+<span id="cb4-11"><a href="#cb4-11"></a><span class="st">  </span><span class="kw">geom_vline</span>(<span class="dt">xintercept =</span> <span class="dv">100</span>)</span>
+<span id="cb4-12"><a href="#cb4-12"></a></span>
+<span id="cb4-13"><a href="#cb4-13"></a>plot_scores_trunc &lt;-<span class="st"> </span><span class="kw">ggplot</span>(truncated_stuff, <span class="kw">aes</span>(<span class="dt">x =</span> scores_truncated)) <span class="op">+</span></span>
+<span id="cb4-14"><a href="#cb4-14"></a><span class="st">  </span><span class="kw">geom_histogram</span>(<span class="dt">binwidth =</span> <span class="dv">5</span>, <span class="dt">color =</span> <span class="st">&quot;white&quot;</span>, <span class="dt">boundary =</span> <span class="dv">90</span>) <span class="op">+</span></span>
+<span id="cb4-15"><a href="#cb4-15"></a><span class="st">  </span><span class="kw">geom_vline</span>(<span class="dt">xintercept =</span> <span class="dv">100</span>)</span>
+<span id="cb4-16"><a href="#cb4-16"></a></span>
+<span id="cb4-17"><a href="#cb4-17"></a>plot_scores <span class="op">+</span><span class="st"> </span>plot_scores_trunc</span></code></pre></div>
+<p><img src="/class/13-class_files/figure-html/truncated-stuff-1.png" width="768" /></p>
+</figure>
+<p>Another issue that often arises when generating data is that it doesn’t quite look like it would in real life. Suppose you have a survey question with responses that range from 1-7 (like a Likert scale that ranges from “Very unsatisfied” to “Very satisfied”). You want most of the responses to be around 3 or 4, but you don’t want anything above 7 or below 1, so you use <code>rtruncnorm()</code>:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>survey &lt;-<span class="st"> </span><span class="kw">tibble</span>(</span>
+<span id="cb5-2"><a href="#cb5-2"></a>  <span class="dt">satisfaction =</span> <span class="kw">rtruncnorm</span>(<span class="dv">2000</span>, <span class="dt">a =</span> <span class="dv">1</span>, <span class="dt">b =</span> <span class="dv">7</span>, <span class="dt">mean =</span> <span class="dv">4</span>, <span class="dt">sd =</span> <span class="dv">2</span>)</span>
+<span id="cb5-3"><a href="#cb5-3"></a>)</span>
+<span id="cb5-4"><a href="#cb5-4"></a></span>
+<span id="cb5-5"><a href="#cb5-5"></a><span class="kw">ggplot</span>(survey, <span class="kw">aes</span>(<span class="dt">x =</span> satisfaction)) <span class="op">+</span></span>
+<span id="cb5-6"><a href="#cb5-6"></a><span class="st">  </span><span class="kw">geom_histogram</span>(<span class="dt">binwidth =</span> <span class="dv">1</span>, <span class="dt">color =</span> <span class="st">&quot;white&quot;</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb5-7"><a href="#cb5-7"></a><span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="dt">breaks =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">7</span>)</span></code></pre></div>
+<p><img src="/class/13-class_files/figure-html/other-truncated-stuff-1.png" width="384" /></p>
+<p>That all looks great until you look at the data itself:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="kw">head</span>(survey)</span></code></pre></div>
+<pre><code>## # A tibble: 6 x 1
+##   satisfaction
+##          &lt;dbl&gt;
+## 1         1.29
+## 2         3.07
+## 3         1.98
+## 4         3.94
+## 5         3.90
+## 6         3.73</code></pre>
+<p>In real life people can’t respond with a 3.234 or 1.953; they have to choose a 3 or a 1. We want to change our synthetic data to match what it would look like in real life. There are several ways to do this with R: we could round the number to the nearest whole number with <code>round(NUMBER, 0)</code>, we could force rounding up with <code>ceiling()</code> (so 3.1 would turn to 4), we could force rounding down with <code>floor()</code> (so 3.9 would turn to 3), or we could lop off all the decimals with <code>trunc()</code>. Because this is all fake data, it doesn’t really matter which method we use—if you were using real data you’d want to think carefully about how to round or floor/ceiling or truncate your data.</p>
+<p>It’s easiest to generate the fake data and then fix it with <code>mutate()</code>:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>survey &lt;-<span class="st"> </span><span class="kw">tibble</span>(</span>
+<span id="cb8-2"><a href="#cb8-2"></a>  <span class="dt">satisfaction =</span> <span class="kw">rtruncnorm</span>(<span class="dv">2000</span>, <span class="dt">a =</span> <span class="dv">1</span>, <span class="dt">b =</span> <span class="dv">7</span>, <span class="dt">mean =</span> <span class="dv">4</span>, <span class="dt">sd =</span> <span class="dv">2</span>)</span>
+<span id="cb8-3"><a href="#cb8-3"></a>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb8-4"><a href="#cb8-4"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">satisfaction =</span> <span class="kw">trunc</span>(satisfaction))</span>
+<span id="cb8-5"><a href="#cb8-5"></a></span>
+<span id="cb8-6"><a href="#cb8-6"></a><span class="kw">head</span>(survey)</span></code></pre></div>
+<pre><code>## # A tibble: 6 x 1
+##   satisfaction
+##          &lt;dbl&gt;
+## 1            4
+## 2            4
+## 3            4
+## 4            3
+## 5            2
+## 6            4</code></pre>
+<p>Finally, sometimes it’s hard to get a consistent range with <code>rnorm()</code>—generated values might be higher or lower than you expect. An alternative to using <code>rtruncnorm()</code> is to scale the generated values up to some reasonable range after the fact using <code>rescale()</code> from the <strong>scales</strong> library. Notice here how I generate some random values with <code>rnorm()</code> but with the default mean of 0 and standard deviation of 1. I then use <code>rescale()</code> to shift that tiny distribution up to something more reasonable for some company:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a><span class="kw">library</span>(scales)</span>
+<span id="cb10-2"><a href="#cb10-2"></a></span>
+<span id="cb10-3"><a href="#cb10-3"></a>incomes &lt;-<span class="st"> </span><span class="kw">tibble</span>(</span>
+<span id="cb10-4"><a href="#cb10-4"></a>  <span class="dt">income_tiny_normal =</span> <span class="kw">rnorm</span>(<span class="dv">2000</span>, <span class="dt">mean =</span> <span class="dv">0</span>, <span class="dt">sd =</span> <span class="dv">1</span>)</span>
+<span id="cb10-5"><a href="#cb10-5"></a>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb10-6"><a href="#cb10-6"></a><span class="st">  </span><span class="co"># Make income range from $35,000 to $200,000</span></span>
+<span id="cb10-7"><a href="#cb10-7"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">income =</span> <span class="kw">rescale</span>(income_tiny_normal, <span class="dt">to =</span> <span class="kw">c</span>(<span class="dv">35000</span>, <span class="dv">200000</span>)))</span>
+<span id="cb10-8"><a href="#cb10-8"></a></span>
+<span id="cb10-9"><a href="#cb10-9"></a><span class="kw">head</span>(incomes)</span></code></pre></div>
+<pre><code>## # A tibble: 6 x 2
+##   income_tiny_normal  income
+##                &lt;dbl&gt;   &lt;dbl&gt;
+## 1             0.651  132720.
+## 2            -0.0920 114053.
+## 3             0.796  136378.
+## 4             0.918  139434.
+## 5            -0.906   93593.
+## 6            -0.654   99936.</code></pre>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a><span class="kw">ggplot</span>(incomes, <span class="kw">aes</span>(<span class="dt">x =</span> income)) <span class="op">+</span></span>
+<span id="cb12-2"><a href="#cb12-2"></a><span class="st">  </span><span class="kw">geom_histogram</span>(<span class="dt">binwidth =</span> <span class="dv">10000</span>, <span class="dt">color =</span> <span class="st">&quot;white&quot;</span>)</span></code></pre></div>
+<p><img src="/class/13-class_files/figure-html/rescale-after-1.png" width="384" /></p>
+<h2 id="using-wakefield">Using wakefield</h2>
+<p>You can use distribution functions to generate numeric data, but generating categorical data is a little trickier. The normal way to generate categories is to provide R with a list of possible categories and then sample (or draw randomly) from that list, like so:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a>sampled_stuff &lt;-<span class="st"> </span><span class="kw">tibble</span>(</span>
+<span id="cb13-2"><a href="#cb13-2"></a>  <span class="co"># Choose from one of 4 colors, 2000 times</span></span>
+<span id="cb13-3"><a href="#cb13-3"></a>  <span class="dt">color =</span> <span class="kw">sample</span>(<span class="kw">c</span>(<span class="st">&quot;Red&quot;</span>, <span class="st">&quot;Blue&quot;</span>, <span class="st">&quot;Green&quot;</span>, <span class="st">&quot;Yellow&quot;</span>), <span class="dt">size =</span> <span class="dv">2000</span>, <span class="dt">replace =</span> <span class="ot">TRUE</span>),</span>
+<span id="cb13-4"><a href="#cb13-4"></a>  <span class="co"># You can specify probabilities too and make it so there&#39;s a 58% chance that</span></span>
+<span id="cb13-5"><a href="#cb13-5"></a>  <span class="co"># &quot;Democrat&quot; will be chosen</span></span>
+<span id="cb13-6"><a href="#cb13-6"></a>  <span class="dt">party =</span> <span class="kw">sample</span>(<span class="kw">c</span>(<span class="st">&quot;Democrat&quot;</span>, <span class="st">&quot;Republican&quot;</span>), <span class="dt">size =</span> <span class="dv">2000</span>, <span class="dt">replace =</span> <span class="ot">TRUE</span>, </span>
+<span id="cb13-7"><a href="#cb13-7"></a>                 <span class="dt">prob =</span> <span class="kw">c</span>(<span class="fl">0.58</span>, <span class="fl">0.42</span>)),</span>
+<span id="cb13-8"><a href="#cb13-8"></a>  <span class="co"># Here we pretend that 30% of the population was in the treatment group</span></span>
+<span id="cb13-9"><a href="#cb13-9"></a>  <span class="dt">treatment =</span> <span class="kw">sample</span>(<span class="kw">c</span>(<span class="st">&quot;Treatment&quot;</span>, <span class="st">&quot;Control&quot;</span>), <span class="dt">size =</span> <span class="dv">2000</span>, <span class="dt">replace =</span> <span class="ot">TRUE</span>,</span>
+<span id="cb13-10"><a href="#cb13-10"></a>                     <span class="dt">prob =</span> <span class="kw">c</span>(<span class="fl">0.3</span>, <span class="fl">0.7</span>))</span>
+<span id="cb13-11"><a href="#cb13-11"></a>)</span>
+<span id="cb13-12"><a href="#cb13-12"></a></span>
+<span id="cb13-13"><a href="#cb13-13"></a><span class="kw">head</span>(sampled_stuff)</span></code></pre></div>
+<pre><code>## # A tibble: 6 x 3
+##   color  party      treatment
+##   &lt;chr&gt;  &lt;chr&gt;      &lt;chr&gt;    
+## 1 Blue   Democrat   Control  
+## 2 Green  Republican Control  
+## 3 Yellow Democrat   Treatment
+## 4 Red    Democrat   Treatment
+## 5 Blue   Democrat   Control  
+## 6 Red    Democrat   Control</code></pre>
+<p>All of that <code>sample()</code> stuff can get tedious, though, and finding/knowing the baseline probabilities for things like political party can take time. The <strong>wakefield</strong> package can simplify all this for you, though. It comes with 49 special functions that generate data for you (run <code>variables()</code> to see a list of all the possibilities). You use these special functions in <code>r_data_frame()</code>, which mostly acts like <code>tibble()</code>, but forces you to specify the number of rows to generate first with <code>n =</code>. If you use the function name by itself, it’ll use all the default arguments (see the help page for each function, like <code>?political</code>, to see what those are). You can also specify your own arguments.</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a><span class="kw">library</span>(wakefield)</span>
+<span id="cb15-2"><a href="#cb15-2"></a></span>
+<span id="cb15-3"><a href="#cb15-3"></a>fancy &lt;-<span class="st"> </span><span class="kw">r_data_frame</span>(</span>
+<span id="cb15-4"><a href="#cb15-4"></a>  <span class="dt">n =</span> <span class="dv">2000</span>,</span>
+<span id="cb15-5"><a href="#cb15-5"></a>  id,</span>
+<span id="cb15-6"><a href="#cb15-6"></a>  color,</span>
+<span id="cb15-7"><a href="#cb15-7"></a>  political,</span>
+<span id="cb15-8"><a href="#cb15-8"></a>  <span class="dt">group =</span> <span class="kw">group</span>(<span class="dt">prob =</span> <span class="kw">c</span>(<span class="fl">0.7</span>, <span class="fl">0.3</span>))</span>
+<span id="cb15-9"><a href="#cb15-9"></a>)</span>
+<span id="cb15-10"><a href="#cb15-10"></a></span>
+<span id="cb15-11"><a href="#cb15-11"></a><span class="kw">head</span>(fancy)</span></code></pre></div>
+<pre><code>## # A tibble: 6 x 4
+##   ID    Color          Political  group    
+##   &lt;chr&gt; &lt;fct&gt;          &lt;fct&gt;      &lt;fct&gt;    
+## 1 0001  Mediumseagreen Democrat   Treatment
+## 2 0002  Gray62         Democrat   Control  
+## 3 0003  Lemonchiffon1  Democrat   Control  
+## 4 0004  Floralwhite    Democrat   Control  
+## 5 0005  Lightseagreen  Democrat   Control  
+## 6 0006  Grey67         Republican Control</code></pre>
+<p>You can also use the regular <code>rnorm()</code> and <code>runif()</code> functions inside <code>r_data_frame()</code>. One advantage of doing this is that you don’t have to repeatedly specify the <code>n</code>—it’ll naturally carry through to all the functions inside <code>r_data_frame()</code>:</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a>super_fancy &lt;-<span class="st"> </span><span class="kw">r_data_frame</span>(</span>
+<span id="cb17-2"><a href="#cb17-2"></a>  <span class="dt">n =</span> <span class="dv">2000</span>,</span>
+<span id="cb17-3"><a href="#cb17-3"></a>  id,</span>
+<span id="cb17-4"><a href="#cb17-4"></a>  gender_inclusive,</span>
+<span id="cb17-5"><a href="#cb17-5"></a>  <span class="dt">income =</span> <span class="kw">rnorm</span>(<span class="dt">mean =</span> <span class="dv">35000</span>, <span class="dt">sd =</span> <span class="dv">15000</span>),</span>
+<span id="cb17-6"><a href="#cb17-6"></a>  <span class="dt">gpa =</span> <span class="kw">runif</span>(<span class="dt">min =</span> <span class="fl">1.5</span>, <span class="dt">max =</span> <span class="fl">4.0</span>),</span>
+<span id="cb17-7"><a href="#cb17-7"></a>  <span class="dt">test_score =</span> <span class="kw">rtruncnorm</span>(<span class="dt">b =</span> <span class="dv">100</span>, <span class="dt">mean =</span> <span class="dv">85</span>, <span class="dt">sd =</span> <span class="dv">10</span>)</span>
+<span id="cb17-8"><a href="#cb17-8"></a>)</span>
+<span id="cb17-9"><a href="#cb17-9"></a></span>
+<span id="cb17-10"><a href="#cb17-10"></a><span class="kw">head</span>(super_fancy)</span></code></pre></div>
+<pre><code>## # A tibble: 6 x 5
+##   ID    Gender income   gpa test_score
+##   &lt;chr&gt; &lt;fct&gt;   &lt;dbl&gt; &lt;dbl&gt;      &lt;dbl&gt;
+## 1 0001  Male   20495.  3.61       71.0
+## 2 0002  Male   27543.  2.80       96.6
+## 3 0003  Male   23591.  1.94       89.5
+## 4 0004  Female 24342.  3.65       86.3
+## 5 0005  Male   30014.  2.52       82.6
+## 6 0006  Female 59602.  2.66       74.4</code></pre>
+<p>Making adjustments with <code>trunc()</code> or <code>round()</code> or <code>rescale()</code> won’t work inside <code>r_data_frame()</code>, but you can do that after with <code>mutate()</code>:</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1"></a>super_fancy &lt;-<span class="st"> </span><span class="kw">r_data_frame</span>(</span>
+<span id="cb19-2"><a href="#cb19-2"></a>  <span class="dt">n =</span> <span class="dv">2000</span>,</span>
+<span id="cb19-3"><a href="#cb19-3"></a>  id,</span>
+<span id="cb19-4"><a href="#cb19-4"></a>  gender_inclusive,</span>
+<span id="cb19-5"><a href="#cb19-5"></a>  <span class="dt">income_tiny =</span> <span class="kw">rnorm</span>(),</span>
+<span id="cb19-6"><a href="#cb19-6"></a>  <span class="dt">gpa =</span> <span class="kw">runif</span>(<span class="dt">min =</span> <span class="fl">1.5</span>, <span class="dt">max =</span> <span class="fl">4.0</span>),</span>
+<span id="cb19-7"><a href="#cb19-7"></a>  <span class="dt">test_score =</span> <span class="kw">rtruncnorm</span>(<span class="dt">b =</span> <span class="dv">100</span>, <span class="dt">mean =</span> <span class="dv">85</span>, <span class="dt">sd =</span> <span class="dv">10</span>)</span>
+<span id="cb19-8"><a href="#cb19-8"></a>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb19-9"><a href="#cb19-9"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">gpa =</span> <span class="kw">round</span>(gpa, <span class="dv">2</span>),</span>
+<span id="cb19-10"><a href="#cb19-10"></a>         <span class="dt">income =</span> <span class="kw">rescale</span>(income_tiny, <span class="dt">to =</span> <span class="kw">c</span>(<span class="dv">35000</span>, <span class="dv">200000</span>)))</span>
+<span id="cb19-11"><a href="#cb19-11"></a></span>
+<span id="cb19-12"><a href="#cb19-12"></a><span class="kw">head</span>(super_fancy)</span></code></pre></div>
+<pre><code>## # A tibble: 6 x 6
+##   ID    Gender income_tiny   gpa test_score  income
+##   &lt;chr&gt; &lt;fct&gt;        &lt;dbl&gt; &lt;dbl&gt;      &lt;dbl&gt;   &lt;dbl&gt;
+## 1 0001  Male        -1.25   3.71       90.1  79707.
+## 2 0002  Trans*      -0.680  3.19       85.5  93149.
+## 3 0003  Trans*       0.379  3.53       74.5 118267.
+## 4 0004  Female      -1.45   1.79       98.0  74908.
+## 5 0005  Male         0.112  3.29       78.1 111924.
+## 6 0006  Male        -0.672  3.48       67.2  93338.</code></pre>
+<p><strong>In general, it’s best to generate fake data with <code>r_data_frame()</code> first, then make any adjustments or changes afterwards with <code>mutate()</code>, <code>filter()</code>, and gang.</strong></p>
+<h2 id="creating-a-fake-program-effect">Creating a fake program effect</h2>
+<p>In your final projects, you’re designing evaluations that try to measure the effect of some social program using econometric tools. It’s often helpful to build that effect into your synthetic dataset so that you know if your model has found the effect. There are a ton of different ways of doing this. I’ll show a few ways below (but this is not an exhaustive list of approaches)</p>
+<h3 id="rcts">RCTs</h3>
+<p>Suppose you have some experimental program that was offered in some randomly assigned villages. You can generate two datasets (one for the treatment villages and one for the control villages), increase the outcome in the treatment villages, and combine the two datasets into one with all villages.</p>
+<p>Here I create a column named <code>pct_boost</code> that generates a random number around 1.3 for the treatment group. I then multiply that number by the pre-treatment income to create the post-treatment income. If the boost is 1, there won’t be any change; if it’s 1.3, there will be a 30% change (e.g. changing income from $100 to $130). I make a similar boost for the control group, but only 1, meaning that on average there won’t be any increase (though, since it’s randomly generated, some people in the control group will see a slight increase or decrease).</p>
+<p>(Instead of multiplying by percentages, I could also just say <code>post_income = pre_income + 200</code> and boost everyone’s income by exactly 200, or do <code>post_income = pre_income + rnorm(mean = 200, sd = 50)</code> to boost everyone’s income by 200 ± 50ish—again, there are lots of ways to do this).</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1"></a><span class="kw">set.seed</span>(<span class="dv">1234</span>)</span>
+<span id="cb21-2"><a href="#cb21-2"></a>village_treatment &lt;-<span class="st"> </span><span class="kw">r_data_frame</span>(</span>
+<span id="cb21-3"><a href="#cb21-3"></a>  <span class="dt">n =</span> <span class="dv">500</span>,</span>
+<span id="cb21-4"><a href="#cb21-4"></a>  age,</span>
+<span id="cb21-5"><a href="#cb21-5"></a>  <span class="kw">sex</span>(<span class="dt">prob =</span> <span class="kw">c</span>(<span class="fl">0.6</span>, <span class="fl">0.4</span>)),</span>
+<span id="cb21-6"><a href="#cb21-6"></a>  <span class="dt">pre_income =</span> <span class="kw">rnorm</span>(<span class="dt">mean =</span> <span class="dv">800</span>, <span class="dt">sd =</span> <span class="dv">100</span>),</span>
+<span id="cb21-7"><a href="#cb21-7"></a>  <span class="dt">pct_boost =</span> <span class="kw">rnorm</span>(<span class="dt">mean =</span> <span class="fl">1.3</span>, <span class="dt">sd =</span> <span class="fl">0.3</span>)</span>
+<span id="cb21-8"><a href="#cb21-8"></a>) <span class="op">%&gt;%</span></span>
+<span id="cb21-9"><a href="#cb21-9"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">post_income =</span> pre_income <span class="op">*</span><span class="st"> </span>pct_boost) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb21-10"><a href="#cb21-10"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">experiment_group =</span> <span class="st">&quot;Treatment&quot;</span>)</span>
+<span id="cb21-11"><a href="#cb21-11"></a></span>
+<span id="cb21-12"><a href="#cb21-12"></a>village_control &lt;-<span class="st"> </span><span class="kw">r_data_frame</span>(</span>
+<span id="cb21-13"><a href="#cb21-13"></a>  <span class="dt">n =</span> <span class="dv">1000</span>,</span>
+<span id="cb21-14"><a href="#cb21-14"></a>  age,</span>
+<span id="cb21-15"><a href="#cb21-15"></a>  <span class="kw">sex</span>(<span class="dt">prob =</span> <span class="kw">c</span>(<span class="fl">0.6</span>, <span class="fl">0.4</span>)),</span>
+<span id="cb21-16"><a href="#cb21-16"></a>  <span class="dt">pre_income =</span> <span class="kw">rnorm</span>(<span class="dt">mean =</span> <span class="dv">800</span>, <span class="dt">sd =</span> <span class="dv">100</span>),</span>
+<span id="cb21-17"><a href="#cb21-17"></a>  <span class="dt">pct_boost =</span> <span class="kw">rnorm</span>(<span class="dt">mean =</span> <span class="dv">1</span>, <span class="dt">sd =</span> <span class="fl">0.3</span>)</span>
+<span id="cb21-18"><a href="#cb21-18"></a>) <span class="op">%&gt;%</span></span>
+<span id="cb21-19"><a href="#cb21-19"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">post_income =</span> pre_income <span class="op">*</span><span class="st"> </span>pct_boost) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb21-20"><a href="#cb21-20"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">experiment_group =</span> <span class="st">&quot;Control&quot;</span>)</span>
+<span id="cb21-21"><a href="#cb21-21"></a></span>
+<span id="cb21-22"><a href="#cb21-22"></a>village_rct &lt;-<span class="st"> </span><span class="kw">bind_rows</span>(village_treatment, village_control) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb21-23"><a href="#cb21-23"></a><span class="st">  </span><span class="co"># This shuffles the dataset so all the treatment people aren&#39;t in the first</span></span>
+<span id="cb21-24"><a href="#cb21-24"></a><span class="st">  </span><span class="co"># 500 rows</span></span>
+<span id="cb21-25"><a href="#cb21-25"></a><span class="st">  </span><span class="kw">sample_frac</span>(<span class="dv">1</span>)</span>
+<span id="cb21-26"><a href="#cb21-26"></a></span>
+<span id="cb21-27"><a href="#cb21-27"></a><span class="kw">head</span>(village_rct)</span></code></pre></div>
+<pre><code>## # A tibble: 6 x 6
+##     Age Sex    pre_income pct_boost post_income experiment_group
+##   &lt;int&gt; &lt;fct&gt;       &lt;dbl&gt;     &lt;dbl&gt;       &lt;dbl&gt; &lt;chr&gt;           
+## 1    51 Male         924.     1.32        1224. Control         
+## 2    48 Male         844.     1.04         874. Control         
+## 3    82 Female       909.     1.12        1015. Control         
+## 4    83 Male         809.     1.61        1306. Treatment       
+## 5    89 Female       838.     1.26        1057. Treatment       
+## 6    47 Male         706.     0.861        608. Control</code></pre>
+<p>We can check for a difference in average post-treatment income. There’s an effect!</p>
+<figure class="fullwidth">
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1"></a>plot_rct_hist &lt;-<span class="st"> </span><span class="kw">ggplot</span>(village_rct, <span class="kw">aes</span>(<span class="dt">x =</span> post_income, <span class="dt">fill =</span> experiment_group)) <span class="op">+</span></span>
+<span id="cb23-2"><a href="#cb23-2"></a><span class="st">  </span><span class="kw">geom_histogram</span>(<span class="dt">binwidth =</span> <span class="dv">100</span>, <span class="dt">color =</span> <span class="st">&quot;white&quot;</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb23-3"><a href="#cb23-3"></a><span class="st">  </span><span class="kw">guides</span>(<span class="dt">fill =</span> <span class="ot">FALSE</span>) <span class="op">+</span></span>
+<span id="cb23-4"><a href="#cb23-4"></a><span class="st">  </span><span class="kw">facet_wrap</span>(<span class="op">~</span>experiment_group, <span class="dt">ncol =</span> <span class="dv">1</span>)</span>
+<span id="cb23-5"><a href="#cb23-5"></a></span>
+<span id="cb23-6"><a href="#cb23-6"></a>plot_rct_means &lt;-<span class="st"> </span><span class="kw">ggplot</span>(village_rct, <span class="kw">aes</span>(<span class="dt">x =</span> experiment_group, <span class="dt">y =</span> post_income,</span>
+<span id="cb23-7"><a href="#cb23-7"></a>                                          <span class="dt">color =</span> experiment_group)) <span class="op">+</span></span>
+<span id="cb23-8"><a href="#cb23-8"></a><span class="st">  </span><span class="kw">stat_summary</span>(<span class="dt">geom =</span> <span class="st">&quot;pointrange&quot;</span>, <span class="dt">size =</span> <span class="dv">1</span>,</span>
+<span id="cb23-9"><a href="#cb23-9"></a>               <span class="dt">fun.data =</span> <span class="st">&quot;mean_se&quot;</span>, <span class="dt">fun.args =</span> <span class="kw">list</span>(<span class="dt">mult =</span> <span class="fl">1.96</span>)) <span class="op">+</span></span>
+<span id="cb23-10"><a href="#cb23-10"></a><span class="st">  </span><span class="kw">guides</span>(<span class="dt">color =</span> <span class="ot">FALSE</span>)</span>
+<span id="cb23-11"><a href="#cb23-11"></a></span>
+<span id="cb23-12"><a href="#cb23-12"></a>plot_rct_hist <span class="op">+</span><span class="st"> </span>plot_rct_means</span></code></pre></div>
+<p><img src="/class/13-class_files/figure-html/plot-rct-village-1.png" width="768" /></p>
+</figure>
+<p>Alternatively, instead of creating two different villages and combining them, you can generate a treatment/control column and add an income bump for just treatment using <code>ifelse()</code>:</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1"></a>village_all_at_once &lt;-<span class="st"> </span><span class="kw">r_data_frame</span>(</span>
+<span id="cb24-2"><a href="#cb24-2"></a>  <span class="dt">n =</span> <span class="dv">1500</span>,</span>
+<span id="cb24-3"><a href="#cb24-3"></a>  age,</span>
+<span id="cb24-4"><a href="#cb24-4"></a>  <span class="kw">sex</span>(<span class="dt">prob =</span> <span class="kw">c</span>(<span class="fl">0.6</span>, <span class="fl">0.4</span>)),</span>
+<span id="cb24-5"><a href="#cb24-5"></a>  <span class="dt">group =</span> <span class="kw">group</span>(<span class="dt">prob =</span> <span class="kw">c</span>(<span class="fl">0.666</span>, <span class="fl">0.333</span>)),</span>
+<span id="cb24-6"><a href="#cb24-6"></a>  <span class="dt">pre_income =</span> <span class="kw">rnorm</span>(<span class="dt">mean =</span> <span class="dv">800</span>, <span class="dt">sd =</span> <span class="dv">100</span>),</span>
+<span id="cb24-7"><a href="#cb24-7"></a>  <span class="dt">pct_boost_treatment =</span> <span class="kw">rnorm</span>(<span class="dt">mean =</span> <span class="fl">1.3</span>, <span class="dt">sd =</span> <span class="fl">0.3</span>),</span>
+<span id="cb24-8"><a href="#cb24-8"></a>  <span class="dt">pct_boost_control =</span> <span class="kw">rnorm</span>(<span class="dt">mean =</span> <span class="dv">1</span>, <span class="dt">sd =</span> <span class="fl">0.3</span>)</span>
+<span id="cb24-9"><a href="#cb24-9"></a>) <span class="op">%&gt;%</span></span>
+<span id="cb24-10"><a href="#cb24-10"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">post_income =</span> <span class="kw">ifelse</span>(group <span class="op">==</span><span class="st"> &quot;Treatment&quot;</span>,</span>
+<span id="cb24-11"><a href="#cb24-11"></a>                              pre_income <span class="op">*</span><span class="st"> </span>pct_boost_treatment,</span>
+<span id="cb24-12"><a href="#cb24-12"></a>                              pre_income <span class="op">*</span><span class="st"> </span>pct_boost_control)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb24-13"><a href="#cb24-13"></a><span class="st">  </span><span class="co"># Get rid of these columns since we don&#39;t need them anymore</span></span>
+<span id="cb24-14"><a href="#cb24-14"></a><span class="st">  </span><span class="kw">select</span>(<span class="op">-</span>pct_boost_treatment, <span class="op">-</span>pct_boost_control)</span>
+<span id="cb24-15"><a href="#cb24-15"></a></span>
+<span id="cb24-16"><a href="#cb24-16"></a><span class="kw">head</span>(village_all_at_once)</span></code></pre></div>
+<pre><code>## # A tibble: 6 x 5
+##     Age Sex    group     pre_income post_income
+##   &lt;int&gt; &lt;fct&gt;  &lt;fct&gt;          &lt;dbl&gt;       &lt;dbl&gt;
+## 1    69 Male   Treatment       776.        901.
+## 2    32 Female Control         839.        859.
+## 3    35 Female Treatment       921.       1187.
+## 4    34 Male   Control         830.       1058.
+## 5    68 Female Control         935.        489.
+## 6    54 Male   Treatment       884.       1022.</code></pre>
+<h3 id="diff-in-diff">Diff-in-diff</h3>
+<p>To generate data for a diff-in-diff situation, you need data for treated and untreated groups, before and after treatment. Once again, there are a bunch of ways to do this. One way would be to make four datasets (city A before, city B before, city A after, city B after, for instance) and then combine them:</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1"></a><span class="kw">set.seed</span>(<span class="dv">1234</span>)</span>
+<span id="cb26-2"><a href="#cb26-2"></a>city_a_before &lt;-<span class="st"> </span><span class="kw">r_data_frame</span>(</span>
+<span id="cb26-3"><a href="#cb26-3"></a>  <span class="dt">n =</span> <span class="dv">500</span>,</span>
+<span id="cb26-4"><a href="#cb26-4"></a>  age,</span>
+<span id="cb26-5"><a href="#cb26-5"></a>  sex, </span>
+<span id="cb26-6"><a href="#cb26-6"></a>  <span class="dt">income =</span> <span class="kw">rnorm</span>(<span class="dt">mean =</span> <span class="dv">15000</span>, <span class="dt">sd =</span> <span class="dv">2500</span>)</span>
+<span id="cb26-7"><a href="#cb26-7"></a>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb26-8"><a href="#cb26-8"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">city =</span> <span class="st">&quot;City A&quot;</span>,</span>
+<span id="cb26-9"><a href="#cb26-9"></a>         <span class="dt">year =</span> <span class="dv">2010</span>)</span>
+<span id="cb26-10"><a href="#cb26-10"></a></span>
+<span id="cb26-11"><a href="#cb26-11"></a>city_b_before &lt;-<span class="st"> </span><span class="kw">r_data_frame</span>(</span>
+<span id="cb26-12"><a href="#cb26-12"></a>  <span class="dt">n =</span> <span class="dv">500</span>,</span>
+<span id="cb26-13"><a href="#cb26-13"></a>  age,</span>
+<span id="cb26-14"><a href="#cb26-14"></a>  sex, </span>
+<span id="cb26-15"><a href="#cb26-15"></a>  <span class="dt">income =</span> <span class="kw">rnorm</span>(<span class="dt">mean =</span> <span class="dv">13000</span>, <span class="dt">sd =</span> <span class="dv">2500</span>)</span>
+<span id="cb26-16"><a href="#cb26-16"></a>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb26-17"><a href="#cb26-17"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">city =</span> <span class="st">&quot;City B&quot;</span>,</span>
+<span id="cb26-18"><a href="#cb26-18"></a>         <span class="dt">year =</span> <span class="dv">2010</span>)</span>
+<span id="cb26-19"><a href="#cb26-19"></a></span>
+<span id="cb26-20"><a href="#cb26-20"></a>city_a_after &lt;-<span class="st"> </span><span class="kw">r_data_frame</span>(</span>
+<span id="cb26-21"><a href="#cb26-21"></a>  <span class="dt">n =</span> <span class="dv">500</span>,</span>
+<span id="cb26-22"><a href="#cb26-22"></a>  age,</span>
+<span id="cb26-23"><a href="#cb26-23"></a>  sex, </span>
+<span id="cb26-24"><a href="#cb26-24"></a>  <span class="dt">income =</span> <span class="kw">rnorm</span>(<span class="dt">mean =</span> <span class="dv">16000</span>, <span class="dt">sd =</span> <span class="dv">2500</span>)</span>
+<span id="cb26-25"><a href="#cb26-25"></a>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb26-26"><a href="#cb26-26"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">city =</span> <span class="st">&quot;City A&quot;</span>,</span>
+<span id="cb26-27"><a href="#cb26-27"></a>         <span class="dt">year =</span> <span class="dv">2011</span>)</span>
+<span id="cb26-28"><a href="#cb26-28"></a></span>
+<span id="cb26-29"><a href="#cb26-29"></a>city_b_after &lt;-<span class="st"> </span><span class="kw">r_data_frame</span>(</span>
+<span id="cb26-30"><a href="#cb26-30"></a>  <span class="dt">n =</span> <span class="dv">500</span>,</span>
+<span id="cb26-31"><a href="#cb26-31"></a>  age,</span>
+<span id="cb26-32"><a href="#cb26-32"></a>  sex, </span>
+<span id="cb26-33"><a href="#cb26-33"></a>  <span class="dt">income =</span> <span class="kw">rnorm</span>(<span class="dt">mean =</span> <span class="dv">19000</span>, <span class="dt">sd =</span> <span class="dv">2500</span>)</span>
+<span id="cb26-34"><a href="#cb26-34"></a>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb26-35"><a href="#cb26-35"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">city =</span> <span class="st">&quot;City B&quot;</span>,</span>
+<span id="cb26-36"><a href="#cb26-36"></a>         <span class="dt">year =</span> <span class="dv">2011</span>)</span>
+<span id="cb26-37"><a href="#cb26-37"></a></span>
+<span id="cb26-38"><a href="#cb26-38"></a>city &lt;-<span class="st"> </span><span class="kw">bind_rows</span>(city_a_before, city_a_after,</span>
+<span id="cb26-39"><a href="#cb26-39"></a>                  city_b_before, city_b_after) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb26-40"><a href="#cb26-40"></a><span class="st">  </span><span class="co"># Make year a category</span></span>
+<span id="cb26-41"><a href="#cb26-41"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">year =</span> <span class="kw">as.factor</span>(year))</span>
+<span id="cb26-42"><a href="#cb26-42"></a></span>
+<span id="cb26-43"><a href="#cb26-43"></a><span class="kw">head</span>(city)</span></code></pre></div>
+<pre><code>## # A tibble: 6 x 5
+##     Age Sex    income city   year 
+##   &lt;int&gt; &lt;fct&gt;   &lt;dbl&gt; &lt;chr&gt;  &lt;fct&gt;
+## 1    45 Male   17120. City A 2010 
+## 2    39 Female 17272. City A 2010 
+## 3    26 Male   14343. City A 2010 
+## 4    22 Male   10486. City A 2010 
+## 5    55 Male   13472. City A 2010 
+## 6    33 Female 16215. City A 2010</code></pre>
+<p>Once the data is combined, you can do regular diff-in-diff stuff, like finding the averages in each group and running a regression with an interaction term:</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1"></a>city_year_averages &lt;-<span class="st"> </span>city <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb28-2"><a href="#cb28-2"></a><span class="st">  </span><span class="kw">group_by</span>(city, year) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb28-3"><a href="#cb28-3"></a><span class="st">  </span><span class="kw">summarize</span>(<span class="dt">avg_income =</span> <span class="kw">mean</span>(income))</span>
+<span id="cb28-4"><a href="#cb28-4"></a>city_year_averages</span></code></pre></div>
+<pre><code>## # A tibble: 4 x 3
+## # Groups:   city [2]
+##   city   year  avg_income
+##   &lt;chr&gt;  &lt;fct&gt;      &lt;dbl&gt;
+## 1 City A 2010      14946.
+## 2 City A 2011      15975.
+## 3 City B 2010      13106.
+## 4 City B 2011      19107.</code></pre>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1"></a><span class="kw">library</span>(broom)</span>
+<span id="cb30-2"><a href="#cb30-2"></a>model_diff_diff &lt;-<span class="st"> </span><span class="kw">lm</span>(income <span class="op">~</span><span class="st"> </span>city <span class="op">+</span><span class="st"> </span>year <span class="op">+</span><span class="st"> </span>city <span class="op">*</span><span class="st"> </span>year, <span class="dt">data =</span> city)</span>
+<span id="cb30-3"><a href="#cb30-3"></a><span class="kw">tidy</span>(model_diff_diff)</span></code></pre></div>
+<pre><code>## # A tibble: 4 x 5
+##   term                estimate std.error statistic  p.value
+##   &lt;chr&gt;                  &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
+## 1 (Intercept)           14946.      112.    133.   0.      
+## 2 cityCity B            -1840.      158.    -11.6  2.97e-30
+## 3 year2011               1029.      158.      6.50 1.03e-10
+## 4 cityCity B:year2011    4972.      224.     22.2  9.40e-98</code></pre>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1"></a><span class="kw">ggplot</span>(city_year_averages, <span class="kw">aes</span>(<span class="dt">x =</span> year, <span class="dt">y =</span> avg_income, </span>
+<span id="cb32-2"><a href="#cb32-2"></a>                               <span class="dt">color =</span> city, <span class="dt">group =</span> city)) <span class="op">+</span></span>
+<span id="cb32-3"><a href="#cb32-3"></a><span class="st">  </span><span class="kw">geom_line</span>(<span class="dt">size =</span> <span class="dv">1</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb32-4"><a href="#cb32-4"></a><span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="st">&quot;bottom&quot;</span>)</span></code></pre></div>
+<p><img src="/class/13-class_files/figure-html/plot-city-dd-1.png" width="384" /></p>
+<h3 id="rdd">RDD</h3>
+<p>To making a synthetic RDD dataset, you need a running variable and an outcome variable. Here we’ll make a fake gifted program that students get into if they score an 80 on a pretest. We care about the program’s effect on high school GPAs. For fun, instead of trying to get the output of <code>rbeta()</code> to fit a range of test scores and GPAs, we’ll use <code>rescale()</code> to rescale the tiny numbers from <code>rbeta()</code> to more real-world levels.</p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1"></a>gifted_program &lt;-<span class="st"> </span><span class="kw">r_data_frame</span>(</span>
+<span id="cb33-2"><a href="#cb33-2"></a>  <span class="dt">n =</span> <span class="dv">1000</span>,</span>
+<span id="cb33-3"><a href="#cb33-3"></a>  id,</span>
+<span id="cb33-4"><a href="#cb33-4"></a>  <span class="dt">pre_test =</span> <span class="kw">rbeta</span>(<span class="dt">shape1 =</span> <span class="dv">7</span>, <span class="dt">shape2 =</span> <span class="dv">2</span>),</span>
+<span id="cb33-5"><a href="#cb33-5"></a>  <span class="dt">gpa =</span> <span class="kw">rbeta</span>(<span class="dt">shape1 =</span> <span class="dv">5</span>, <span class="dt">shape2 =</span> <span class="dv">3</span>)</span>
+<span id="cb33-6"><a href="#cb33-6"></a>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb33-7"><a href="#cb33-7"></a><span class="st">  </span><span class="co"># Beta distributions range from 0-1 naturally, so for the test score we&#39;ll</span></span>
+<span id="cb33-8"><a href="#cb33-8"></a><span class="st">  </span><span class="co"># just multiply the pre_test by 100, so the maximum score will be 100</span></span>
+<span id="cb33-9"><a href="#cb33-9"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">pre_test =</span> pre_test <span class="op">*</span><span class="st"> </span><span class="dv">100</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb33-10"><a href="#cb33-10"></a><span class="st">  </span><span class="co"># Then we&#39;ll put people in the program based on the cutoff</span></span>
+<span id="cb33-11"><a href="#cb33-11"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">in_program =</span> pre_test <span class="op">&gt;=</span><span class="st"> </span><span class="dv">80</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb33-12"><a href="#cb33-12"></a><span class="st">  </span><span class="co"># Next we can boost the GPA for those in the program with a math formula.</span></span>
+<span id="cb33-13"><a href="#cb33-13"></a><span class="st">  </span><span class="co"># There are three parts here: </span></span>
+<span id="cb33-14"><a href="#cb33-14"></a><span class="st">  </span><span class="co"># 1. (gpa * 40) makes the tiny random GPA score (0.243 or whatever) bigger.</span></span>
+<span id="cb33-15"><a href="#cb33-15"></a><span class="st">  </span><span class="co"># 2. (10 * in_program) will add 10 points for those in the program</span></span>
+<span id="cb33-16"><a href="#cb33-16"></a><span class="st">  </span><span class="co"># 3. (pre_test / 2) makes it so gpa is related to pretest scores and builds </span></span>
+<span id="cb33-17"><a href="#cb33-17"></a><span class="st">  </span><span class="co">#    in a correlation</span></span>
+<span id="cb33-18"><a href="#cb33-18"></a><span class="st">  </span><span class="co"># </span></span>
+<span id="cb33-19"><a href="#cb33-19"></a><span class="st">  </span><span class="co"># You can adjust the 40 and 10 and 2 to change how spread out the data is, </span></span>
+<span id="cb33-20"><a href="#cb33-20"></a><span class="st">  </span><span class="co"># how big the gap is, and how correlated test scores are to GPA, respectively</span></span>
+<span id="cb33-21"><a href="#cb33-21"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">gpa =</span> (gpa <span class="op">*</span><span class="st"> </span><span class="dv">40</span>) <span class="op">+</span><span class="st"> </span>(<span class="dv">10</span> <span class="op">*</span><span class="st"> </span>in_program) <span class="op">+</span><span class="st"> </span>(pre_test <span class="op">/</span><span class="st"> </span><span class="dv">2</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb33-22"><a href="#cb33-22"></a><span class="st">  </span><span class="co"># Transform the meaningless tiny GPA score to something in the 2-4 scale</span></span>
+<span id="cb33-23"><a href="#cb33-23"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">gpa =</span> <span class="kw">rescale</span>(gpa, <span class="dt">to =</span> <span class="kw">c</span>(<span class="dv">2</span>, <span class="dv">4</span>))) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb33-24"><a href="#cb33-24"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">gpa =</span> <span class="kw">round</span>(gpa, <span class="dv">2</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb33-25"><a href="#cb33-25"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">pre_test_centered =</span> pre_test <span class="op">-</span><span class="st"> </span><span class="dv">80</span>)</span></code></pre></div>
+<p>With this data, we can do standard RDD stuff, like looking at the discontinuity:</p>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1"></a><span class="kw">ggplot</span>(gifted_program, <span class="kw">aes</span>(<span class="dt">x =</span> pre_test, <span class="dt">y =</span> gpa, <span class="dt">color =</span> in_program)) <span class="op">+</span></span>
+<span id="cb34-2"><a href="#cb34-2"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">size =</span> <span class="fl">0.5</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb34-3"><a href="#cb34-3"></a><span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">method =</span> <span class="st">&quot;lm&quot;</span>) <span class="op">+</span></span>
+<span id="cb34-4"><a href="#cb34-4"></a><span class="st">  </span><span class="kw">geom_vline</span>(<span class="dt">xintercept =</span> <span class="dv">80</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb34-5"><a href="#cb34-5"></a><span class="st">  </span><span class="kw">guides</span>(<span class="dt">color =</span> <span class="ot">FALSE</span>)</span></code></pre></div>
+<p><img src="/class/13-class_files/figure-html/plot-rdd-1.png" width="384" /></p>
+<p>And measuring the size of the gap with a parametric model with a bandwidth of 10:</p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1"></a>model_rdd_parametric &lt;-<span class="st"> </span><span class="kw">lm</span>(gpa <span class="op">~</span><span class="st"> </span>pre_test_centered <span class="op">+</span><span class="st"> </span>in_program,</span>
+<span id="cb35-2"><a href="#cb35-2"></a>                           <span class="dt">data =</span> <span class="kw">filter</span>(gifted_program, pre_test <span class="op">&gt;=</span><span class="st"> </span><span class="dv">70</span>, pre_test <span class="op">&lt;=</span><span class="st"> </span><span class="dv">90</span>))</span>
+<span id="cb35-3"><a href="#cb35-3"></a><span class="kw">tidy</span>(model_rdd_parametric)</span></code></pre></div>
+<pre><code>## # A tibble: 3 x 5
+##   term              estimate std.error statistic  p.value
+##   &lt;chr&gt;                &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
+## 1 (Intercept)         2.93     0.0188     155.   0.      
+## 2 pre_test_centered   0.0107   0.00303      3.52 4.68e- 4
+## 3 in_programTRUE      0.441    0.0335      13.2  1.18e-34</code></pre>
+<p>And measuring the size of the gap nonparametricaly:</p>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1"></a><span class="kw">library</span>(rdrobust)</span>
+<span id="cb37-2"><a href="#cb37-2"></a></span>
+<span id="cb37-3"><a href="#cb37-3"></a>model_rdd_nonparametric &lt;-<span class="st"> </span><span class="kw">rdrobust</span>(<span class="dt">y =</span> gifted_program<span class="op">$</span>gpa, </span>
+<span id="cb37-4"><a href="#cb37-4"></a>                                    <span class="dt">x =</span> gifted_program<span class="op">$</span>pre_test, </span>
+<span id="cb37-5"><a href="#cb37-5"></a>                                    <span class="dt">c =</span> <span class="dv">80</span>)</span>
+<span id="cb37-6"><a href="#cb37-6"></a><span class="kw">summary</span>(model_rdd_nonparametric)</span></code></pre></div>
+<pre><code>## Call: rdrobust
+## 
+## Number of Obs.                 1000
+## BW type                       mserd
+## Kernel                   Triangular
+## VCE method                       NN
+## 
+## Number of Obs.                 525         475
+## Eff. Number of Obs.            188         213
+## Order est. (p)                   1           1
+## Order bias  (p)                  2           2
+## BW est. (h)                  6.765       6.765
+## BW bias (b)                 10.738      10.738
+## rho (h/b)                    0.630       0.630
+## 
+## =============================================================================
+##         Method     Coef. Std. Err.         z     P&gt;|z|      [ 95% C.I. ]       
+## =============================================================================
+##   Conventional     0.419     0.042     9.935     0.000     [0.336 , 0.501]     
+##         Robust         -         -     8.232     0.000     [0.313 , 0.508]     
+## =============================================================================</code></pre>
+<h3 id="iv">IV</h3>
+<p>Generating synthetic data for IV regression is a little trickier since you have to build in a correlation between the instrument and the policy <em>and</em> the policy and the outcome. Here’s one way to do that (again, there are a ton of different ways to do this; this is just one example), with wage as the outcome, education as the policy, and father’s years of education as the instrument that explains the endogeneity in education:</p>
+<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1"></a><span class="kw">set.seed</span>(<span class="dv">1234</span>)</span>
+<span id="cb39-2"><a href="#cb39-2"></a></span>
+<span id="cb39-3"><a href="#cb39-3"></a>wage_edu &lt;-<span class="st"> </span><span class="kw">r_data_frame</span>(</span>
+<span id="cb39-4"><a href="#cb39-4"></a>  <span class="dt">n =</span> <span class="dv">2000</span>,</span>
+<span id="cb39-5"><a href="#cb39-5"></a>  id,</span>
+<span id="cb39-6"><a href="#cb39-6"></a>  sex,</span>
+<span id="cb39-7"><a href="#cb39-7"></a>  race,</span>
+<span id="cb39-8"><a href="#cb39-8"></a>  age,</span>
+<span id="cb39-9"><a href="#cb39-9"></a>  <span class="co"># Ability is the unmeasured, omitted variable. Here&#39;s it&#39;s a totally</span></span>
+<span id="cb39-10"><a href="#cb39-10"></a>  <span class="co"># meaningless number around 35</span></span>
+<span id="cb39-11"><a href="#cb39-11"></a>  <span class="dt">ability =</span> <span class="kw">rnorm</span>(<span class="dt">mean =</span> <span class="dv">35</span>, <span class="dt">sd =</span> <span class="dv">10</span>),</span>
+<span id="cb39-12"><a href="#cb39-12"></a>  <span class="co"># Instead of caring about years here, since we&#39;ll just rescale everything</span></span>
+<span id="cb39-13"><a href="#cb39-13"></a>  <span class="co"># after, we&#39;ll draw random numbers in the same range-ish as ability</span></span>
+<span id="cb39-14"><a href="#cb39-14"></a>  <span class="dt">father_educ =</span> <span class="kw">rnorm</span>(<span class="dt">mean =</span> <span class="dv">15</span>, <span class="dt">sd =</span> <span class="dv">20</span>),</span>
+<span id="cb39-15"><a href="#cb39-15"></a>  <span class="dt">wage_noise =</span> <span class="kw">rnorm</span>(<span class="dt">mean =</span> <span class="dv">10</span>, <span class="dt">sd =</span> <span class="dv">2</span>)</span>
+<span id="cb39-16"><a href="#cb39-16"></a>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb39-17"><a href="#cb39-17"></a><span class="st">  </span><span class="co"># Do some math to combine and correlate ability, father&#39;s education, and</span></span>
+<span id="cb39-18"><a href="#cb39-18"></a><span class="st">  </span><span class="co"># random noise to make educ and wage. Note how father&#39;s education helps build</span></span>
+<span id="cb39-19"><a href="#cb39-19"></a><span class="st">  </span><span class="co"># education, but doesn&#39;t appear in the wage formula---it&#39;s an instrument</span></span>
+<span id="cb39-20"><a href="#cb39-20"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">educ =</span> <span class="dv">5</span> <span class="op">+</span><span class="st"> </span>(<span class="fl">0.4</span> <span class="op">*</span><span class="st"> </span>father_educ) <span class="op">+</span><span class="st"> </span>(<span class="fl">0.5</span> <span class="op">*</span><span class="st"> </span>ability)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb39-21"><a href="#cb39-21"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">wage =</span> <span class="dv">10</span> <span class="op">+</span><span class="st"> </span>(<span class="fl">0.3</span> <span class="op">*</span><span class="st"> </span>educ) <span class="op">+</span><span class="st"> </span>wage_noise) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb39-22"><a href="#cb39-22"></a><span class="st">  </span><span class="co"># Rescale stuff</span></span>
+<span id="cb39-23"><a href="#cb39-23"></a><span class="st">  </span><span class="co"># Hourly wage goes from $7.75 to $200; education goes from 10-23 years; </span></span>
+<span id="cb39-24"><a href="#cb39-24"></a><span class="st">  </span><span class="co"># unmeasured ability goes from 0 to 500</span></span>
+<span id="cb39-25"><a href="#cb39-25"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">wage =</span> <span class="kw">rescale</span>(wage, <span class="dt">to =</span> <span class="kw">c</span>(<span class="fl">7.75</span>, <span class="dv">200</span>)),</span>
+<span id="cb39-26"><a href="#cb39-26"></a>         <span class="dt">educ =</span> <span class="kw">rescale</span>(educ, <span class="dt">to =</span> <span class="kw">c</span>(<span class="dv">10</span>, <span class="dv">23</span>)),</span>
+<span id="cb39-27"><a href="#cb39-27"></a>         <span class="dt">father_educ =</span> <span class="kw">rescale</span>(father_educ, <span class="dt">to =</span> <span class="kw">c</span>(<span class="dv">10</span>, <span class="dv">23</span>)),</span>
+<span id="cb39-28"><a href="#cb39-28"></a>         <span class="dt">ability =</span> <span class="kw">rescale</span>(ability, <span class="dt">to =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">500</span>))) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb39-29"><a href="#cb39-29"></a><span class="st">  </span><span class="co"># Get rid of random wage noise. We could also get rid of ability, since we</span></span>
+<span id="cb39-30"><a href="#cb39-30"></a><span class="st">  </span><span class="co"># can&#39;t measure it in real life, but I&#39;ll leave it here</span></span>
+<span id="cb39-31"><a href="#cb39-31"></a><span class="st">  </span><span class="kw">select</span>(<span class="op">-</span>wage_noise)</span>
+<span id="cb39-32"><a href="#cb39-32"></a></span>
+<span id="cb39-33"><a href="#cb39-33"></a><span class="kw">head</span>(wage_edu)</span></code></pre></div>
+<pre><code>## # A tibble: 6 x 8
+##   ID    Sex    Race       Age ability father_educ  educ  wage
+##   &lt;chr&gt; &lt;fct&gt;  &lt;fct&gt;    &lt;int&gt;   &lt;dbl&gt;       &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1 0001  Male   White       84    90.9        16.2  14.3  57.6
+## 2 0002  Female White       34   246.         18.6  18.3 111. 
+## 3 0003  Female White       72   213.         15.2  15.0  75.4
+## 4 0004  Female White       26   319.         15.0  16.3  95.5
+## 5 0005  Female White       56   236.         16.9  16.8 121. 
+## 6 0006  Female Hispanic    28   126.         14.2  13.1  67.5</code></pre>
+<p>Now we can do standard IV stuff, like look at the relationship between education and wages:</p>
+<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1"></a><span class="kw">ggplot</span>(wage_edu, <span class="kw">aes</span>(<span class="dt">x =</span> educ, <span class="dt">y =</span> wage)) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb41-2"><a href="#cb41-2"></a><span class="st">  </span><span class="kw">geom_point</span>()</span></code></pre></div>
+<p><img src="/class/13-class_files/figure-html/wage-edu-1.png" width="384" /></p>
+<p>Check the strength of the instrument in the first stage (huge F-statistic!):</p>
+<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1"></a>model_first_stage &lt;-<span class="st"> </span><span class="kw">lm</span>(educ <span class="op">~</span><span class="st"> </span>father_educ, <span class="dt">data =</span> wage_edu)</span>
+<span id="cb42-2"><a href="#cb42-2"></a><span class="kw">tidy</span>(model_first_stage)</span></code></pre></div>
+<pre><code>## # A tibble: 2 x 5
+##   term        estimate std.error statistic  p.value
+##   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
+## 1 (Intercept)    2.59     0.191       13.6 2.72e-40
+## 2 father_educ    0.826    0.0118      70.3 0.</code></pre>
+<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1"></a><span class="kw">glance</span>(model_first_stage)</span></code></pre></div>
+<pre><code>## # A tibble: 1 x 11
+##   r.squared adj.r.squared sigma statistic p.value    df logLik   AIC   BIC
+##       &lt;dbl&gt;         &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt; &lt;int&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1     0.712         0.712 0.993     4944.       0     2 -2822. 5650. 5667.
+## # … with 2 more variables: deviance &lt;dbl&gt;, df.residual &lt;int&gt;</code></pre>
+<p>And run the 2SLS model with <code>iv_robust()</code>:</p>
+<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1"></a><span class="kw">library</span>(estimatr)</span>
+<span id="cb46-2"><a href="#cb46-2"></a></span>
+<span id="cb46-3"><a href="#cb46-3"></a>model_2sls &lt;-<span class="st"> </span><span class="kw">iv_robust</span>(wage <span class="op">~</span><span class="st"> </span>educ <span class="op">|</span><span class="st"> </span>father_educ, <span class="dt">data =</span> wage_edu)</span>
+<span id="cb46-4"><a href="#cb46-4"></a><span class="kw">tidy</span>(model_2sls)</span></code></pre></div>
+<pre><code>##          term estimate std.error statistic   p.value conf.low conf.high
+## 1 (Intercept)   -104.3      3.69     -28.3 3.82e-148     -112     -97.1
+## 2        educ     12.4      0.23      54.0  0.00e+00       12      12.9
+##     df outcome
+## 1 1998    wage
+## 2 1998    wage</code></pre>
+<h2 id="clearest-and-muddiest-things">Clearest and muddiest things</h2>
+<p>Go to <a href="https://forms.gle/gDXoxmbQeps5suaJ6">this form</a> and answer these three questions:</p>
+<ol style="list-style-type: decimal">
+<li>What was the muddiest thing from class today? What are you still wondering about?</li>
+<li>What was the clearest thing from class today?</li>
+<li>What was the most exciting thing you learned?</li>
+</ol>
+<p>I’ll compile the questions and send out answers after class.</p>

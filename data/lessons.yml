@@ -117,6 +117,7 @@ lessons:
   - title: "Work day"
     date: "December 2"
     reading: "13-reading"
+    class: "13-class"
 
   - title: "**Code-through due**"
     date: "December 4"
