@@ -15,6 +15,10 @@ permalinks:
   post: "/:year/:month/:day/:slug/"
 buildFuture: True
 disableKinds: ["taxonomy", "taxonomyTerm"]
+markup:
+  goldmark:
+    renderer:
+      unsafe: true
 menu:
   main:
     - name: Syllabus
