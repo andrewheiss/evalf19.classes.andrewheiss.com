@@ -126,6 +126,7 @@ lessons:
   - title: "Ethics and open science"
     date: "December 9"
     reading: "14-reading"
+    class: "14-class"
 
   - title: '<span class="fake-header-table">Final</span>'
     header: True
